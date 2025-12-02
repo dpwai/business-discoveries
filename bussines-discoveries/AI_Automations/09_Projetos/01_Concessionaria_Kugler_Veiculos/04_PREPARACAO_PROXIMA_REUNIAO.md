@@ -1,46 +1,69 @@
 # Preparação Estratégica: Concessionária Kugler (Funilaria e Pintura)
 
-## 1. O Desafio (Perguntas Difíceis para a Deepwork)
-*Antes de vender a solução, precisamos ter certeza que conseguimos entregar. Reflita sobre estes pontos:*
+## 1. Contexto de Mercado & Visão (Workshop 4.0)
+*Insights da Pesquisa de Mercado para embasar nossa autoridade.*
+
+### Tendências & Benchmarks (Onde queremos chegar)
+- **Workshop 4.0:** A oficina do futuro é conectada. Não é apenas sobre "consertar carros", é sobre **fluxo de dados**.
+- **O "Agente Invisível":** A tendência não é substituir o sistema legado (NBS), mas criar uma camada de inteligência (RPA/AI) que opera o sistema para o humano.
+- **KPIs de Sucesso (Metas para a Kugler):**
+    - **Cycle Time (Tempo de Ciclo):** Meta de mercado é **< 8.2 dias**. Qual é a da Kugler hoje? (> 15 dias?)
+    - **Eficiência Técnica:** Meta de **125%** (vender 50h trabalhando 40h).
+    - **Touch Time:** Maximizar o tempo que o mecânico está *tocando* no carro vs. esperando peça/aprovação.
+
+---
+
+## 2. A Solução Proposta: "Agente de Automação NBS"
+*Não vamos vender apenas um dashboard. Vamos vender um "funcionário digital".*
+
+### O Conceito
+Um agente inteligente que interage com o NBS através de interfaces modernas (Tablet/WhatsApp), eliminando a fricção de uso do sistema legado.
+
+### Pilares da Solução
+1.  **Entrada Sem Fricção (Check-in Inteligente):**
+    - Consultor usa Tablet.
+    - Leitura de Placa (LPR) + Fotos + Áudio transcrito para texto.
+    - **Agente:** Abre a O.S. no NBS automaticamente.
+2.  **Controle de Mão de Obra (Gamificado):**
+    - Interface "Start/Stop" simplificada para o técnico (Tablet na baia).
+    - **Agente:** Marca o tempo no módulo de oficina do NBS.
+3.  **Torre de Controle (Gestão Visual):**
+    - Painéis em tempo real (TVs) mostrando status, gargalos e metas do dia.
+
+---
+
+## 3. O Desafio (Perguntas Difíceis para a Deepwork)
+*Pontos de atenção interna antes da reunião.*
 
 ### Viabilidade Técnica (Integração NBS)
-- **O "Elefante na Sala":** Como vamos extrair dados do NBS em *tempo real*?
-    - O NBS tem API aberta?
-    - Vamos precisar de acesso direto ao banco de dados (SQL)?
-    - Se não tiver API nem acesso ao banco, vamos depender de relatórios exportados (CSV/Excel)? Isso mata o "tempo real".
-    - *Risco:* Vender um dashboard "ao vivo" e entregar um dashboard que atualiza "ontem".
+- **O "Elefante na Sala":** Como vamos extrair dados e *inserir* dados no NBS em tempo real?
+    - API? Acesso ao Banco (SQL)? Ou RPA (Robôs clicando em telas)?
+    - *Risco:* Prometer automação e travar na barreira técnica do sistema legado.
 
 ### Adoção Cultural (O Fator Humano)
 - **O Mecânico vai usar?**
-    - A solução depende que o funileiro/pintor pare o que está fazendo para clicar em "Iniciar/Pausar" em um tablet/celular.
-    - Eles têm mãos sujas de graxa/tinta. O dispositivo aguenta?
-    - Eles vão ver isso como "controle do patrão" e boicotar?
-    - *Mitigação:* A interface precisa ser absurdamente simples (botões gigantes) e talvez precisemos de incentivos (gamificação?).
-
-### Infraestrutura
-- Tem Wi-Fi de qualidade na área da funilaria?
-- Onde ficarão os dispositivos (tablets/telas)?
+    - A interface precisa ser "à prova de graxa" e absurdamente simples.
+    - Precisamos vender o benefício *para eles* (ex: "você vai receber seu bônus mais rápido e correto").
 
 ---
 
-## 2. Perguntas para o Cliente (Diagnóstico Profundo)
-*Perguntas desenhadas para expor a dor e criar urgência.*
+## 4. Perguntas para o Cliente (Diagnóstico Profundo)
+*Perguntas desenhadas para expor a dor e validar a solução.*
 
-### Sobre a "Caixa Preta" Operacional
-1. "Daniel, se um cliente VIP ligar agora perguntando do carro dele, **quantos minutos e quantas pessoas** você precisa acionar para me dizer *exatamente* em que etapa o carro está e quando fica pronto?"
-2. "Hoje, você saberia me dizer quem é seu funileiro mais eficiente e quem é o que mais gera retrabalho, com dados, ou é apenas 'feeling'?"
+### Sobre Performance & Dados
+1.  "Daniel, o benchmark de mercado para Cycle Time é de 8 dias. Você sabe qual é a sua média hoje? Se for 15, sabemos que tem dinheiro parado no pátio."
+2.  "Hoje, você confia 100% no apontamento de horas dos seus técnicos? Se um técnico disser que trabalhou 4h num serviço de 2h, você tem como auditar isso agora?"
 
-### Sobre o Custo da Ineficiência
-3. "Quanto você estima que perde por mês com **horas ociosas** ou **gargalos** que você nem vê? (Ex: carro parado esperando peça enquanto o funileiro está sem serviço)"
-4. "Como é feito o controle de materiais hoje? Se um pintor gastar 30% a mais de tinta que o necessário, você fica sabendo?"
+### Sobre a Operação Diária
+3.  "Quanto tempo seu consultor perde hoje digitando dados no NBS na frente do cliente? E se ele pudesse fazer isso falando, enquanto toma um café com o cliente?"
+4.  "Se instalássemos uma 'Torre de Controle' (TV) hoje na oficina, que informação *precisaria* estar lá para que você não precisasse descer para o chão de fábrica?"
 
-### Sobre a Visão de Futuro
-5. "Imagine que instalamos uma TV de 60 polegadas no meio da oficina. O que precisaria estar escrito nela para que a equipe trabalhasse sozinha, sem o gerente precisar gritar?"
+### Sobre Infraestrutura
+5.  "Como é o Wi-Fi na área da funilaria? Precisamos garantir que os tablets funcionem em qualquer box."
 
 ---
 
-## 3. Checklist de Levantamento Técnico (Para o João)
-- [ ] Pedir documentação técnica do NBS (Dicionário de dados, Manual de API).
-- [ ] Verificar infraestrutura de rede no local (Ping, cobertura Wi-Fi).
-- [ ] Listar exatamente quais campos do "Relatório Gerencial" atual são úteis e quais são lixo.
-- [ ] Entender o fluxo físico do carro (Entrada -> Orçamento -> Desmontagem -> Funilaria -> Preparação -> Pintura -> Montagem -> Polimento -> Entrega).
+## 5. Próximos Passos (Checklist Técnico)
+- [ ] Validar acesso ao NBS (API vs SQL vs RPA).
+- [ ] Mapear o fluxo exato de abertura de O.S. (quais campos são obrigatórios?).
+- [ ] Definir o MVP: Começamos pela Entrada (Consultor) ou pelo Controle (Técnico)?
