@@ -1,0 +1,25 @@
+<svg width="400" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00C2FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066FF;stop-opacity:1" />
+    </linearGradient>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&amp;display=swap');
+      .text-title { font-family: 'Montserrat', sans-serif; font-weight: 700; fill: #FFFFFF; }
+      .text-subtitle { font-family: 'Montserrat', sans-serif; font-weight: 500; fill: #FFFFFF; }
+    </style>
+  </defs>
+
+  <!-- Symbol -->
+  <g transform="translate(20, 10)">
+    <path d="M 20 80 L 50 80 L 80 30" stroke="url(#grad1)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M 20 55 L 50 55 L 65 30" stroke="url(#grad1)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M 20 30 L 35 30" stroke="url(#grad1)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M 65 80 L 80 80 L 95 55" stroke="url(#grad1)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- Text -->
+  <text x="130" y="65" class="text-title" font-size="38">DEEPWORK</text>
+  <text x="130" y="100" class="text-subtitle" font-size="24" letter-spacing="2">AI FLOWS</text>
+</svg>

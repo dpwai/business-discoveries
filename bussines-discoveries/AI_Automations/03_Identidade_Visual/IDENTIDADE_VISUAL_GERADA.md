@@ -94,10 +94,10 @@ O logo combina dois elementos principais:
 ### Cor Primária: Azul Profundo (Deep Blue)
 
 **Códigos:**
-- **Hex**: `#1E3A5F`
-- **RGB**: `R: 30, G: 58, B: 95`
-- **CMYK**: `C: 100, M: 70, Y: 30, K: 50`
-- **HSL**: `H: 210°, S: 52%, L: 25%`
+- **Hex**: `#0A2342`
+- **RGB**: `R: 10, G: 35, B: 66`
+- **CMYK**: `C: 100, M: 85, Y: 45, K: 50`
+- **HSL**: `H: 213°, S: 74%, L: 15%`
 
 **Significado:**
 - Profundidade (Deepwork)
@@ -117,10 +117,10 @@ O logo combina dois elementos principais:
 ### Cor Secundária: Azul Claro (Flow Blue)
 
 **Códigos:**
-- **Hex**: `#4A90E2`
-- **RGB**: `R: 74, G: 144, B: 226`
-- **CMYK**: `C: 70, M: 40, Y: 0, K: 0`
-- **HSL**: `H: 210°, S: 75%, L: 59%`
+- **Hex**: `#0066FF`
+- **RGB**: `R: 0, G: 102, B: 255`
+- **CMYK**: `C: 100, M: 60, Y: 0, K: 0`
+- **HSL**: `H: 216°, S: 100%, L: 50%`
 
 **Significado:**
 - Fluxo e movimento (Flows)
@@ -140,10 +140,10 @@ O logo combina dois elementos principais:
 ### Cor de Destaque: Laranja Suave (Action Orange)
 
 **Códigos:**
-- **Hex**: `#F5A623`
-- **RGB**: `R: 245, G: 166, B: 35`
-- **CMYK**: `C: 0, M: 35, Y: 90, K: 0`
-- **HSL**: `H: 38°, S: 91%, L: 55%`
+- **Hex**: `#FF9F1C`
+- **RGB**: `R: 255, G: 159, B: 28`
+- **CMYK**: `C: 0, M: 45, Y: 95, K: 0`
+- **HSL**: `H: 35°, S: 100%, L: 55%`
 
 **Significado:**
 - Energia e ação
@@ -215,9 +215,9 @@ O logo combina dois elementos principais:
 
 #### 1. Logo: Fonte Customizada ou Inter Bold
 
-**Fonte**: **Inter** (peso: Bold/700)
-- **"Deepwork"**: Inter Bold, tamanho variável
-- **"AI Flows"**: Inter Regular, tamanho 70% do "Deepwork"
+**Fonte**: **Montserrat** (peso: Bold/700)
+- **"Deepwork"**: Montserrat Bold, tamanho maior
+- **"AI Flows"**: Montserrat Medium, tamanho 70% do "Deepwork"
 
 **Alternativas**: Poppins Bold, Montserrat Bold
 

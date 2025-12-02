@@ -16,35 +16,29 @@ O arquivo HTML inclui:
 
 Foram criadas versões SVG do logo baseadas no conceito visual definido:
 
-### 1. `logo_conceito.svg`
+### 1. `logo_final.svg`
 - **Versão**: Logo completo horizontal (principal)
 - **Dimensões**: 400x120px
-- **Cores**: Azul profundo (#1E3A5F) + Azul claro (#4A90E2)
+- **Cores**: Gradiente Azul (#00C2FF -> #0066FF) + Deep Ocean (#0A2342)
 - **Uso**: Header de sites, apresentações principais
 
-### 2. `logo_icone.svg`
+### 2. `logo_icon.svg`
 - **Versão**: Ícone/Isotipo isolado (apenas símbolo)
-- **Dimensões**: 120x120px (viewBox)
-- **Cores**: Azul profundo (#1E3A5F) + Azul claro (#4A90E2)
+- **Dimensões**: 120x120px
+- **Cores**: Gradiente Azul
 - **Uso**: Favicon, ícone de app, pequenos espaços
 
-### 3. `logo_vertical.svg`
-- **Versão**: Logo completo vertical
-- **Dimensões**: 200x250px
-- **Cores**: Azul profundo (#1E3A5F) + Azul claro (#4A90E2)
-- **Uso**: Assinaturas de email, materiais com espaço vertical limitado
+### 3. `logo_final_dark.svg`
+- **Versão**: Logo para fundo escuro
+- **Dimensões**: 400x120px
+- **Cores**: Gradiente Azul + Branco
+- **Uso**: Headers escuros, materiais com fundo escuro
 
-### 4. `logo_monocromatico.svg`
+### 4. `logo_final_mono.svg`
 - **Versão**: Logo monocromático (preto)
 - **Dimensões**: 400x120px
 - **Cores**: Preto (#000000)
 - **Uso**: Impressão em preto e branco, documentos oficiais
-
-### 5. `logo_fundo_escuro.svg`
-- **Versão**: Logo para fundo escuro (branco)
-- **Dimensões**: 400x120px
-- **Cores**: Branco (#FFFFFF) + Azul claro (#4A90E2)
-- **Uso**: Headers escuros, materiais com fundo escuro
 
 ---
 
