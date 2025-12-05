@@ -1,81 +1,61 @@
-# Brainstorming: O Agente de Automação NBS
+# Brainstorming: Estratégia de Produto (Dual Core)
 
-**Conceito Central:** Criar uma camada de inteligência (Agente) que opera o sistema legado (NBS) automaticamente, liberando humanos de tarefas repetitivas e propensas a erro.
-
-**O Papel do João (Técnico):** Desenvolver os "braços" do robô (RPA/Integrações).
-**Nosso Papel (Criativo/Funcional):** Definir o "cérebro" e a "voz" desse agente. O que ele deve fazer e como interagimos com ele.
+**Mudança de Estratégia:** Não estamos vendendo "uma solução", estamos vendendo **dois produtos complementares** que resolvem dores diferentes.
 
 ---
 
-## 1. O "Agente Invisível" (Backend)
-Este agente atua nos bastidores, recebendo comandos simples de interfaces modernas e executando processos complexos no NBS.
+## 📦 Produto 1: Deepwork BI (A Torre de Controle)
+*O "Cérebro" da Operação. Foco em Visibilidade e Decisão.*
 
-### Capacidades Principais:
+**A Dor:** "Eu não sei o que está acontecendo na minha oficina agora."
+**A Solução:** Dashboards em tempo real e gestão visual.
 
-#### A. Abertura de O.S. Automática
-*   **Entrada:** Consultor envia áudio no WhatsApp ou preenche formulário rápido no Tablet (Placa + Fotos + Relato).
-*   **Ação do Agente:**
-    1.  Loga no NBS.
-    2.  Busca cliente/veículo.
-    3.  Cria a O.S.
-    4.  Preenche "Reclamação" (transcrita do áudio).
-    5.  Anexa fotos (se o NBS permitir ou salva em drive linkado).
-*   **Benefício:** Zero erro de digitação, padronização da entrada, agilidade no atendimento.
+### Funcionalidades Chave:
+1.  **Painel do Gestor (Cockpit):**
+    *   Faturamento em tempo real (vs Meta).
+    *   Ticket Médio.
+    *   Cycle Time (Média da semana).
+2.  **Gestão Visual (Chão de Fábrica):**
+    *   TVs mostrando a fila de carros em cada etapa (Funilaria, Pintura, Montagem).
+    *   Alertas visuais de gargalo (Vermelho = Parado há > 4h).
+3.  **Análise de Eficiência:**
+    *   Ranking de técnicos (Quem entrega mais rápido? Quem gera mais retrabalho?).
 
-#### B. Gestão de Mão de Obra (Apontamento)
-*   **Entrada:** Técnico clica "Iniciar" no Tablet ou passa crachá.
-*   **Ação do Agente:**
-    1.  Identifica o serviço no NBS.
-    2.  Inicia a contagem de tempo (Time Tracking) no módulo de oficina do NBS.
-    3.  Quando o técnico clica "Parar", o agente encerra o apontamento no NBS.
-*   **Benefício:** Precisão absoluta no custo da mão de obra e pagamento justo. Fim do "chute" de horas.
-
-#### C. Requisição de Peças
-*   **Entrada:** Técnico solicita "Filtro de Óleo" via comando de voz ou clique no Tablet.
-*   **Ação do Agente:**
-    1.  Verifica estoque no NBS.
-    2.  Se disponível, cria a requisição interna para o almoxarifado.
-    3.  Se indisponível, alerta o setor de compras ou gera cotação automática.
-*   **Benefício:** O técnico não sai da baia, o fluxo não para.
+**Valor Entregue:** Clareza, Controle, Fim do "Achismo".
 
 ---
 
-## 2. Interfaces de Interação (Frontend)
-Como os humanos conversam com o Agente?
+## 🤖 Produto 2: Deepwork Agent (O Operador Digital)
+*As "Mãos" da Operação. Foco em Execução e Automação.*
 
-### A. Interface "Consultor" (Tablet/Mobile)
-*   **Foco:** Agilidade e Experiência do Cliente.
-*   **Funcionalidades:**
-    *   Scanner de Placa (OCR).
-    *   Checklist visual de entrada (marcar avarias).
-    *   Botão "Gerar O.S." (aciona o Agente).
+**A Dor:** "Meus funcionários perdem tempo digitando e erram muito."
+**A Solução:** Um robô que opera o NBS para você.
 
-### B. Interface "Técnico" (Tablet na Baia ou WhatsApp)
-*   **Foco:** Simplicidade e Mãos Livres.
-*   **Funcionalidades:**
-    *   Lista de tarefas do dia.
-    *   Botão gigante Start/Stop.
-    *   Botão "Pedir Peça".
-    *   Botão "Chamar Supervisor" (para travas/dúvidas).
+### Funcionalidades Chave:
+1.  **Entrada Sem Fricção (Check-in):**
+    *   Consultor usa Tablet/Voz.
+    *   Agente preenche a O.S. no NBS.
+2.  **Apontamento Automático (Time Tracking):**
+    *   Técnico dá "Start/Stop" no Tablet.
+    *   Agente insere os tempos no módulo de oficina do NBS.
+3.  **Requisição de Peças:**
+    *   Técnico pede via interface simples.
+    *   Agente verifica estoque e faz a requisição no sistema.
 
-### C. Interface "Gestor" (WhatsApp/Dashboard)
-*   **Foco:** Controle e Alertas.
-*   **Funcionalidades:**
-    *   Recebe alertas do Agente: "O.S. 1234 parada por falta de peça há 2h".
-    *   Resumo do dia: "Hoje abrimos 15 O.S. e faturamos R$ 20k (estimado)".
+**Valor Entregue:** Agilidade, Precisão de Dados, Redução de Custo Operacional.
 
 ---
 
-## 3. Cenário de Exemplo: "A Jornada Sem Fricção"
-
-1.  **Chegada:** Cliente chega. Consultor aponta Tablet. Agente identifica: "Olá Sr. João, revisão de 10k?"
-2.  **Entrada:** Consultor confirma e tira fotos. Agente abre a O.S. no NBS em segundos.
-3.  **Execução:** Carro vai pro box. Técnico vê a tarefa na tela. Clica "Iniciar". Agente marca o tempo no NBS.
-4.  **Peças:** Técnico nota que precisa de uma pastilha extra. Fala no App. Agente requisita no almoxarifado. Peça chega na mão dele.
-5.  **Fim:** Técnico clica "Finalizar". Agente fecha a O.S. de serviço, calcula o custo real e avisa o consultor: "Carro pronto".
+## 🔄 A Sinergia (O Ecossistema)
+*   O **Agente** gera os dados limpos (sem erro humano).
+*   O **BI** visualiza esses dados para tomada de decisão.
+*   *Um não vive sem o outro:* BI sem dados confiáveis é inútil. Agente sem BI é apenas um digitador rápido.
 
 ---
 
-## Próximos Passos
-*   Definir quais desses fluxos são prioridade para o MVP (Produto Mínimo Viável).
-*   Validar com o João quais "portas" do NBS estão abertas para essa automação.
+## Próximos Passos de Design
+*   Criar uma apresentação com **Abas/Seções Claras**:
+    *   Aba 1: Visão Geral (O Problema).
+    *   Aba 2: O Agente (Automação).
+    *   Aba 3: O BI (Gestão).
+    *   Aba 4: O Futuro (ROI).
