@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # 🗄️ Database: PostgreSQL
+  # Armazena dados de clientes, logs e também serve de base para o n8n.
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: deepwork_db
+    restart: always
+    environment:
+      - POSTGRES_USER=deepwork
+      - POSTGRES_PASSWORD=deepwork_password
+      - POSTGRES_DB=deepwork_main
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - deepwork_net
+
+  # ---------------------------------------------------------------------------
+  # ⚡ Automation: n8n
+  # Ferramenta Low-Code para fluxos rápidos e integrações.
+  # ---------------------------------------------------------------------------
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: deepwork_n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=deepwork_main
+      - DB_POSTGRESDB_USER=deepwork
+      - DB_POSTGRESDB_PASSWORD=deepwork_password
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - deepwork_net
+
+  # ---------------------------------------------------------------------------
+  # 🧠 Backend: Python (FastAPI)
+  # API Core para lógica de negócio pesada e IA.
+  # ---------------------------------------------------------------------------
+  backend:
+    build: ./backend
+    container_name: deepwork_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://deepwork:deepwork_password@postgres:5432/deepwork_main
+    depends_on:
+      - postgres
+    networks:
+      - deepwork_net
+
+  # ---------------------------------------------------------------------------
+  # 💻 Frontend: Next.js
+  # Dashboard do cliente.
+  # ---------------------------------------------------------------------------
+  frontend:
+    build: ./frontend
+    container_name: deepwork_web
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    networks:
+      - deepwork_net
+
+volumes:
+  postgres_data:
+  n8n_data:
+
+networks:
+  deepwork_net:
+    driver: bridge
