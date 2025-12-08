@@ -33,6 +33,15 @@ Centralizar dados do NBS e do chão de fábrica em dashboards visuais para tomad
         *   Eficiência da Equipe (Horas vendidas vs Horas trabalhadas)
         *   Gargalos (Carros parados há > X horas)
 
+4.  **Confiabilidade & Sustentação (SLA):**
+    *   [ ] **Confiabilidade das Fontes:** Podemos confiar 100% nos dados do NBS hoje? Existe risco de inconsistência (lixo entra, lixo sai)?
+    *   [ ] **Frequência de Atualização (CRON):** Qual a necessidade real?
+        *   ( ) Tempo Real (Streaming - Mais caro/complexo)
+        *   ( ) 1x por dia (D-1)
+        *   ( ) A cada turno (Manhã/Tarde)
+    *   [ ] **Monitoria:** Quando o dashboard falhar ou o dado estiver errado, quem deve ser avisado?
+    *   [ ] **SLA de Erro:** Qual o tempo máximo aceitável para o sistema ficar fora do ar? (Crítico para definir suporte).
+
 ---
 
 ## 3. Produto 2: Agente NBS (Automação Inteligente)
@@ -76,6 +85,11 @@ Garantir que a operação não pare por vírus (Ransomware) e que os dados dos c
 
 3.  **Entregável:**
     *   [ ] A entrega será um **Relatório de Vulnerabilidades** + **Plano de Correção** + **Execução da Blindagem**?
+
+4.  **Governança & Compliance (LGPD):**
+    *   [ ] **Lifecycle (Ciclo de Vida):** Por quanto tempo *somos obrigados* a manter os dados? (5 anos, 10 anos, eterno?).
+    *   [ ] **Roles (Permissões):** Quem pode ver o quê? Precisamos criar níveis de acesso restritos (Ex: pintor não vê faturamento)?
+    *   [ ] **NDA & Confidencialidade:** Qual o nível de sensibilidade dos dados? (Dados pessoais de clientes, margem de lucro, etc). Precisamos de NDAs assinados?
 
 ---
 
