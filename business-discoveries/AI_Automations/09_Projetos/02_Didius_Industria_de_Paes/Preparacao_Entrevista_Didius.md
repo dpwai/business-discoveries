@@ -1,53 +1,128 @@
-# Roteiro de Investigação Consultiva: Didius Indústria de Pães
-**Foco:** Mapeamento de Processos e Descoberta de Dores (Discovery)
-**Objetivo:** Entender o "Chão de Fábrica" e o dia a dia da gestão e da operação antes de propor qualquer solução.
+# Roteiro de Entrevista Consultiva: Didius Indústria de Pães
+
+**Cliente:** Didius Indústria de Pães (Marcelo)
+**Foco:** Mapeamento de "Chão de Fábrica", PCP e Jornada do Pedido
+**Objetivo:** Sair com 1-3 processos candidatos a MVP que doam no bolso ou na operação.
 
 ---
 
-## 1. Abertura: O Mapeamento do Terreno
-*O objetivo aqui é mostrar honestidade intelectual. Nós não sabemos como a Didius funciona por dentro, e precisamos entender a "Jornada do Pedido" e a "Jornada do Produto".*
+## 📋 CHECKLIST PRÉ-ENTREVISTA
 
-**Abordagem:**
-"Marcelo, antes de falarmos sobre tecnologia ou IA, meu objetivo hoje é entender o seu negócio na unha. Eu quero entender 'a vida como ela é' aqui dentro, desde a hora que o pedido chega até a hora que o caminhão sai. Onde as coisas travam? Onde você perde tempo?"
-
----
-
-## 2. Investigação dos 3 Pilares (Perguntas de Diagnóstico)
-*Não vamos vender o remédio agora. Vamos apenas pedir para ele descrever os sintomas.*
-
-### Pilar 1: Business Intelligence (Como a empresa se enxerga)
-**O que queremos descobrir:** Se a gestão é feita no escuro (feeling) ou com dados reais.
-
-1.  **A Composição de Preço:** "Marcelo, hoje, como você define o preço de venda para um contrato grande? Você tem na ponta do lápis o custo da farinha, da energia e da hora-homem daquele lote específico, ou a gente trabalha com uma margem média?"
-2.  **O Painel de Controle:** "Se você viajar por 15 dias e ficar sem falar com a fábrica, quais são os números que você precisa receber no WhatsApp para saber se a empresa está saudável? Você recebe isso hoje?"
-3.  **Análise de Clientes:** "Você consegue me dizer hoje quem são seus 5 clientes mais lucrativos e os 5 que te dão prejuízo (por causa de devolução ou logística)? É fácil tirar esse relatório?"
-
-### Pilar 2: IA e Automação (Onde existe trabalho braçal/repetitivo)
-**O que queremos descobrir:** Tarefas manuais, repetitivas e propensas a erro humano.
-
-1.  **O Fluxo de Pedidos:** "Explica para mim o caminho do pedido: O cliente manda um WhatsApp/Email -> Quem recebe? -> Onde essa pessoa digita? -> Como isso vira uma ordem de produção? Existe muito 'Ctrl+C Ctrl+V' nesse processo?"
-2.  **Planejamento de Produção (PCP):** "Quem define o que vai ser assado amanhã de manhã? É uma pessoa que tem que olhar planilha, olhar estoque e decidir? Quanto tempo essa pessoa gasta planejando o dia?"
-3.  **Compras e Estoque:** "Já aconteceu de parar uma linha por falta de insumo? Como vocês decidem a hora de comprar farinha ou embalagem? É no 'olhômetro' do estoque ou o sistema avisa?"
-
-### Pilar 3: Governança e Segurança (Como o negócio se protege)
-**O que queremos descobrir:** Riscos ocultos de conformidade e propriedade intelectual.
-
-1.  **A "Receita do Bolo":** "Os processos e as receitas especiais da Didius estão documentados em algum sistema seguro ou estão na cabeça de funcionários de confiança? Se o seu padeiro chefe sair hoje, a qualidade cai?"
-2.  **Dados de Terceiros:** "Atendendo escolas e hospitais, vocês lidam com dados de entrega ou contratos que exigem sigilo? Como isso fica armazenado hoje?"
+- [ ] Confirmar data/hora da reunião
+- [ ] Preparar mentalidade: "Não sou vendedor, sou um especialista em eficiência tentando entender a vida como ela é"
+- [ ] Objetivo mental: Descobrir o "Problema do Dia Ruim" (o que faz o Marcelo perder o sono)
 
 ---
 
-## 3. Caça aos Gargalos (Perguntas de Processo)
-*Peça para ele descrever "O Problema do Dia Ruim".*
+## 🎤 1. Abertura: O Mapeamento do Terreno
 
-*   "Marcelo, me conta como foi o último dia que deu tudo errado aqui. O que aconteceu? Foi entrega errada? Foi máquina quebrada? Foi pedido que sumiu?"
-    *   *(A resposta dele vai revelar a maior dor latente para atacarmos primeiro).*
-*   "Existe alguma tarefa aqui na administração que sua equipe odeia fazer? Aquela coisa chata, de digitar nota, conferir canhoto, que toma horas do dia?"
+**Script Sugerido:**
+> "Marcelo, obrigado pelo tempo. Como comentei, a Deepwork não é uma vendedora de software que quer te empurrar mais um sistema. Nós somos uma consultoria de performance.
+>
+> Meu objetivo hoje não é falar de tecnologia, mas entender a sua operação 'na unha'. Quero entender a viagem do pão: desde o pedido do cliente até a entrega no caminhão.
+>
+> Quero descobrir onde as coisas travam, onde tem trabalho manual chato e onde você sente que está pilotando no escuro. Podemos começar?"
 
 ---
 
-## 4. O Próximo Passo (A Promessa de Análise)
-*Agora sim, preparamos o terreno para a Deepwork.*
+## 📊 2. Mapeamento de Ferramentas (O Ecossistema Atual)
 
-**Fechamento:** "Perfeito, Marcelo. Eu anotei muita coisa aqui. O que eu vejo é que você tem um processo muito forte, mas com vários pontos onde a gente pode colocar 'inteligência' para você parar de apagar incêndio e começar a pilotar.
-Eu vou levar essas informações para o meu time e vamos desenhar um **Mapa de Oportunidades** específico para a Didius, focado em resolver [Citar a dor que ele mais reclamou]. Podemos marcar o retorno para apresentar isso?"
+*Objetivo: Entender onde os dados vivem hoje.*
+
+1.  **Sistema Principal (ERP):**
+    - [ ] Qual sistema vocês usam hoje para faturar/controlar estoque?
+    - [ ] O PCP (Planejamento de Produção) é feito nele ou em planilhas?
+    - [ ] Você confia nos números que saem dele?
+
+2.  **Comunicação com Clientes:**
+    - [ ] Os pedidos chegam por onde? (WhatsApp, E-mail, Telefone, Portal?)
+    - [ ] Quem recebe esse pedido? O que essa pessoa faz com ele? (Digita no sistema? Copia para planilha?) **-> ALERTA DE BOT**
+
+3.  **Controle de "Chão de Fábrica":**
+    - [ ] Como a ordem de produção chega no padeiro? (Papel, Tela, Grito?)
+    - [ ] Como você sabe quanto de farinha/insumo foi gasto *na realidade* vs o que estava planejado?
+
+---
+
+## 🔄 3. Mapeamento de Processos (A Caça aos Gargalos)
+
+*Objetivo: Achar o trabalho braçal e o "Ctrl+C Ctrl+V".*
+
+1.  **A Jornada do Pedido (Fluxo Crítico):**
+    - "Me descreve o caminho de um pedido de um cliente grande (escola/hospital)."
+    - [ ] Onde tem digitação manual?
+    - [ ] Onde costuma dar erro de digitação/comunicação?
+
+2.  **Planejamento de Produção (O Cérebro da Padaria):**
+    - "Quem decide o que vai ser assado amanhã? Quanto tempo essa pessoa gasta planejando?"
+    - [ ] É feito no "olhômetro" ou tem dados?
+    - [ ] Já aconteceu de parar linha por falta de insumo?
+
+3.  **Compras e Estoque:**
+    - "Como é o processo de compra de insumos? O sistema avisa ou depende do estoqueiro avisar?"
+
+4.  **O "Problema do Dia Ruim":**
+    - "Marcelo, me conta o último dia que deu tudo errado aqui. O que aconteceu?"
+    - (A resposta geralmente revela a maior dor latente)
+
+---
+
+## 💰 4. Custos e Impacto (A Hora da Verdade)
+
+*Objetivo: Quantificar a dor para justificar o preço depois.*
+
+1.  **Custo do Erro:**
+    - "Quando um pedido vai errado ou a produção para, quanto isso custa (mais ou menos) pra Didius? Devolução, multa, hora extra?"
+
+2.  **Custo Administrativo:**
+    - "Essas tarefas de digitar pedido/nota/planilha... quantas pessoas/horas sua equipe gasta nisso por semana? Se elas não fizessem isso, poderiam estar vendendo mais?"
+
+3.  **Valor da Informação:**
+    - "Quanto valeria pra você saber, em tempo real no seu WhatsApp, se a produção está atrasada ou se a margem de um pedido está negativa?"
+
+---
+
+## 🔒 5. Governança e Riscos (A "Receita do Bolo")
+
+1.  **Propriedade Intelectual:**
+    - "As receitas e processos chaves estão na cabeça das pessoas ou documentados? Se o padeiro chefe sair hoje, a qualidade cai?"
+
+2.  **Dados Sensíveis:**
+    - "Vocês lidam com contratos de escolas/hospitais que têm exigência de sigilo?"
+
+---
+
+## 💡 6. Validação de Oportunidades (Mental - Não perguntar)
+
+*Enquanto ele fala, marque mentalmente:*
+
+- [ ] **Oportunidade 1: Automação de Entrada de Pedidos** (Leitura de WhatsApp/E-mail -> ERP)
+- [ ] **Oportunidade 2: Agente de PCP** (Análise de estoque + Pedidos -> Sugestão de Produção)
+- [ ] **Oportunidade 3: BI/Dashboard no WhatsApp** (Resumo diário de faturamento/produção para o Marcelo)
+
+---
+
+## 📝 7. Coleta Técnica (Para o João Balzer)
+
+*Se identificar uma oportunidade clara, pergunte:*
+
+- [ ] "Esse sistema que vocês usam, ele é web (acessa no navegador) ou instalado no computador?"
+- [ ] "Vocês conseguem exportar relatórios dele em Excel?"
+- [ ] "Posso tirar uma foto da tela onde essa pessoa digita os pedidos hoje?" (Se presencial)
+
+---
+
+## 🎁 Fechamento
+
+> "Perfeito, Marcelo. O que eu vejo é que você tem uma operação robusta, mas tem [X] e [Y] consumindo tempo da sua equipe.
+>
+> Eu vou levar isso pro meu time técnico. Vamos desenhar um 'Funcionário Digital' piloto para resolver [A Dor Mais Forte] e volto para te apresentar a proposta.
+>
+> A ideia é começar pequeno, provar que funciona e que economiza dinheiro, e depois expandimos. Combinado?"
+
+---
+
+### Espaço para Anotações Rápidas:
+*   **Dor Principal:** _______________________________________________________
+*   **Ferramenta Chave:** ____________________________________________________
+*   **Volume (Pedidos/Dia):** ________________________________________________
