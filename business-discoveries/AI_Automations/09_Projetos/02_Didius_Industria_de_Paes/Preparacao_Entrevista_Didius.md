@@ -1,128 +1,147 @@
 # Roteiro de Entrevista Consultiva: Didius Indústria de Pães
-
-**Cliente:** Didius Indústria de Pães (Marcelo)
-**Foco:** Mapeamento de "Chão de Fábrica", PCP e Jornada do Pedido
-**Objetivo:** Sair com 1-3 processos candidatos a MVP que doam no bolso ou na operação.
-
----
-
-## 📋 CHECKLIST PRÉ-ENTREVISTA
-
-- [ ] Confirmar data/hora da reunião
-- [ ] Preparar mentalidade: "Não sou vendedor, sou um especialista em eficiência tentando entender a vida como ela é"
-- [ ] Objetivo mental: Descobrir o "Problema do Dia Ruim" (o que faz o Marcelo perder o sono)
+**Fase:** Descoberta & Diagnóstico do Negócio
+**Objetivo:** Mapear a anatomia da empresa, identificar a estrutura operacional e encontrar oportunidades ocultas de automação e eficiência.
+**Mentalidade:** "Folha em Branco" - Não assumir nada, investigar tudo.
 
 ---
 
-## 🎤 1. Abertura: O Mapeamento do Terreno
+## 🎤 1. Abertura: Apresentação & Contexto
 
-**Script Sugerido:**
-> "Marcelo, obrigado pelo tempo. Como comentei, a Deepwork não é uma vendedora de software que quer te empurrar mais um sistema. Nós somos uma consultoria de performance.
+**1. Apresentação Pessoal & Background:**
+> "Marcelo, antes de começarmos, queria me apresentar rapidamente.
 >
-> Meu objetivo hoje não é falar de tecnologia, mas entender a sua operação 'na unha'. Quero entender a viagem do pão: desde o pedido do cliente até a entrega no caminhão.
+> Eu sou Rodrigo, venho de um background forte em análise de negócios e processos [Ajustar conforme realidade]. Meu sócio, João Balzer, é engenheiro de software especialista em Inteligência Artificial e Automação.
 >
-> Quero descobrir onde as coisas travam, onde tem trabalho manual chato e onde você sente que está pilotando no escuro. Podemos começar?"
+> Nós unimos essas duas pontas: a visão de negócio e a capacidade técnica de execução."
+
+**2. A Deepwork (Nosso "Pitch"):**
+> "A Deepwork nasceu para resolver um problema que vimos em todo lugar: empresas perdendo dinheiro com ineficiência.
+>
+> Nós não somos uma 'software house' tradicional que chega querendo te vender um sistema pronto. Nós somos uma consultoria de eficiência operacional que usa IA para eliminar trabalho manual.
+>
+> Nossa missão é simples: Mapear onde sua operação trava ou desperdiça tempo humano, e criar 'Agentes Digitais' para fazer esse trabalho melhor, mais rápido e sem erros."
+
+**3. O Que Já Fizemos (Prova Social):**
+> "Para você ter uma ideia, na **Kugler Veículos** (Indústria Metalúrgica), nós implementamos automações que transformaram a gestão de pedidos e o acompanhamento de produção.
+>
+> Também estamos atuando em outros setores trazendo essa inteligência de dados pra quem toma decisão."
+
+**4. O Objetivo de Hoje:**
+> "Dito isso, meu objetivo hoje não é te vender nada agora. É fazer um diagnóstico.
+>
+> Eu quero entender a Didius a fundo: seus departamentos, seu fluxo de produção, seus gargalos.
+>
+> Se encontrarmos oportunidades onde a conta fecha, eu volto com uma proposta desenhada pra você. Se não, eu serei o primeiro a dizer. Podemos seguir assim?"
 
 ---
 
-## 📊 2. Mapeamento de Ferramentas (O Ecossistema Atual)
+## 🏢 2. Anatomia do Negócio (Estrutura & Pessoas)
 
-*Objetivo: Entender onde os dados vivem hoje.*
+*Objetivo: Entender o tamanho da operação e onde estão as pessoas.*
 
-1.  **Sistema Principal (ERP):**
-    - [ ] Qual sistema vocês usam hoje para faturar/controlar estoque?
-    - [ ] O PCP (Planejamento de Produção) é feito nele ou em planilhas?
-    - [ ] Você confia nos números que saem dele?
+1.  **Visão Geral:**
+    - [ ] Hoje, como a Didius está dividida em departamentos? (Ex: Produção, Vendas, Financeiro, Logística, Compras...)
+    - [ ] Qual o número total de funcionários hoje?
 
-2.  **Comunicação com Clientes:**
-    - [ ] Os pedidos chegam por onde? (WhatsApp, E-mail, Telefone, Portal?)
-    - [ ] Quem recebe esse pedido? O que essa pessoa faz com ele? (Digita no sistema? Copia para planilha?) **-> ALERTA DE BOT**
+2.  **Raio-X por Departamento:**
+    *(Tente preencher uma tabela mental rápida)*
 
-3.  **Controle de "Chão de Fábrica":**
-    - [ ] Como a ordem de produção chega no padeiro? (Papel, Tela, Grito?)
-    - [ ] Como você sabe quanto de farinha/insumo foi gasto *na realidade* vs o que estava planejado?
+    *   **Administrativo/Financeiro:**
+        - [ ] Quantas pessoas?
+        - [ ] O que toma mais tempo delas? (Emitir nota, cobrar boleto, pagar conta?)
 
----
+    *   **Vendas/Comercial:**
+        - [ ] Tem time de vendas ou os clientes tiram o pedido?
+        - [ ] Quantos vendedores? Eles ficam na rua ou internos?
 
-## 🔄 3. Mapeamento de Processos (A Caça aos Gargalos)
+    *   **Produção (Chão de Fábrica):**
+        - [ ] Quantos turnos?
+        - [ ] Quem comanda o ritmo da produção?
 
-*Objetivo: Achar o trabalho braçal e o "Ctrl+C Ctrl+V".*
-
-1.  **A Jornada do Pedido (Fluxo Crítico):**
-    - "Me descreve o caminho de um pedido de um cliente grande (escola/hospital)."
-    - [ ] Onde tem digitação manual?
-    - [ ] Onde costuma dar erro de digitação/comunicação?
-
-2.  **Planejamento de Produção (O Cérebro da Padaria):**
-    - "Quem decide o que vai ser assado amanhã? Quanto tempo essa pessoa gasta planejando?"
-    - [ ] É feito no "olhômetro" ou tem dados?
-    - [ ] Já aconteceu de parar linha por falta de insumo?
-
-3.  **Compras e Estoque:**
-    - "Como é o processo de compra de insumos? O sistema avisa ou depende do estoqueiro avisar?"
-
-4.  **O "Problema do Dia Ruim":**
-    - "Marcelo, me conta o último dia que deu tudo errado aqui. O que aconteceu?"
-    - (A resposta geralmente revela a maior dor latente)
+    *   **Logística/Expedição:**
+        - [ ] Frota própria ou terceirizada?
+        - [ ] Como é o controle de saída?
 
 ---
 
-## 💰 4. Custos e Impacto (A Hora da Verdade)
+## 🕵️ 3. Caça às Oportunidades (Dores & Ineficiências)
 
-*Objetivo: Quantificar a dor para justificar o preço depois.*
+*Objetivo: Encontrar processos repetitivos, manuais e cegueira de dados.*
 
-1.  **Custo do Erro:**
-    - "Quando um pedido vai errado ou a produção para, quanto isso custa (mais ou menos) pra Didius? Devolução, multa, hora extra?"
+### A. Monitoramento & Inteligência de Mercado
+- [ ] **Compras de Insumos (Farinha/Matéria Prima):** Hoje, como você monitora o preço da farinha e dos principais insumos? É manual? Alguém fica ligando/pesquisando na internet todo dia?
+- [ ] **Monitoramento da Concorrência:** Você consegue saber o preço que seu concorrente está praticando na ponta? Ou só descobre quando perde a venda?
 
-2.  **Custo Administrativo:**
-    - "Essas tarefas de digitar pedido/nota/planilha... quantas pessoas/horas sua equipe gasta nisso por semana? Se elas não fizessem isso, poderiam estar vendendo mais?"
+### B. Estoque & PCP (Planejamento)
+- [ ] **Visibilidade de Estoque:** Se eu te perguntar AGORA quanto você tem de estoque de produto acabado, você sabe? Ou precisa contar lá na câmara fria?
+- [ ] **Ruptura:** Já aconteceu de parar a produção por falta de um ingrediente bobo (ex: faltou fermento)?
+- [ ] **Desperdício:** Você tem controle real do que é jogado fora ou sobra de produção?
 
-3.  **Valor da Informação:**
-    - "Quanto valeria pra você saber, em tempo real no seu WhatsApp, se a produção está atrasada ou se a margem de um pedido está negativa?"
-
----
-
-## 🔒 5. Governança e Riscos (A "Receita do Bolo")
-
-1.  **Propriedade Intelectual:**
-    - "As receitas e processos chaves estão na cabeça das pessoas ou documentados? Se o padeiro chefe sair hoje, a qualidade cai?"
-
-2.  **Dados Sensíveis:**
-    - "Vocês lidam com contratos de escolas/hospitais que têm exigência de sigilo?"
+### C. Tarefas Repetitivas (Onde o humano vira robô)
+- [ ] Olhando para o escritório hoje: Tem alguém que passa o dia copiando dados de um lugar e colando em outro? (Ex: Do WhatsApp pro Sistema, do E-mail pro Excel?)
+- [ ] **Pedidos:** Como o pedido "nasce"? O cliente manda "Oi" no Zap e alguém digita? Quanto tempo isso leva?
 
 ---
 
-## 💡 6. Validação de Oportunidades (Mental - Não perguntar)
+## 💻 4. Ecossistema Tecnológico & "Shadow IT"
 
-*Enquanto ele fala, marque mentalmente:*
+*Objetivo: Saber onde vamos plugar e descobrir os sistemas "invisíveis".*
 
-- [ ] **Oportunidade 1: Automação de Entrada de Pedidos** (Leitura de WhatsApp/E-mail -> ERP)
-- [ ] **Oportunidade 2: Agente de PCP** (Análise de estoque + Pedidos -> Sugestão de Produção)
-- [ ] **Oportunidade 3: BI/Dashboard no WhatsApp** (Resumo diário de faturamento/produção para o Marcelo)
+- [ ] **O Oficial:** Vocês usam algum sistema de gestão (ERP) central? Qual?
+- [ ] **A Realidade (Shadow IT):** Seja sincero: qual é a "planilha mágica" ou o "caderninho" que se sumir hoje a empresa para? (Geralmente é onde está o verdadeiro processo).
+- [ ] **Integração:** O sistema conversa com as outras áreas ou é cada um no seu quadrado copiando dados?
 
 ---
 
-## 📝 7. Coleta Técnica (Para o João Balzer)
+## 📊 5. Volumetria & Potencial de ROI (O Cálculo da Viabilidade)
 
-*Se identificar uma oportunidade clara, pergunte:*
+*Objetivo: Coletar dados para montar o Business Case.*
 
-- [ ] "Esse sistema que vocês usam, ele é web (acessa no navegador) ou instalado no computador?"
-- [ ] "Vocês conseguem exportar relatórios dele em Excel?"
-- [ ] "Posso tirar uma foto da tela onde essa pessoa digita os pedidos hoje?" (Se presencial)
+- [ ] **Volume de Pedidos:** Estamos falando de 10, 100 ou 1000 pedidos/dia?
+- [ ] **Tempo Gasto:** Quanto tempo (em minutos/horas) sua equipe gasta nessas tarefas manuais que citamos?
+- [ ] **Custo do Erro:** Já parou para calcular quanto custa um pedido errado (logística reversa, cliente insatisfeito)?
+- [ ] ** sazonalidade:** Tem época do ano que esse volume explode e o caos se instala?
+
+---
+
+## 🧠 6. Maturidade Digital & Cultura
+
+*Objetivo: Avaliar o risco de implantação.*
+
+- [ ] **Adesão do Time:** Se colocarmos uma automação para ajudar, seu time vai ver como um "superpoder" ou como uma ameaça?
+- [ ] **Liderança:** Quem seriam os "padrinhos" (Key Users) internos desse projeto? Quem vai nos ajudar a fazer acontecer?
+
+---
+
+## 🛡️ 7. Governança de Dados & Segurança (O "Seguro de Vida")
+
+*Objetivo: Descobrir vulnerabilidades críticas e compliance.*
+
+- [ ] **O Teste do "Sequestro" (Ransomware):** Vocês já passaram pelo susto de algum vírus bloquear os arquivos (tela pedindo Bitcoin)? Ou conhecem algum parceiro que sofreu com isso?
+- [ ] **Desastre (Backup Real):** Se o servidor principal "pegar fogo" agora, a gente perde o trabalho de 1 hora, de 1 dia ou de 1 mês? (RPO - Ponto de Recuperação)
+- [ ] **Controle de Acesso:** Hoje, cada funcionário tem sua senha ou existe aquela "senha geral" que todo mundo usa para agilizar?
+- [ ] **Dados Sensíveis (LGPD):** Vocês armazenam dados de funcionários (folha de ponto, documentos) ou de clientes de forma segura, ou está tudo em pastas abertas na rede?
+
+---
+
+## 🎯 8. Priorização (A Dor que Tira o Sono)
+
+> "Marcelo, de tudo isso que falamos - compras, estoque, vendas, digitação manual - se você tivesse uma 'Varinha Mágica' para resolver **UM** problema amanhã, qual seria? Qual é aquele que te dá mais dor de cabeça ou prejuízo?"
 
 ---
 
 ## 🎁 Fechamento
 
-> "Perfeito, Marcelo. O que eu vejo é que você tem uma operação robusta, mas tem [X] e [Y] consumindo tempo da sua equipe.
+> "Perfeito. Isso me dá uma visão muito clara.
 >
-> Eu vou levar isso pro meu time técnico. Vamos desenhar um 'Funcionário Digital' piloto para resolver [A Dor Mais Forte] e volto para te apresentar a proposta.
+> O que eu percebi é que temos oportunidades claras em [Citar Exemplo Diagnosticado, ex: automação de cotação de insumos ou entrada de pedidos].
 >
-> A ideia é começar pequeno, provar que funciona e que economiza dinheiro, e depois expandimos. Combinado?"
+> Vou levar esses dados para desenhar uma arquitetura de solução personalizada para a Didius e volto com um plano de ação."
 
 ---
 
-### Espaço para Anotações Rápidas:
-*   **Dor Principal:** _______________________________________________________
-*   **Ferramenta Chave:** ____________________________________________________
-*   **Volume (Pedidos/Dia):** ________________________________________________
+### Anotações do Consultor:
+
+*   **Departamento mais inchado:** __________________________
+*   **Tarefa mais repetitiva citada:** _______________________
+*   **Maior "Buraco Negro" (onde falta informação):** ___________________
