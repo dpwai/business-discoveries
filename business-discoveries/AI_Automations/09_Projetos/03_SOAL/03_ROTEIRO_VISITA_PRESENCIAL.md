@@ -2,7 +2,15 @@
 
 **Objetivo:** Sair do campo das suposições e coletar evidências físicas das dores, dados e processos.
 
-## 1. Mapeamento de "Shadow IT" (As Planilhas Paralelas)
+## 1. Auditoria da "Qualidade da Origem" (Garbage In, Garbage Out)
+Antes de culpar o sistema, culpe o processo.
+*   **Ação Crítica:** Pedir para acompanhar um funcionário lançando uma nota ou um abastecimento *em tempo real*.
+*   **O que observar:**
+    *   Ele digita na hora ou anota num papel de pão para digitar sexta-feira?
+    *   O sistema é lento/difícil e ele "chuta" valores para acabar logo?
+    *   **Foto Obrigatória:** Fotografar os post-its colados nos monitores. Ali estão as senhas e os "macetes" que o sistema não resolve.
+
+## 2. Mapeamento de "Shadow IT" (As Planilhas Paralelas)
 Onde o sistema oficial falha, o Excel reina. Precisamos encontrar essas planilhas.
 *   **Ação:** Sentar ao lado do Gerente Administrativo e do Tiago (Máquinas) e pedir: *"Me mostra como você controla X coisa que o sistema não te entrega hoje?"*
 *   **O que procurar:**
@@ -30,7 +38,12 @@ Evite perguntar *"O que você quer?"*. Pergunte *"O que te impede de ir embora m
 *   **Para o Tiago (Máquinas):** *"Qual a máquina que mais quebra e por que a gente só descobre depois que quebrou?"*
 *   **Para o Gerente Geral:** *"Quanto tempo sua equipe perde digitando dados que já deveriam estar no sistema?"*
 
-## 5. Checklist de Dados Faltantes (Para confirmar)
+## 5. A Pergunta de 1 Milhão (Foco em Decisão)
+Transforme a conversa de "TI" para "Negócio".
+*   **Para o Claudio (Diretor):** *"Qual foi a decisão mais cara (ou o maior prejuízo) que você teve este ano porque não tinha a informação correta na hora certa?"* (A resposta define o valor do nosso projeto).
+*   **Rastreio do Processo:** Escolha uma NF de insumo aleatória e peça para ver o caminho dela desde a chegada na porteira até o pagamento. Onde ela enrosca?
+
+## 6. Checklist de Dados Faltantes (Para confirmar)
 *   [ ] Número exato de cabeças de gado.
 *   [ ] Quantidade exata de fazendas/retiros.
 *   [ ] Lista dos principais insumos que sofrem com falta de controle de estoque.
