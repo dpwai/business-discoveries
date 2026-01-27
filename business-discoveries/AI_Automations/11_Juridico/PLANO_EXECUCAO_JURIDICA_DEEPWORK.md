@@ -1,90 +1,87 @@
-# Plano de Execução Jurídica & Operacional: DeepWork AI Flows
+# Plano de Execução Jurídica e Operacional: DeepWork AI Flows
 
-> **Solicitante:** Rodrigo Kugler (Sócio Co-Founder)
-> **Responsável:** DeepWork Legal Agent ⚖️
-> **Data:** 20/01/2026
-> **Status:** Draft Inicial para Execução
-
----
-
-## 🧭 Visão Geral
-Este documento estabelece o **roadmap jurídico-operacional** para transformar a DeepWork AI de um projeto em uma empresa de tecnologia (SaaS) pronta para escala, investimento e auditoria. 
-
-O foco é criar uma estrutura que permita **agilidade comercial** no curto prazo (Projeto SOAL) enquanto constrói **segurança patrimonial e intelectual** para o longo prazo.
+**Solicitante:** Rodrigo Kugler (Sócio Co-Founder)
+**Responsável:** DeepWork Legal Agent
+**Data:** 27/01/2026
+**Status:** Versão Final para Execução
 
 ---
 
-## 1. 🏗️ Fase 0: Constituição & Sócios (A Base)
-*Antes de vender o primeiro software, precisamos definir as regras do jogo entre os fundadores.*
+## 1. Visão Geral
+Este documento estabelece o roteiro jurídico-operacional para transformar a DeepWork AI de um projeto em uma empresa de tecnologia (Data Warehousing & BI) pronta para escala, investimento e auditoria. 
 
-### 1.1. Acordo de Sócios (Memorandum of Understanding - MoU)
-Como você citou "futuro sócio", esta é a prioridade zero. Não comece sem isso.
-*   **Definição de Papéis:** Quem é CEO (Executivo), CTO (Técnico), CCO (Comercial)? Quem tem a palavra final em quê?
-*   **Divisão de Equity (Cap Table):** Porcentagem de cada um.
-*   **Vesting:** O contrato que garante que o sócio só ganha as ações se ficar na empresa por um tempo (ex: 4 anos com 1 ano de cliff). Isso protege a empresa caso um sócio saia cedo.
-*   **IP Assignment:** Cláusula onde os sócios cedem **todo** o código e "know-how" produzido para o CNPJ da DeepWork. O código não é do João nem do Rodrigo, é da DeepWork Ltda.
+O foco é criar uma estrutura que permita agilidade comercial no curto prazo (Projeto SOAL) enquanto constrói segurança patrimonial e intelectual para o longo prazo.
 
-### 1.2. Formalização da Pessoa Jurídica (CNPJ)
-*   **Natureza Jurídica:** Sociedade Empresária Limitada (Ltda) é o padrão inicial ideal.
-*   **Regime Tributário:** Simples Nacional (Anexo V -> Fator R -> Anexo III) ou Lucro Presumido. *Validar com Contador.*
-*   **CNAEs Sugeridos (Classificação Nacional de Atividades Econômicas):**
-    *   *Principal:* 62.01-5-01 (Desenvolvimento de programas de computador sob encomenda).
-    *   *Secundários:* 
-        *   62.02-3-00 (Desenvolvimento e licenciamento de programas de computador customizáveis).
-        *   62.04-0-00 (Consultoria em tecnologia da informação).
-        *   63.11-9-00 (Tratamento de dados, provedores de serviços de aplicação e serviços de hospedagem na internet).
+---
 
-### 1.3. Proteção da Marca (INPI)
+## 2. Fase 0: Constituição e Sócios (A Base)
+Antes de vender o primeiro software, é fundamental definir as regras societárias entre os fundadores.
+
+### 2.1. Acordo de Sócios (Memorandum of Understanding - MoU)
+Prioridade zero. Documento parassocial que define a governança inicial.
+*   **Definição de Papéis:**
+    *   **João Vitor Balzer (CTO/Tech):** Responsável por tecnologia, arquitetura de dados, segurança e desenvolvimento.
+    *   **Rodrigo Kugler (CEO/Comercial):** Responsável por vendas, discovery, relação com clientes e produto.
+*   **Divisão de Equity (Cap Table):** **50% / 50%**. Igualdade societária para alinhamento de longo prazo.
+*   **Vesting:** Contrato que garante a aquisição progressiva das ações (ex: 4 anos com 1 ano de cliff), protegendo a empresa em caso de saída antecipada.
+*   **Propriedade Intelectual (IP Assignment):**
+    *   **Código:** Todo código produzido pertence à **DeepWork Ltda**.
+    *   **Patentes/Marcas:** Avaliar estratégia fiscal e de proteção patrimonial para registro de patentes (Pessoa Física licenciando para PJ ou registro direto na PJ).
+
+### 2.2. Formalização da Pessoa Jurídica (CNPJ)
+*   **Sede:** **São Paulo (Capital)**. Estratégia para redução de carga tributária (ISS para serviços de tecnologia) e acesso ao ecossistema.
+*   **Natureza Jurídica:** Sociedade Empresária Limitada (Ltda).
+*   **Regime Tributário:** Início pelo **Simples Nacional**, com transição planejada para Lucro Presumido.
+*   **Atividades (CNAEs):** Foco em desenvolvimento de software sob encomenda, licenciamento e consultoria em TI.
+
+### 2.3. Proteção da Marca (INPI)
 *   Verificar disponibilidade de "DeepWork AI".
-*   Registrar na classe de software (Classe 9) e serviços de tecnologia (Classe 42).
+*   Registrar nas classes de software (Classe 9) e serviços de tecnologia (Classe 42).
 
 ---
 
-## 2. 🛡️ Fase 1: Kit "Go-to-Market" (Vendas e Clientes)
-*Documentos necessários para fechar negócios com segurança.*
+## 3. Fase 1: Kit "Go-to-Market" (Contratos)
+Instrumentos jurídicos para formalização comercial.
 
-### 2.1. O Contrato Piloto (Foco: SOAL)
-Um contrato híbrido entre "Parceria de Inovação" e "Prestação de Serviço".
-*   **Objeto:** Desenvolvimento de MVP e Validação de Tecnologias Agrícolas.
-*   **Contrapartida:** A DeepWork cobra um valor reduzido (ou zero) em troca de:
-    1.  Acesso irrestrito aos dados históricos (anonimizados para uso futuro).
-    2.  Feedback contínuo e acesso aos usuários (tratoristas, gerentes).
-    3.  Direito de uso do case como marketing ("Powered by DeepWork").
-*   **Cláusula Vital:** "A Propriedade Intelectual da Solução desenvolvida pertence 100% à DeepWork. A SOAL recebe uma Licença de Uso Perpétua e Irrevogável".
+### 3.1. O Contrato Piloto (Cliente: SOAL)
+Contrato híbrido de Parceria de Inovação e Prestação de Serviço.
+*   **Objeto:** Desenvolvimento de MVP, Data Warehousing e Validação Tecnológica.
+*   **Modelo Comercial:**
+    1.  **Desenvolvimento:** Isento de cobrança em troca da Propriedade Intelectual e validação.
+    2.  **Manutenção:** Taxa mensal estimada em **R$ 750,00** para cobrir custos de infraestrutura após entrega.
+    3.  **Congelamento:** Período de 3 meses após entrega para ajustes finos, seguido de congelamento de escopo para renegociação.
+*   **Contrapartidas:** Acesso a dados históricos para migração, feedback contínuo e direito de uso do case ("Powered by DeepWork").
+*   **Propriedade Intelectual:** Pertence 100% à DeepWork. O cliente recebe licença de uso.
 
-### 2.2. O Contrato Padrão de SaaS (B2B)
-Para quando escalarmos para outros produtores.
-*   **MSA (Master Services Agreement):** O contrato "guarda-chuva" que rege a relação geral.
-*   **Order Form (Pedido):** Uma folha simples onde se preenche preço, quantidade de licenças e prazo. Agiliza a venda.
-*   **SLA (Acordo de Nível de Serviço):** Definição de suporte. (Ex: "Atendemos chamados críticos em até 4h"). Evita que o cliente ligue de madrugada exigindo suporte imediato se não pagou por isso.
+### 3.2. Contrato de Data Warehousing & BI (Padrão de Mercado)
+Evolução para escala comercial.
+*   **Privacidade "Zero Knowledge":** A DeepWork realiza o processamento criptografado de ponta a ponta e não acessa visualmente dados sensíveis (financeiros/pessoais) do cliente.
+*   **MSA (Master Services Agreement):** Contrato mestre de governança e confidencialidade.
+*   **SLA (Acordo de Nível de Serviço):** Garantias de disponibilidade e integridade.
 
-### 2.3. Termos de Uso e Privacidade (Site/App)
-*   **Disclaimer de IA:** Texto obrigatório eximindo a DeepWork de prejuízos causados por decisões tomadas com base na IA (alucinações). "A IA é uma ferramenta consultiva".
-*   **Política de Dados:** Como coletamos, onde guardamos (Nuvem/Local) e como protegemos os dados.
-
----
-
-## 3. 🚧 Fase 2: Operacional & Colaboradores
-*Como contratar ajuda sem criar passivo trabalhista.*
-
-### 3.1. Contrato de Prestação de Serviços (PJ/Freelancer)
-*   Para desenvolvedores ou consultores que ajudarem a construir.
-*   **Cessão de Direitos Autorais (IP):** A cláusula mais importante. Quem codou cede os direitos para a DeepWork. Sem isso, um dev pode reclamar royalties do seu software no futuro.
-*   **Tabela de Entregáveis:** Definir escopo fechado ou horas/mês.
-
-### 3.2. NDA (Non-Disclosure Agreement)
-*   Para qualquer pessoa que tenha acesso ao "segredo do negócio" (algoritmos, estratégia comercial) antes de ser contratada ou tornar-se parceira.
+### 3.3. Termos de Uso e Privacidade
+*   **Isenção de IA:** Cláusula de responsabilidade limitada, definindo a IA como ferramenta consultiva de suporte à decisão, e não determinística.
+*   **Política de Dados:** Definição clara de coleta, armazenamento e proteção.
 
 ---
 
-## 4. 📋 Checklist de Execução Imediata (Next Steps)
+## 4. Fase 2: Operacional e Colaboradores
+Estrutura para crescimento sem passivo trabalhista.
 
-Para a semana 1, sugiro focar na **Estruturação Societária** e no **Contrato SOAL**:
+### 4.1. Prolabore e Transição de Carreira
+*   **Fase 1 (Atual):** Dedicação híbrida.
+*   **Fase 2 (Transição Rodrigo):** Rodrigo assume dedicação integral (Full-time) com retirada alvo de R$ 8.000,00. João mantém dedicação parcial.
+*   **Fase 3 (Full DeepWork):** Ambos em dedicação integral com retirada alvo de R$ 20.000,00.
+*   **Mecanismo:** Ajuste proporcional na distribuição de lucros/prolabore durante a fase de transição.
 
-- [ ] **Reunião de Sócios:** Definir o "Cap Table" (quem tem quanto) e responsabilidades.
-- [ ] **Validar CNAEs:** Consultar um contador de confiança para abrir o CNPJ correto (evitar CNAEs que impeçam o Simples Nacional se for o caso).
-- [ ] **Draft do Contrato SOAL:** Criar a minuta focada na troca de Tecnologia por Dados/Validação.
-- [ ] **Mapeamento de Riscos Iniciais:** Listar quais dados da SOAL são sensíveis (Financeiro? Pessoal?) para aplicar as travas de segurança logo na arquitetura do software.
+### 4.2. NDA (Acordo de Confidencialidade)
+*   Obrigatório para qualquer colaborador ou parceiro com acesso a informações estratégicas.
 
 ---
-**Nota do Agente:** Rodrigo, este é o esqueleto robusto. Se você aprovar esta estrutura, posso começar a redigir o **texto final** de qualquer um desses documentos (começando pelo MoU ou pelo Contrato SOAL, que parecem ser os mais urgentes).
+
+## 5. Checklist de Execução Imediata
+
+- [ ] **Reunião de Sócios:** Formalizar o "Cap Table" e responsabilidades.
+- [ ] **Validar CNAEs:** Consultoria contábil para abertura do CNPJ em SP.
+- [ ] **Draft do Contrato SOAL:** Minuta focada na troca de Tecnologia por Dados/Validação.
+- [ ] **Mapeamento de Riscos:** Listar dados sensíveis para aplicação imediata de travas de segurança.
