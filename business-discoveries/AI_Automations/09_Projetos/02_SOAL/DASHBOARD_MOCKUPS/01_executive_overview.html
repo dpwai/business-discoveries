@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOAL - Executive Overview | Raio-X da Safra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: '#09090b',
+                        surface: '#18181b',
+                        'surface-highlight': '#27272a',
+                        'brand-primary': '#10b981',
+                        'brand-danger': '#ef4444',
+                        'brand-warning': '#f59e0b',
+                        'brand-info': '#3b82f6',
+                        'agro-soy': '#eab308',
+                        'agro-corn': '#f97316',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .glassmorphism {
+            background: rgba(24, 24, 27, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-canvas text-zinc-100 antialiased">
+
+    <!-- Main Container -->
+    <div class="min-h-screen p-6">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-zinc-100 mb-1">Raio-X da Safra</h1>
+                    <p class="text-zinc-400 text-sm">Executive Overview Dashboard</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Safra Selector -->
+                    <div class="glassmorphism px-4 py-2 rounded-lg">
+                        <select class="bg-transparent text-zinc-100 font-semibold outline-none cursor-pointer">
+                            <option>Safra 2025/26 - Soja</option>
+                            <option>Safra 2024/25 - Milho</option>
+                            <option>Safra 2024/25 - Soja</option>
+                        </select>
+                    </div>
+                    <!-- Net Margin Badge -->
+                    <div class="bg-brand-primary/20 border border-brand-primary/50 px-6 py-2 rounded-lg">
+                        <div class="text-xs text-brand-primary font-medium mb-0.5">Margem Líquida Projetada</div>
+                        <div class="text-2xl font-bold text-brand-primary">R$ 4.200<span class="text-sm">/ha</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top KPI Cards -->
+        <div class="grid grid-cols-3 gap-6 mb-6">
+
+            <!-- Progress Card -->
+            <div class="glassmorphism rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-zinc-400 mb-4">Progresso da Safra</h3>
+                <div class="flex items-center justify-center gap-8">
+                    <!-- Plantio -->
+                    <div class="text-center">
+                        <div class="relative w-32 h-32 mb-3">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="#27272a" stroke-width="12" fill="none" />
+                                <circle cx="64" cy="64" r="56" stroke="#10b981" stroke-width="12" fill="none"
+                                    stroke-dasharray="351.86" stroke-dashoffset="0" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div>
+                                    <div class="text-3xl font-bold text-brand-primary">100%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-sm font-medium text-zinc-300">Plantio</div>
+                    </div>
+                    <!-- Colheita -->
+                    <div class="text-center">
+                        <div class="relative w-32 h-32 mb-3">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="#27272a" stroke-width="12" fill="none" />
+                                <circle cx="64" cy="64" r="56" stroke="#eab308" stroke-width="12" fill="none"
+                                    stroke-dasharray="351.86" stroke-dashoffset="309.64" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div>
+                                    <div class="text-3xl font-bold text-agro-soy">12%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-sm font-medium text-zinc-300">Colheita</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Flow Card -->
+            <div class="glassmorphism rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-zinc-400 mb-4">Status de Fluxo de Caixa</h3>
+                <div class="mb-4">
+                    <div class="flex items-baseline justify-between mb-2">
+                        <span class="text-xs text-zinc-500">Saldo Atual</span>
+                        <span class="text-2xl font-bold text-brand-primary">R$ 2.4M</span>
+                    </div>
+                </div>
+                <!-- Mini Sparkline Chart -->
+                <div class="h-24 flex items-end justify-between gap-1">
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 60%"></div>
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 75%"></div>
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 50%"></div>
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 90%"></div>
+                    <div class="flex-1 bg-brand-danger/30 rounded-t" style="height: 40%"></div>
+                    <div class="flex-1 bg-brand-danger/30 rounded-t" style="height: 55%"></div>
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 85%"></div>
+                    <div class="flex-1 bg-brand-primary/30 rounded-t" style="height: 100%"></div>
+                </div>
+                <div class="mt-3 flex justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-brand-primary rounded-sm"></div>
+                        <span class="text-zinc-400">Receita</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-brand-danger rounded-sm"></div>
+                        <span class="text-zinc-400">Despesas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Price Card -->
+            <div class="glassmorphism rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-zinc-400 mb-4">Preço Médio de Venda</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-baseline justify-between mb-1">
+                            <span class="text-xs text-zinc-500">Preço Realizado</span>
+                            <span class="text-2xl font-bold text-zinc-100">R$ 142,50</span>
+                        </div>
+                        <div class="text-xs text-zinc-400">por saca</div>
+                    </div>
+                    <div class="h-px bg-zinc-800"></div>
+                    <div>
+                        <div class="flex items-baseline justify-between mb-1">
+                            <span class="text-xs text-zinc-500">Meta</span>
+                            <span class="text-xl font-semibold text-zinc-400">R$ 135,00</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="text-xs text-brand-primary font-semibold">+5.6%</div>
+                            <div class="text-xs text-zinc-500">acima da meta</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Chart: Profitability Waterfall -->
+        <div class="glassmorphism rounded-xl p-6 mb-6">
+            <h3 class="text-lg font-semibold text-zinc-100 mb-6">Rentabilidade - Análise Waterfall</h3>
+            <div class="h-80 flex items-end justify-between gap-4 px-8">
+                <!-- Receita Bruta -->
+                <div class="flex-1 flex flex-col items-center">
+                    <div class="w-full bg-brand-primary rounded-t-lg" style="height: 100%"></div>
+                    <div class="mt-3 text-center">
+                        <div class="text-sm font-bold text-brand-primary">R$ 12.5M</div>
+                        <div class="text-xs text-zinc-400 mt-1">Receita Bruta</div>
+                    </div>
+                </div>
+                <!-- Subsídios -->
+                <div class="flex-1 flex flex-col items-center justify-end">
+                    <div class="w-full bg-brand-info/50 rounded-t-lg" style="height: 20%"></div>
+                    <div class="mt-3 text-center">
+                        <div class="text-sm font-bold text-brand-info">+R$ 1.2M</div>
+                        <div class="text-xs text-zinc-400 mt-1">Subsídios</div>
+                    </div>
+                </div>
+                <!-- Custos Diretos -->
+                <div class="flex-1 flex flex-col items-center justify-end">
+                    <div class="w-full bg-brand-danger/70 rounded-t-lg" style="height: 60%"></div>
+                    <div class="mt-3 text-center">
+                        <div class="text-sm font-bold text-brand-danger">-R$ 7.8M</div>
+                        <div class="text-xs text-zinc-400 mt-1">Custos Diretos</div>
+                    </div>
+                </div>
+                <!-- Custos Operacionais -->
+                <div class="flex-1 flex flex-col items-center justify-end">
+                    <div class="w-full bg-brand-danger/50 rounded-t-lg" style="height: 30%"></div>
+                    <div class="mt-3 text-center">
+                        <div class="text-sm font-bold text-brand-danger">-R$ 2.1M</div>
+                        <div class="text-xs text-zinc-400 mt-1">Custos Operacionais</div>
+                    </div>
+                </div>
+                <!-- Lucro Líquido -->
+                <div class="flex-1 flex flex-col items-center">
+                    <div class="w-full bg-brand-primary/80 rounded-t-lg" style="height: 45%"></div>
+                    <div class="mt-3 text-center">
+                        <div class="text-sm font-bold text-brand-primary">R$ 3.8M</div>
+                        <div class="text-xs text-zinc-400 mt-1">Lucro Líquido</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Risk Alerts & Market Position -->
+        <div class="grid grid-cols-2 gap-6">
+
+            <!-- Risk Alerts -->
+            <div class="glassmorphism rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-zinc-100 mb-4">Alertas de Risco</h3>
+                <div class="space-y-3">
+                    <!-- Alert 1 -->
+                    <div class="flex items-start gap-3 p-3 bg-brand-warning/10 border border-brand-warning/30 rounded-lg">
+                        <div class="w-2 h-2 bg-brand-warning rounded-full mt-1.5"></div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-zinc-100">3 Tratores em Manutenção</div>
+                            <div class="text-xs text-zinc-400 mt-1">John Deere 8R-04, Case IH 340, New Holland T7</div>
+                        </div>
+                    </div>
+                    <!-- Alert 2 -->
+                    <div class="flex items-start gap-3 p-3 bg-brand-info/10 border border-brand-info/30 rounded-lg">
+                        <div class="w-2 h-2 bg-brand-info rounded-full mt-1.5"></div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-zinc-100">Previsão de Chuva</div>
+                            <div class="text-xs text-zinc-400 mt-1">40mm esperados nos próximos 2 dias - Ajustar cronograma de colheita</div>
+                        </div>
+                    </div>
+                    <!-- Alert 3 -->
+                    <div class="flex items-start gap-3 p-3 bg-brand-danger/10 border border-brand-danger/30 rounded-lg">
+                        <div class="w-2 h-2 bg-brand-danger rounded-full mt-1.5"></div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-zinc-100">Estoque Baixo: Glifosato</div>
+                            <div class="text-xs text-zinc-400 mt-1">Restam apenas 2 dias de operação</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Position Table -->
+            <div class="glassmorphism rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-zinc-100 mb-4">Posição de Mercado</h3>
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-zinc-800">
+                            <th class="text-left text-xs font-semibold text-zinc-400 pb-3">Commodity</th>
+                            <th class="text-right text-xs font-semibold text-zinc-400 pb-3">Preço B3</th>
+                            <th class="text-right text-xs font-semibold text-zinc-400 pb-3">Chicago</th>
+                            <th class="text-right text-xs font-semibold text-zinc-400 pb-3">Variação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-zinc-800/50">
+                            <td class="py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-agro-soy rounded-full"></div>
+                                    <span class="text-sm font-medium text-zinc-100">Soja</span>
+                                </div>
+                            </td>
+                            <td class="text-right text-sm text-zinc-100 font-semibold">R$ 142,50</td>
+                            <td class="text-right text-sm text-zinc-300">$13.45</td>
+                            <td class="text-right">
+                                <span class="text-sm font-semibold text-brand-primary">+2.3%</span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-zinc-800/50">
+                            <td class="py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-agro-corn rounded-full"></div>
+                                    <span class="text-sm font-medium text-zinc-100">Milho</span>
+                                </div>
+                            </td>
+                            <td class="text-right text-sm text-zinc-100 font-semibold">R$ 68,90</td>
+                            <td class="text-right text-sm text-zinc-300">$4.82</td>
+                            <td class="text-right">
+                                <span class="text-sm font-semibold text-brand-danger">-1.1%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-zinc-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-zinc-100">Dólar</span>
+                                </div>
+                            </td>
+                            <td class="text-right text-sm text-zinc-100 font-semibold">R$ 5,42</td>
+                            <td class="text-right text-sm text-zinc-300">-</td>
+                            <td class="text-right">
+                                <span class="text-sm font-semibold text-brand-primary">+0.8%</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
