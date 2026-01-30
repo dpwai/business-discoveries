@@ -24,7 +24,7 @@ A Serra da Onça Agropecuária (SOAL) opera aproximadamente 2.150 hectares de pr
 
 ### Desafio Central
 
-A operação gera dados em cinco sistemas desconectados (AgriWin, John Deere Operations Center, Vestro, Castrolanda e planilhas Excel), criando uma carga de trabalho manual significativa para consolidação e impossibilitando visibilidade em tempo real do custo por hectare. Decisões estratégicas são tomadas com base em cálculos manuais que consomem "meio dia de trabalho" e dados fragmentados que nunca apresentam uma visão unificada.
+A operação gera dados em fontes primárias desconectadas (John Deere Operations Center, Vestro, Balança e Planilhas de Controle), enquanto o sistema oficial (AgriWin) falha em consolidar a realidade operacional. O desafio não é apenas integrar o AgriWin, mas substitui-lo como centralizador de gestão, conectando diretamente as fontes reais de dados (Cadernetas, Excel, Máquinas) em um novo Data Warehouse proprietário. Decisões estratégicas hoje dependem de 'Shadow IT' que passará a ser a infraestrutura oficial.
 
 ### Principais Descobertas
 
@@ -40,7 +40,7 @@ A operação gera dados em cinco sistemas desconectados (AgriWin, John Deere Ope
 
 ### Direção Recomendada
 
-Implementar um Data Warehouse unificado usando arquitetura Medallion (Bronze/Silver/Gold) que ingira dados de todas as cinco fontes, automatize as correções manuais através de regras de negócio codificadas, e entregue dashboards de custo por hectare atualizados automaticamente. A primeira fase deve focar na automação do fluxo Vestro e na consolidação do custo por cultura.
+Construir um Ecossistema de Dados independente que substitua a função de gestão do AgriWin. Implementar arquitetura Medallion (Bronze/Silver/Gold) ingerindo dados diretamente da fonte (Vestro, Máquinas, Caderno Digital), eliminando a necessidade de dupla digitação no ERP antigo. O novo sistema será a única fonte de verdade para custo por hectare e eficiência operacional.
 
 ### Resultado Esperado
 
@@ -231,58 +231,11 @@ A entrada de grãos no secador é registrada em um caderno físico. Este caderno
 
 **Estado Atual: Silos Desconectados**
 
-```
-+-------------+     +-------------+     +-------------+
-|   AgriWin   |     |  SharePoint |     | Castrolanda |
-|    (ERP)    |     |   (Excel)   |     |   (Coop)    |
-+-------------+     +-------------+     +-------------+
-      |                   |                   |
-      |    SEM CONEXÃO    |    SEM CONEXÃO    |
-      |                   |                   |
-      v                   v                   v
-+---------------------------------------------------+
-|                 CONSOLIDAÇÃO MANUAL                |
-|          (Claudio / Tiago / Valentina)            |
-+---------------------------------------------------+
-```
+![Fragmented Data Landscape](./assets/fragmented_data_landscape.png)
 
 **Estado Proposto: Data Warehouse Medallion**
 
-```
-+-------------+  +-------------+  +-------------+  +--------+  +--------+
-|   AgriWin   |  |  Castrolanda|  |    Vestro   |  |John Deere| |Caderno |
-+-------------+  +-------------+  +-------------+  +--------+  +--------+
-      |               |                |              |            |
-      v               v                v              v            v
-+---------------------------------------------------------------------+
-|                      CAMADA BRONZE (Raw)                            |
-|        Dados brutos "as-is" de todas as fontes                      |
-+---------------------------------------------------------------------+
-                                |
-                                v
-+---------------------------------------------------------------------+
-|                      CAMADA SILVER (Clean)                          |
-|   Dados limpos, normalizados, deduplicados                          |
-|   - Correção automática de horímetro                                |
-|   - Tabela DE-PARA para nomes de talhões                            |
-|   - Validação de integridade referencial                            |
-+---------------------------------------------------------------------+
-                                |
-                                v
-+---------------------------------------------------------------------+
-|                      CAMADA GOLD (Business)                         |
-|   Métricas de negócio prontas para consumo                          |
-|   - Custo por hectare por cultura                                   |
-|   - Eficiência de máquinas                                          |
-|   - Comparativo mercado e margem                                    |
-+---------------------------------------------------------------------+
-                                |
-                                v
-+---------------------------------------------------------------------+
-|                      CAMADA DE CONSUMO                              |
-|   Dashboards (Power BI) + ChatGPT MCP + Alertas                     |
-+---------------------------------------------------------------------+
-```
+![Unified Data Ecosystem](./assets/unified_data_ecosystem.png)
 
 ### Mapa de Oportunidades
 

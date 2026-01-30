@@ -1,469 +1,145 @@
-# Figma Design Prompt: Dashboard #1 - Executive Overview "Raio-X da Safra"
+# Figma Design Prompt: Dashboard #1 - "O Dia do Produtor" (Operational Reality)
 
 ## 🎯 Design Brief
-Create a high-fidelity executive dashboard for agricultural business management with an "Industrial Precision" aesthetic - think Bloomberg Terminal meets John Deere Operations Center.
+Create a highly functional, "Battle Station" style dashboard for a rural producer. Unlike the previous executive version, this one must be **action-oriented**. The producer opens this at 6:00 AM to decide: "What needs my attention today?".
+Focus on **Weather Risks**, **Machinery Status**, **Critical Alerts**, and **Daily Costs**. The aesthetic should be "Industrial Precision" - dark mode, high contrast, dense information but clear hierarchy.
 
 ---
 
 ## 📐 Canvas Setup
 
 ### Frame Specifications
-- **Frame Name:** `Executive_Overview_Dashboard`
+- **Frame Name:** `Producer_Daily_Dashboard`
 - **Dimensions:** 1920px × 1080px (Desktop HD)
-- **Background Color:** `#09090b` (Zinc-950)
+- **Background Color:** `#0f172a` (Slate-950 - slightly bluer/richer dark for modern feel)
 - **Padding:** 24px all sides
 
 ---
 
 ## 🎨 Design System Tokens
 
-### Color Palette (Save as Figma Styles)
-
+### Color Palette
 **Backgrounds:**
-- `bg-canvas`: `#09090b`
-- `bg-surface`: `#18181b`
-- `bg-surface-highlight`: `#27272a`
+- `bg-canvas`: `#0f172a`
+- `bg-card`: `#1e293b` (Slate-800)
+- `bg-card-highlight`: `#334155` (Slate-700)
 
 **Typography:**
-- `text-primary`: `#f4f4f5` (Zinc-100)
-- `text-secondary`: `#a1a1aa` (Zinc-400)
-- `text-muted`: `#52525b` (Zinc-600)
+- `text-primary`: `#f1f5f9` (Slate-100)
+- `text-secondary`: `#94a3b8` (Slate-400)
+- `text-accent`: `#38bdf8` (Sky-400) - For operational data
 
-**Semantic Colors:**
-- `brand-primary`: `#10b981` (Emerald-500) - Profit, Growth
-- `brand-danger`: `#ef4444` (Red-500) - Expenses, Alerts
-- `brand-warning`: `#f59e0b` (Amber-500) - Warnings
-- `brand-info`: `#3b82f6` (Blue-500) - Information
-- `agro-soy`: `#eab308` (Yellow-500) - Soy culture
-- `agro-corn`: `#f97316` (Orange-500) - Corn culture
+**Semantic Colors (Critical for Alerts):**
+- `status-ok`: `#22c55e` (Green-500) - Everything running smooth
+- `status-warning`: `#f59e0b` (Amber-500) - Needs attention (Maintenance, Inventory)
+- `status-critical`: `#ef4444` (Red-500) - STOPPER (Breakdown, Pest outbreak)
+- `weather-rain`: `#3b82f6` (Blue-500)
+- `weather-dry`: `#f97316` (Orange-500)
 
-### Typography Styles (Save as Text Styles)
-
-**Font Family:** Inter (Download from Google Fonts if needed)
-
-- `Heading/XL`: Inter Bold, 30px, Line Height 36px, #f4f4f5
-- `Heading/L`: Inter Semibold, 18px, Line Height 24px, #f4f4f5
-- `Heading/M`: Inter Semibold, 14px, Line Height 20px, #a1a1aa
-- `Body/Number/XL`: Inter Bold, 32px, Line Height 40px, #f4f4f5
-- `Body/Number/L`: Inter Bold, 24px, Line Height 32px, #f4f4f5
-- `Body/Number/M`: Inter Semibold, 16px, Line Height 24px, #f4f4f5
-- `Body/Number/S`: Inter Semibold, 14px, Line Height 20px, #f4f4f5
-- `Label/M`: Inter Medium, 12px, Line Height 16px, #a1a1aa
-- `Label/S`: Inter Regular, 10px, Line Height 14px, #52525b
-
-### Component Styles
-
-**Glassmorphism Card:**
-- Fill: `#18181b` at 80% opacity
-- Border: 1px solid `#ffffff` at 10% opacity
-- Corner Radius: 12px
-- Effect: Background Blur 10px
+### Typography
+**Font:** Inter or Roboto (Clean, legible numbers are priority)
 
 ---
 
-## 📦 Layout Structure (Top to Bottom)
+## 📦 Layout Structure
 
-### 1. HEADER SECTION
-**Position:** Top, Full Width
-**Height:** 88px
-**Layout:** Horizontal, Space Between
+### 1. HEADER: The "Morning Check"
+**Height:** 80px
+**Layout:** Flex, Space Between
 
-#### Left Side: Title Block
-- **Main Title:** "Raio-X da Safra"
-  - Style: Heading/XL
-  - Color: text-primary
-- **Subtitle:** "Executive Overview Dashboard"
-  - Style: Label/M
-  - Color: text-secondary
-  - Margin Top: 4px
-
-#### Right Side: Controls Row
-**Layout:** Horizontal, Gap 16px
-
-**Element 1: Safra Selector**
-- Type: Dropdown/Select component
-- Background: Glassmorphism Card
-- Padding: 12px 16px
-- Text: "Safra 2025/26 - Soja"
-- Style: Body/Number/M
-- Color: text-primary
-- Icon: Chevron Down (12px, text-secondary)
-
-**Element 2: Net Margin Badge**
-- Background: `#10b981` at 20% opacity
-- Border: 1px solid `#10b981` at 50% opacity
-- Corner Radius: 8px
-- Padding: 12px 24px
-- Layout: Vertical, Center Aligned
-
-  - **Label:** "Margem Líquida Projetada"
-    - Style: Label/M
-    - Color: brand-primary
-  - **Value:** "R$ 4.200" + "/ha" (smaller)
-    - Number: Body/Number/L, brand-primary
-    - Unit: Body/Number/S, brand-primary
+- **Left:** Logo "SOAL Intelligence" + Date/Time (e.g., "Quinta, 29 Jan | 06:15 AM")
+- **Center:** **Weather Ticker** (Crucial)
+  - Layout: Horizontal capsule
+  - Content: "⛅ 24°C | Vento: 12km/h NO | 💧 Chuva em 48h: **45mm** (Alerta)"
+  - Style: The "45mm" should be bold/colored to draw attention.
+- **Right:** User Profile + "Emergency Stop" button (or similar quick action).
 
 ---
 
-### 2. TOP KPI CARDS ROW
-**Position:** Below Header, 32px margin top
-**Layout:** 3 Columns, Equal Width (1fr 1fr 1fr), Gap 24px
-**Card Height:** 280px
+### 2. TOP ROW: "O Que Está Acontecendo Agora?" (Real-Time Ops)
+**Height:** 320px
+**Layout:** 3 Cards (Weather Risk, Machinery Live, Market Opportunities)
+
+#### Card 1: Risco Climático & Janela de Trabalho (35% Width)
+*The most important factor for daily decisions.*
+- **Title:** "Janela de Operação"
+- **Visual:** A 5-day forecast timeline focusing on "Plantability/Harvestability".
+- **Content:**
+  - Today: ✅ Ideal (Green)
+  - Tomorrow: ✅ Ideal (Green)
+  - Saturday: ⚠️ Chuva (40mm) - PARADA OBRIGATÓRIA
+  - Sunday: ❌ Solo Encharcado
+  - **Action Item:** "Recomendação: Acelerar colheita no Talhão 4 hoje e amanhã."
+
+#### Card 2: Status da Frota em Tempo Real (35% Width)
+*Are the machines working?*
+- **Title:** "Operação em Campo: Plantio Soja"
+- **Visual:** 3 circular stats or list.
+  - **Ativos:** 4 Máquinas (Green dot)
+  - **Parados:** 1 Máquina (Red dot - blinking?)
+  - **Eficiência Média:** 85%
+- **List Detail:**
+  - 🚜 JD 8R (Talhão 02): 5.2 km/h | 🟢 Operando
+  - 🚜 Case 340 (Talhão 04): 0.0 km/h | 🔴 Parado (Manutenção Hidráulica - 45min)
+  - 🚜 Pulverizador (Talhão 01): 18 km/h | 🟢 Aplicando Fungicida
+
+#### Card 3: Oportunidades de Mercado (30% Width)
+*Should I sell today?*
+- **Title:** "Mercado & Metas"
+- **Content:**
+  - **Soja Spot:** R$ 138,00 (🔻 -0.5%)
+  - **Target de Venda:** R$ 142,00
+  - **Indicador:** "Segurar Venda" (Visual badge)
+  - **Dólar:** R$ 5,45 (🔺 +1.2%)
 
 ---
 
-#### CARD 1: Progresso da Safra
+### 3. MIDDLE ROW: "Briefing de Decisão" (Alerts & Costs)
+**Height:** 400px
+**Layout:** 2 Columns (2fr, 1fr)
 
-**Base:** Glassmorphism Card with 24px padding
+#### Card 1: Mapa de Alertas & Saúde da Lavoura (Map View)
+*Where are the problems?*
+- **Visual:** A stylized map of the farm outlines (Talhões).
+- **Overlays:**
+  - **Talhão 02:** 🐞 Alerta de Praga (Lagarta) - Nível Médio (Yellow overlay)
+  - **Talhão 05:** 💧 Déficit Hídrico - Nível Baixo (Green overlay)
+  - **Talhão 08:** 📉 Baixa População de Plantas (Red overlay area)
+- **Sidebar on map:** List of active alerts categorized by Priority.
+  - "🔴 ALTA: Talhão 08 com falha de plantio detectada (5%). Replantio recomendado."
+  - "🟡 MÉDIA: Monitoramento de Lagarta no Talhão 02 indicou nível de dano econômico em 3 dias."
 
-**Header:**
-- Text: "Progresso da Safra"
-- Style: Heading/M
-- Margin Bottom: 16px
-
-**Content Layout:** Horizontal, 2 circular progress indicators
-
-**Progress Indicator 1: Plantio (100%)**
-- **Circle Specs:**
-  - Outer Diameter: 128px
-  - Stroke Width: 12px
-  - Background Track: `#27272a`
-  - Progress Track: `#10b981` (brand-primary)
-  - Progress: 100% (full circle)
-  - Cap: Round
-
-- **Center Content:**
-  - Text: "100%"
-  - Style: Body/Number/XL
-  - Color: brand-primary
-
-- **Label Below:**
-  - Text: "Plantio"
-  - Style: Body/Number/S
-  - Color: text-primary
-  - Margin Top: 12px
-
-**Progress Indicator 2: Colheita (12%)**
-- **Circle Specs:**
-  - Same as above
-  - Progress Track: `#eab308` (agro-soy)
-  - Progress: 12% (calculate: 360° × 0.12 = 43.2°)
-
-- **Center Content:**
-  - Text: "12%"
-  - Style: Body/Number/XL
-  - Color: agro-soy
-
-- **Label Below:**
-  - Text: "Colheita"
-  - Style: Body/Number/S
-  - Color: text-primary
-
-**Gap between indicators:** 32px
+#### Card 2: Custo Real vs Planejado (Financial Reality)
+*Am I bleeding money?*
+- **Title:** "Acumulado da Safra"
+- **Visual:** Gauge or Bullet Chart.
+- **Metric:**
+  - **Custo Atual:** R$ 3.850/ha
+  - **Meta/Orçamento:** R$ 3.800/ha
+  - **Delta:** 🔺 +R$ 50/ha (Over budget)
+- **Breakdown (Mini list):**
+  - Diesel: ✅ Dentro da meta
+  - Defensivos: ❌ +12% (Devido a extra de fungicida)
+  - Manutenção: ✅ Dentro da meta
 
 ---
 
-#### CARD 2: Status de Fluxo de Caixa
+### 4. BOTTOM ROW: "Planejamento Próximas 24h"
+**Height:** 180px
+**Layout:** Horizontal Timeline or Kanban-style cards
 
-**Base:** Glassmorphism Card with 24px padding
-
-**Header:**
-- Text: "Status de Fluxo de Caixa"
-- Style: Heading/M
-- Margin Bottom: 16px
-
-**Saldo Row:**
-- Layout: Horizontal, Space Between
-- **Left:** "Saldo Atual" - Label/M, text-muted
-- **Right:** "R$ 2.4M" - Body/Number/L, brand-primary
-- Margin Bottom: 16px
-
-**Mini Bar Chart:**
-- Container Height: 96px
-- Layout: 8 vertical bars, equal width, gap 4px
-- Alignment: Bottom
-
-**Bar Data (Height %, Color):**
-1. 60% - brand-primary at 30% opacity
-2. 75% - brand-primary at 30% opacity
-3. 50% - brand-primary at 30% opacity
-4. 90% - brand-primary at 30% opacity
-5. 40% - brand-danger at 30% opacity
-6. 55% - brand-danger at 30% opacity
-7. 85% - brand-primary at 30% opacity
-8. 100% - brand-primary at 30% opacity
-
-**Bars Style:**
-- Corner Radius: 2px (top only)
-
-**Legend Row:**
-- Position: Below chart, 12px margin top
-- Layout: Horizontal, Space Between
-
-**Legend Item 1:**
-- Square: 12×12px, brand-primary, radius 2px
-- Text: "Receita" - Label/M, text-secondary
-- Gap: 8px
-
-**Legend Item 2:**
-- Square: 12×12px, brand-danger, radius 2px
-- Text: "Despesas" - Label/M, text-secondary
-- Gap: 8px
+- **Col 1 (Manhã):** "Concluir Plantio Talhão 04" | "Recebimento Adubo (10h)"
+- **Col 2 (Tarde):** "Mover Maquinário para Talhão 06" | "Manutenção Preventiva JD 7J"
+- **Col 3 (Noite):** "Aplicação Noturna (Se vento < 10km/h)"
 
 ---
 
-#### CARD 3: Preço Médio de Venda
+## 🎯 Key Design Features for the Producer
+1.  **"Red stops the eye":** Use red sparingly but strictly for things that require immediate phone calls (Machines stopped, Pest outbreaks).
+2.  **Dense but Grouped:** Heavy information density is fine (they are experts), but group it logically (Weather / Iron / Agronomy / Money).
+3.  **Direct Language:** Don't say "Variance Analysis of Fuel Consumption". Say "Diesel: Gastando 10% a mais que o planejado".
 
-**Base:** Glassmorphism Card with 24px padding
-
-**Header:**
-- Text: "Preço Médio de Venda"
-- Style: Heading/M
-- Margin Bottom: 16px
-
-**Section 1: Preço Realizado**
-- Layout: Horizontal, Space Between
-- **Left:** "Preço Realizado" - Label/M, text-muted
-- **Right:** "R$ 142,50" - Body/Number/L, text-primary
-- **Subtext:** "por saca" - Label/S, text-secondary (aligned right)
-- Margin Bottom: 16px
-
-**Divider:**
-- 1px height, color: `#27272a`
-- Margin Bottom: 16px
-
-**Section 2: Meta**
-- Layout: Horizontal, Space Between
-- **Left:** "Meta" - Label/M, text-muted
-- **Right:** "R$ 135,00" - Body/Number/M, text-secondary
-- Margin Bottom: 12px
-
-**Variance Row:**
-- **Text 1:** "+5.6%" - Label/M, brand-primary, Semibold
-- **Text 2:** "acima da meta" - Label/M, text-muted
-- Gap: 8px
-
----
-
-### 3. MAIN CHART: Profitability Waterfall
-**Position:** Below KPI Cards, 24px margin top
-**Layout:** Glassmorphism Card, 24px padding
-**Height:** 440px
-
-**Header:**
-- Text: "Rentabilidade - Análise Waterfall"
-- Style: Heading/L
-- Margin Bottom: 24px
-
-**Chart Container:**
-- Height: 320px
-- Layout: Horizontal, 5 columns, equal width, gap 24px
-- Padding: 0 32px
-- Alignment: Bottom
-
-**Column 1: Receita Bruta**
-- Bar Height: 100% (320px)
-- Bar Width: Full column width
-- Fill: brand-primary
-- Corner Radius: 8px (top only)
-- **Label Above:** "R$ 12.5M" - Body/Number/S, brand-primary
-- **Label Below:** "Receita Bruta" - Label/M, text-secondary
-- Gap from bar: 12px
-
-**Column 2: Subsídios**
-- Bar Height: 20% (64px)
-- Position: Aligned to bottom
-- Fill: brand-info at 50% opacity
-- Corner Radius: 8px (top only)
-- **Label Above:** "+R$ 1.2M" - Body/Number/S, brand-info
-- **Label Below:** "Subsídios" - Label/M, text-secondary
-
-**Column 3: Custos Diretos**
-- Bar Height: 60% (192px)
-- Fill: brand-danger at 70% opacity
-- Corner Radius: 8px (top only)
-- **Label Above:** "-R$ 7.8M" - Body/Number/S, brand-danger
-- **Label Below:** "Custos Diretos" - Label/M, text-secondary
-
-**Column 4: Custos Operacionais**
-- Bar Height: 30% (96px)
-- Fill: brand-danger at 50% opacity
-- Corner Radius: 8px (top only)
-- **Label Above:** "-R$ 2.1M" - Body/Number/S, brand-danger
-- **Label Below:** "Custos Operacionais" - Label/M, text-secondary
-
-**Column 5: Lucro Líquido**
-- Bar Height: 45% (144px)
-- Fill: brand-primary at 80% opacity
-- Corner Radius: 8px (top only)
-- **Label Above:** "R$ 3.8M" - Body/Number/S, brand-primary
-- **Label Below:** "Lucro Líquido" - Label/M, text-secondary
-
----
-
-### 4. BOTTOM SECTION: Risk Alerts & Market Position
-**Position:** Below Main Chart, 24px margin top
-**Layout:** 2 Columns, Equal Width (1fr 1fr), Gap 24px
-
----
-
-#### LEFT CARD: Alertas de Risco
-
-**Base:** Glassmorphism Card, 24px padding
-**Min Height:** 280px
-
-**Header:**
-- Text: "Alertas de Risco"
-- Style: Heading/L
-- Margin Bottom: 16px
-
-**Alert List:** Vertical stack, gap 12px
-
-**Alert Card Style (Base):**
-- Layout: Horizontal, gap 12px
-- Padding: 12px
-- Corner Radius: 8px
-- Alignment: Start
-
-**Alert 1: Warning Level**
-- Background: brand-warning at 10% opacity
-- Border: 1px solid brand-warning at 30% opacity
-
-**Indicator Dot:**
-- Size: 8×8px circle
-- Fill: brand-warning
-- Position: 6px from top
-
-**Content:**
-- **Title:** "3 Tratores em Manutenção"
-  - Style: Body/Number/S, text-primary
-- **Description:** "John Deere 8R-04, Case IH 340, New Holland T7"
-  - Style: Label/M, text-secondary
-  - Margin Top: 4px
-
-**Alert 2: Info Level**
-- Background: brand-info at 10% opacity
-- Border: 1px solid brand-info at 30% opacity
-- Indicator: brand-info
-
-**Content:**
-- **Title:** "Previsão de Chuva"
-- **Description:** "40mm esperados nos próximos 2 dias - Ajustar cronograma de colheita"
-
-**Alert 3: Critical Level**
-- Background: brand-danger at 10% opacity
-- Border: 1px solid brand-danger at 30% opacity
-- Indicator: brand-danger
-
-**Content:**
-- **Title:** "Estoque Baixo: Glifosato"
-- **Description:** "Restam apenas 2 dias de operação"
-
----
-
-#### RIGHT CARD: Posição de Mercado
-
-**Base:** Glassmorphism Card, 24px padding
-
-**Header:**
-- Text: "Posição de Mercado"
-- Style: Heading/L
-- Margin Bottom: 16px
-
-**Table Structure:**
-
-**Table Header Row:**
-- Border Bottom: 1px solid `#27272a`
-- Padding Bottom: 12px
-
-**Columns:**
-1. "Commodity" - Left aligned, Label/M, text-secondary
-2. "Preço B3" - Right aligned, Label/M, text-secondary
-3. "Chicago" - Right aligned, Label/M, text-secondary
-4. "Variação" - Right aligned, Label/M, text-secondary
-
-**Table Rows:** (Each row has bottom border: 1px solid `#27272a` at 50% opacity, padding 16px vertical)
-
-**Row 1: Soja**
-- **Col 1:**
-  - Dot: 8×8px circle, agro-soy
-  - Text: "Soja" - Body/Number/S, text-primary
-  - Gap: 8px
-- **Col 2:** "R$ 142,50" - Body/Number/S, text-primary, Semibold
-- **Col 3:** "$13.45" - Body/Number/S, text-primary
-- **Col 4:** "+2.3%" - Body/Number/S, brand-primary, Semibold
-
-**Row 2: Milho**
-- **Col 1:**
-  - Dot: agro-corn
-  - Text: "Milho"
-- **Col 2:** "R$ 68,90"
-- **Col 3:** "$4.82"
-- **Col 4:** "-1.1%" - Body/Number/S, brand-danger, Semibold
-
-**Row 3: Dólar**
-- **Col 1:**
-  - Dot: `#71717a` (Zinc-500)
-  - Text: "Dólar"
-- **Col 2:** "R$ 5,42"
-- **Col 3:** "-"
-- **Col 4:** "+0.8%" - brand-primary
-
----
-
-## 🎯 Design Guidelines
-
-### Visual Hierarchy
-1. High contrast between background and cards (glassmorphism effect)
-2. Bold numbers for key metrics
-3. Color coding for semantic meaning (green = positive, red = negative)
-
-### Spacing System
-- Use multiples of 4px for all spacing
-- Card padding: 24px
-- Section gaps: 24px
-- Element gaps: 12-16px
-- Tight gaps: 4-8px
-
-### Interactive States (Optional for Static Mockup)
-- Hover on cards: Increase border opacity to 20%
-- Hover on buttons/dropdowns: Background to surface-highlight
-
-### Accessibility
-- Ensure all text has minimum 4.5:1 contrast ratio
-- Use semibold/bold weights for better readability on dark backgrounds
-
----
-
-## 📤 Export Settings
-
-**For Development Handoff:**
-- Export entire frame as PNG @2x: `Executive_Overview_2x.png`
-- Export individual components as SVG (icons, charts)
-- Export color styles as JSON
-- Export text styles documentation
-
-**For Presentation:**
-- Export as PDF: `SOAL_Dashboard_01_Executive.pdf`
-
----
-
-## ✅ Checklist
-
-- [ ] Set up 1920×1080 frame with #09090b background
-- [ ] Create all color styles in Figma
-- [ ] Create all text styles in Figma
-- [ ] Build glassmorphism card component
-- [ ] Create header section with title and controls
-- [ ] Build 3 KPI cards (Progress, Cash Flow, Price)
-- [ ] Create waterfall chart with 5 columns
-- [ ] Build risk alerts section with 3 alert cards
-- [ ] Create market position table with 3 rows
-- [ ] Verify all spacing follows 4px grid
-- [ ] Check all colors match specification
-- [ ] Export mockup at 2x resolution
-
----
-
-**Estimated Time:** 2-3 hours for experienced Figma designer
-**Complexity:** Medium-High (Custom charts, precise spacing, glassmorphism effects)
+## 📤 Export Checklist
+- [ ] Dark Mode (Essential for low-light cab viewing or early morning).
+- [ ] High Contrast Fonts for readability.
+- [ ] "Morning Briefing" summary visible at a glance.
