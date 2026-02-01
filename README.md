@@ -1,61 +1,64 @@
-# DeepWork AI Flows
+# 📊 DPWAI - Business Discoveries
 
-Bem-vindo ao repositório oficial da **DeepWork AI Flows**.
+Repositório central de **descobertas de negócio, análises de clientes e documentação estratégica** da DPWAI.
 
-Este repositório centraliza toda a inteligência do negócio, desde a estratégia e pesquisa de mercado até o código-fonte dos nossos "Funcionários Digitais".
+> ⚠️ **Este repo é apenas documentação** - O código da plataforma está em [dpwai/dpwai-app](https://github.com/dpwai/dpwai-app)
+
+## 🎯 O que é a DPWAI?
+
+**Deepwork AI Flows** - Soluções personalizadas para problemas específicos.
+
+Automação consultiva + plataforma de inteligência de dados, focada inicialmente no **AGRO**.
+
+- **Não** é chatbot genérico
+- **É** consultoria profunda + desenvolvimento específico
+- "Funcionários digitais" que usam ferramentas existentes
 
 ## 📂 Estrutura do Repositório
 
-- **`business-discoveries/AI_Automations/`**: O "Cérebro" do negócio. Contém toda a documentação, visão, pesquisa de mercado e definições de produto.
-    - `01_Visao_Negocio`: Estratégia e posicionamento.
-    - `02_Identidade_Marca`: Branding e tom de voz.
-    - `10_Gestao_Tecnica`: Decisões técnicas e stack.
-- **`backend/`**: API em Python (FastAPI) responsável pela lógica complexa e IA.
-- **`frontend/`**: Dashboard do cliente em Next.js.
-- **`n8n/`**: Arquivos e configurações para automação Low-Code.
-- **`database/`**: Scripts e dados do PostgreSQL.
-- **`docker-compose.yml`**: Orquestração de todo o ambiente.
+```
+├── 00_CONHECIMENTO/       # Base de conhecimento geral
+├── 01_Visao_Negocio/      # Estratégia, posicionamento, modelo de negócio
+├── 02_Identidade_Marca/   # Branding, tom de voz, valores
+├── 03_Identidade_Visual/  # Logos, cores, tipografia
+├── 07_Operacional/        # Processos, roteiros, templates
+├── 08_Ferramentas/        # Ferramentas e integrações
+├── 09_Projetos/           # Projetos por cliente
+│   └── 02_SOAL/           # 🌾 Fazenda Santana do Iapó (cliente principal)
+├── 10_Gestao_Tecnica/     # Stack, decisões técnicas
+├── 11_Juridico/           # Contratos e termos
+│
+├── business-discoveries/  # (Legacy) Estrutura antiga - migrar conteúdo
+├── backend/               # (Deprecated) Usar dpwai-app
+├── frontend/              # (Deprecated) Usar dpwai-app
+└── docker-compose.yml     # (Deprecated)
+```
 
-## 🚀 Como Rodar o Projeto
+## 🌾 Projeto Principal: SOAL
 
-Utilizamos **Docker** para garantir que tudo rode igual na sua máquina e em produção.
+**Cliente:** Serra da Onça Agropecuária LTDA (Fazenda Santana do Iapó)
+- **Local:** Piraí do Sul - PR
+- **Área:** ~2.150 hectares
+- **Operação:** Soja, Milho, Feijão + Gado de corte
 
-### Pré-requisitos
-- Docker e Docker Compose instalados.
+📁 Documentação completa em: `09_Projetos/02_SOAL/`
 
-### Passo a Passo
+## 🔗 Outros Repositórios DPWAI
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone https://github.com/balzer-and-kugler/business-discoveries.git
-    cd business-discoveries
-    ```
+| Repo | Descrição |
+|------|-----------|
+| [dpwai-app](https://github.com/dpwai/dpwai-app) | 🚀 Plataforma principal (Next.js) |
+| [org](https://github.com/dpwai/org) | Documentação central da empresa |
+| [design](https://github.com/dpwai/design) | Assets visuais e brand guidelines |
+| [infra](https://github.com/dpwai/infra) | Infraestrutura e deploy |
+| [docs](https://github.com/dpwai/docs) | Documentação técnica |
 
-2.  **Suba o ambiente:**
-    ```bash
-    docker-compose up --build
-    ```
+## 👥 Time
 
-3.  **Acesse os serviços:**
-    - **Frontend (Dashboard):** [http://localhost:3000](http://localhost:3000)
-    - **Backend (API):** [http://localhost:8000](http://localhost:8000)
-    - **n8n (Automação):** [http://localhost:5678](http://localhost:5678)
-    - **Banco de Dados:** `localhost:5432`
+- **João Balzer** - Tech Lead
+- **Rodrigo Kugler** - Business Lead
+- **Muffin 🤖** - AI Assistant
 
-## 🛠️ Stack Tecnológica
+---
 
-Focamos em **simplicidade e ROI**.
-
-- **Frontend:** Next.js (Web Responsivo).
-- **Backend:** Python + FastAPI.
-- **Automação:** n8n.
-- **Banco de Dados:** PostgreSQL.
-- **BI & Relatórios:** Usamos a infraestrutura do cliente (Google Looker Studio ou Power BI) para reduzir custos e fricção.
-
-Para mais detalhes, veja [STACK_TECNOLOGICA.md](business-discoveries/AI_Automations/10_Gestao_Tecnica/STACK_TECNOLOGICA.md).
-
-## 🤝 Contribuindo
-
-1.  Crie uma branch para sua feature (`git checkout -b feature/nova-feature`).
-2.  Siga o padrão de commit.
-3.  Abra um Pull Request.
+*Última atualização: Fevereiro 2026*
