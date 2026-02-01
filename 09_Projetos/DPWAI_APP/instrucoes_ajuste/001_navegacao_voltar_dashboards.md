@@ -1,8 +1,9 @@
 # Ajuste: Navegacao do botao "Voltar" nos dashboards
 
 **Data:** 2026-02-01
-**Status:** Pendente
+**Status:** ✅ Concluído
 **Prioridade:** Alta
+**Implementado em:** e146d49 (feature/secret-manager-87)
 
 ---
 
@@ -33,7 +34,14 @@ A tela de Dashboards Agricolas tem o layout ideal: cards com icones coloridos, d
 ---
 
 ## Checklist de implementacao
-- [ ] Ajustar rota do botao "Voltar" nos dashboards nativos
-- [ ] Definir `/dashboards/native` como tela inicial de "Paineis"
-- [ ] Adicionar card "Contas a Receber" na listagem
-- [ ] Testar navegacao em todos os 7 dashboards
+- [x] Ajustar rota do botao "Voltar" nos dashboards nativos
+- [x] Definir `/dashboards/native` como tela inicial de "Paineis"
+- [x] Adicionar card "Contas a Receber" na listagem (já existia!)
+- [x] Testar navegacao em todos os 7 dashboards (todos já apontavam correto)
+
+### Arquivos modificados:
+- `dpwaiagro/app/dpwai/[tenant_snake]/layout.tsx` - Menu lateral
+- `dpwaiagro/app/dpwai/[tenant_snake]/page.tsx` - Home page
+- `dpwaiagro/app/dpwai/[tenant_snake]/dashboard/page.tsx` - Redirect
+- `dpwaiagro/app/dpwai/[tenant_snake]/dashboards/native/operacional/page.tsx` - Botão voltar
+- `dpwaiagro/components/PremiumWelcome.tsx` - Card de boas-vindas
