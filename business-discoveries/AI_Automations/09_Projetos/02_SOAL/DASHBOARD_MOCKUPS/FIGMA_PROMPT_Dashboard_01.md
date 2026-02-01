@@ -1,145 +1,119 @@
-# Figma Design Prompt: Dashboard #1 - "O Dia do Produtor" (Operational Reality)
+# Figma Design Prompt: Dashboard #1 - "Visão do Produtor" (The Daily Quick View)
 
 ## 🎯 Design Brief
-Create a highly functional, "Battle Station" style dashboard for a rural producer. Unlike the previous executive version, this one must be **action-oriented**. The producer opens this at 6:00 AM to decide: "What needs my attention today?".
-Focus on **Weather Risks**, **Machinery Status**, **Critical Alerts**, and **Daily Costs**. The aesthetic should be "Industrial Precision" - dark mode, high contrast, dense information but clear hierarchy.
+**Philosophy:** "Less is More". The user wants a clean, direct start screen. No clutter, no complex maps, no noise.
+**Primary Goal:** Answer "How is my cash flow?" and "Is anything broken?" in 5 seconds.
+**Visual Style:** "Executive Industrial". Dark, Sleek, Glassmorphism cards, Zinc colors. Consistent with Dashboards 03, 04, and 08.
 
 ---
 
 ## 📐 Canvas Setup
 
 ### Frame Specifications
-- **Frame Name:** `Producer_Daily_Dashboard`
+- **Frame Name:** `Producer_Home_QuickView`
 - **Dimensions:** 1920px × 1080px (Desktop HD)
-- **Background Color:** `#0f172a` (Slate-950 - slightly bluer/richer dark for modern feel)
-- **Padding:** 24px all sides
+- **Background Color:** `#09090b` (Zinc-950)
+- **Padding:** 32px
 
 ---
 
-## 🎨 Design System Tokens
+## 🎨 Design System Tokens (Unified)
 
 ### Color Palette
-**Backgrounds:**
-- `bg-canvas`: `#0f172a`
-- `bg-card`: `#1e293b` (Slate-800)
-- `bg-card-highlight`: `#334155` (Slate-700)
-
-**Typography:**
-- `text-primary`: `#f1f5f9` (Slate-100)
-- `text-secondary`: `#94a3b8` (Slate-400)
-- `text-accent`: `#38bdf8` (Sky-400) - For operational data
-
-**Semantic Colors (Critical for Alerts):**
-- `status-ok`: `#22c55e` (Green-500) - Everything running smooth
-- `status-warning`: `#f59e0b` (Amber-500) - Needs attention (Maintenance, Inventory)
-- `status-critical`: `#ef4444` (Red-500) - STOPPER (Breakdown, Pest outbreak)
-- `weather-rain`: `#3b82f6` (Blue-500)
-- `weather-dry`: `#f97316` (Orange-500)
+- **Bg:** `#09090b` (Canvas), `#18181b` (Cards)
+- **Financials:**
+    - `money-out`: `#ef4444` (Red-500) - Accounts Payable
+    - `money-in`: `#10b981` (Emerald-500) - Accounts Receivable/Profit
+    - `money-neutral`: `#3b82f6` (Blue-500) - Balances
+- **Status:**
+    - `status-ok`: `#10b981` (Emerald-500)
+    - `status-alert`: `#f59e0b` (Amber-500)
+    - `status-critical`: `#ef4444` (Red-500)
 
 ### Typography
-**Font:** Inter or Roboto (Clean, legible numbers are priority)
+- **Headings:** Inter, SemiBold.
+- **Numbers:** Inter or Roboto Mono (Bold). Financials must be large and legible.
 
 ---
 
 ## 📦 Layout Structure
 
-### 1. HEADER: The "Morning Check"
+### 1. HEADER: The Morning Greeting
 **Height:** 80px
-**Layout:** Flex, Space Between
+**Layout:** Minimalist Row
 
-- **Left:** Logo "SOAL Intelligence" + Date/Time (e.g., "Quinta, 29 Jan | 06:15 AM")
-- **Center:** **Weather Ticker** (Crucial)
-  - Layout: Horizontal capsule
-  - Content: "⛅ 24°C | Vento: 12km/h NO | 💧 Chuva em 48h: **45mm** (Alerta)"
-  - Style: The "45mm" should be bold/colored to draw attention.
-- **Right:** User Profile + "Emergency Stop" button (or similar quick action).
+- **Left:** "Bom dia, Claudio" (Large, Welcoming) + Date
+- **Right:** Weather Ticker (Minimalist Capsule)
+    - "⛅ 24°C | 💧 Chuva: 0mm (Hoje)" (White text, concise)
 
 ---
 
-### 2. TOP ROW: "O Que Está Acontecendo Agora?" (Real-Time Ops)
+### 2. ROW 1: THE FINANCIAL PULSE (Priority #1)
+**Height:** 280px
+**Layout:** 3 Cards (Payable, Receivable, Cash Balance)
+*Direct request: "Um olhar rápido em contas a pagar e receber."*
+
+#### Card 1: A Pagar (Curto Prazo)
+- **Title:** "A Pagar (7 Dias)"
+- **Icon:** Arrow Up Right (Red)
+- **Main Value:** **R$ 142.500** (Large, Red text)
+- **Sub-detail:** "3 boletos vencendo hoje" (Alert text)
+- **Action:** Button "Ver Detalhes" (Ghost style)
+
+#### Card 2: A Receber (Curto Prazo)
+- **Title:** "A Receber (Previsão)"
+- **Icon:** Arrow Down Left (Green)
+- **Main Value:** **R$ 450.000** (Large, Green text)
+- **Sub-detail:** "Disponível na Cooperativa: R$ 380k"
+- **Visual:** Simple trend line (sparkline) showing positive trend.
+
+#### Card 3: Saldo de Caixa (Projetado)
+- **Title:** "Disponibilidade de Caixa"
+- **Icon:** Wallet/Bank (Blue)
+- **Main Value:** **R$ 1.2M** (White text)
+- **Visual:** A simple progress bar or "Safety Level" indicator (Green Zone).
+- **Status:** "Caixa Saudável" (Badge)
+
+---
+
+### 3. ROW 2: OPERATIONAL REALITY (The "Silo" & "Field" Pulse)
 **Height:** 320px
-**Layout:** 3 Cards (Weather Risk, Machinery Live, Market Opportunities)
+**Layout:** 2 Large Cards (Split 50/50)
 
-#### Card 1: Risco Climático & Janela de Trabalho (35% Width)
-*The most important factor for daily decisions.*
-- **Title:** "Janela de Operação"
-- **Visual:** A 5-day forecast timeline focusing on "Plantability/Harvestability".
-- **Content:**
-  - Today: ✅ Ideal (Green)
-  - Tomorrow: ✅ Ideal (Green)
-  - Saturday: ⚠️ Chuva (40mm) - PARADA OBRIGATÓRIA
-  - Sunday: ❌ Solo Encharcado
-  - **Action Item:** "Recomendação: Acelerar colheita no Talhão 4 hoje e amanhã."
+#### Card 1: Resumo da Safra (Silo & Colheita)
+*Simple view of what matters physically.*
+- **Title:** "Status da Colheita & Recebimento"
+- **Layout:** Horizontal stats sequence.
+    - **Colheita:** � **45% Concluído** (Progress bar)
+    - **Secador:** 🔥 **Operando** (Green Badge)
+    - **Fila:** � **2 Caminhões** (Neutral)
+    - **Silo:** � **60% Cheio** (Visual fill bar)
+- **Design:** Clean icons, large numbers, no complex tables.
 
-#### Card 2: Status da Frota em Tempo Real (35% Width)
-*Are the machines working?*
-- **Title:** "Operação em Campo: Plantio Soja"
-- **Visual:** 3 circular stats or list.
-  - **Ativos:** 4 Máquinas (Green dot)
-  - **Parados:** 1 Máquina (Red dot - blinking?)
-  - **Eficiência Média:** 85%
-- **List Detail:**
-  - 🚜 JD 8R (Talhão 02): 5.2 km/h | 🟢 Operando
-  - 🚜 Case 340 (Talhão 04): 0.0 km/h | 🔴 Parado (Manutenção Hidráulica - 45min)
-  - 🚜 Pulverizador (Talhão 01): 18 km/h | 🟢 Aplicando Fungicida
-
-#### Card 3: Oportunidades de Mercado (30% Width)
-*Should I sell today?*
-- **Title:** "Mercado & Metas"
-- **Content:**
-  - **Soja Spot:** R$ 138,00 (🔻 -0.5%)
-  - **Target de Venda:** R$ 142,00
-  - **Indicador:** "Segurar Venda" (Visual badge)
-  - **Dólar:** R$ 5,45 (🔺 +1.2%)
+#### Card 2: Alertas de Maquinário (Exception Management)
+*Only what needs fixing. If everything is fine, show "All Good".*
+- **Title:** "Atenção na Frota"
+- **Content:** List of strictly critical items (Maximum 3).
+    - 🔴 **JD 8R:** Consumo Excessivo (28L/h)
+    - 🟡 **Pulverizador:** Manutenção Preventiva em 5h
+    - *If no alerts:* Show a large Green Check "Frota 100% Operacional".
 
 ---
 
-### 3. MIDDLE ROW: "Briefing de Decisão" (Alerts & Costs)
-**Height:** 400px
-**Layout:** 2 Columns (2fr, 1fr)
+### 4. ROW 3: COMMODITIES & DECISION (Quick Market View)
+**Height:** 160px
+**Layout:** 4 Small Ticker Cards
+*Quick decision support.*
 
-#### Card 1: Mapa de Alertas & Saúde da Lavoura (Map View)
-*Where are the problems?*
-- **Visual:** A stylized map of the farm outlines (Talhões).
-- **Overlays:**
-  - **Talhão 02:** 🐞 Alerta de Praga (Lagarta) - Nível Médio (Yellow overlay)
-  - **Talhão 05:** 💧 Déficit Hídrico - Nível Baixo (Green overlay)
-  - **Talhão 08:** 📉 Baixa População de Plantas (Red overlay area)
-- **Sidebar on map:** List of active alerts categorized by Priority.
-  - "🔴 ALTA: Talhão 08 com falha de plantio detectada (5%). Replantio recomendado."
-  - "🟡 MÉDIA: Monitoramento de Lagarta no Talhão 02 indicou nível de dano econômico em 3 dias."
-
-#### Card 2: Custo Real vs Planejado (Financial Reality)
-*Am I bleeding money?*
-- **Title:** "Acumulado da Safra"
-- **Visual:** Gauge or Bullet Chart.
-- **Metric:**
-  - **Custo Atual:** R$ 3.850/ha
-  - **Meta/Orçamento:** R$ 3.800/ha
-  - **Delta:** 🔺 +R$ 50/ha (Over budget)
-- **Breakdown (Mini list):**
-  - Diesel: ✅ Dentro da meta
-  - Defensivos: ❌ +12% (Devido a extra de fungicida)
-  - Manutenção: ✅ Dentro da meta
+- **Ticker 1:** Soja Spot: **R$ 138,00** (🔻 -0.5%)
+- **Ticker 2:** Milho Spot: **R$ 58,00** (➖ 0.0%)
+- **Ticker 3:** Dólar PTAX: **R$ 5,45** (🔺 +1.2%)
+- **Ticker 4:** Ureia/Ton: **US$ 380** (📉 Baixa)
 
 ---
 
-### 4. BOTTOM ROW: "Planejamento Próximas 24h"
-**Height:** 180px
-**Layout:** Horizontal Timeline or Kanban-style cards
-
-- **Col 1 (Manhã):** "Concluir Plantio Talhão 04" | "Recebimento Adubo (10h)"
-- **Col 2 (Tarde):** "Mover Maquinário para Talhão 06" | "Manutenção Preventiva JD 7J"
-- **Col 3 (Noite):** "Aplicação Noturna (Se vento < 10km/h)"
-
----
-
-## 🎯 Key Design Features for the Producer
-1.  **"Red stops the eye":** Use red sparingly but strictly for things that require immediate phone calls (Machines stopped, Pest outbreaks).
-2.  **Dense but Grouped:** Heavy information density is fine (they are experts), but group it logically (Weather / Iron / Agronomy / Money).
-3.  **Direct Language:** Don't say "Variance Analysis of Fuel Consumption". Say "Diesel: Gastando 10% a mais que o planejado".
-
-## 📤 Export Checklist
-- [ ] Dark Mode (Essential for low-light cab viewing or early morning).
-- [ ] High Contrast Fonts for readability.
-- [ ] "Morning Briefing" summary visible at a glance.
+## 💡 UX Philosophy for this Dashboard
+1.  **"Don't Make Me Think":** Green is good money, Red is bad money/alert.
+2.  **No Scrolling:** Everything fits on one 1080p screen.
+3.  **Click to Dive:** This dashboard is the surface. Clicking "A Pagar" goes to Dashboard #3. Clicking "Frota" goes to Dashboard #4.
+4.  **Zero Fluff:** No map overlays, no satellite imagery here. Just the numbers that matter for the morning coffee decision.
