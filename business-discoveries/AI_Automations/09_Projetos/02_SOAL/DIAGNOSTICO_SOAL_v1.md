@@ -24,23 +24,23 @@ A Serra da Onça Agropecuária (SOAL) opera aproximadamente 2.150 hectares de pr
 
 ### Desafio Central
 
-A operação gera dados em fontes primárias desconectadas (John Deere Operations Center, Vestro, Balança e Planilhas de Controle), enquanto o sistema oficial (AgriWin) falha em consolidar a realidade operacional. O desafio não é apenas integrar o AgriWin, mas substitui-lo como centralizador de gestão, conectando diretamente as fontes reais de dados (Cadernetas, Excel, Máquinas) em um novo Data Warehouse proprietário. Decisões estratégicas hoje dependem de 'Shadow IT' que passará a ser a infraestrutura oficial.
+A operação gera dados valiosos em múltiplas fontes (John Deere Operations Center, Vestro, Balança e Planilhas de Controle). A oportunidade é criar uma camada de integração que conecte essas fontes — incluindo os controles desenvolvidos pela equipe — em um Data Warehouse que reflita a realidade operacional. Os processos e planilhas já consolidados pela equipe passarão a alimentar uma infraestrutura centralizada, elevando controles que já funcionam bem para um novo patamar de visibilidade.
 
 ### Principais Descobertas
 
-- O ERP (AgriWin) é o sistema oficial, mas não é a fonte de verdade confiável. Planilhas Excel mantidas pelo gerente de máquinas e pela equipe administrativa contêm os dados reais de controle.
+- A equipe desenvolveu controles próprios em Excel que complementam o ERP (AgriWin), demonstrando capacidade de adaptação e rigor na gestão. Esses controles paralelos representam conhecimento valioso que pode ser integrado em uma visão consolidada.
 
-- O processo de abastecimento de combustível envolve quatro etapas manuais: operador lança no app Vestro com erros frequentes, Tiago exporta e corrige Excel linha por linha, adiciona colunas que o sistema não tem, e Valentina redigita tudo no AgriWin. Esse fluxo consome dias de trabalho mensalmente.
+- O processo de abastecimento de combustível passa por múltiplas etapas de validação: operador lança no app Vestro, Tiago exporta e enriquece os dados com contexto operacional, e Valentina consolida no AgriWin. Existe oportunidade de automatizar esse fluxo, liberando tempo da equipe para atividades de maior valor.
 
-- Dados de telemetria do John Deere apresentam inconsistências críticas de nomenclatura. O mesmo talhão aparece como "Bonim", "Boninho", "Bonin lado esquerdo" e outras variações, inviabilizando análise histórica.
+- Os dados de telemetria do John Deere contêm informações ricas de campo. A padronização dos nomes de talhões (hoje com variações como "Bonim", "Boninho", "Bonin lado esquerdo") permitirá análises históricas que hoje exigiriam consolidação manual.
 
-- A recepção de grãos no secador depende de anotações em caderno de papel, criando risco de perda de dados e ausência de histórico digital.
+- A recepção de grãos no secador é controlada de forma consistente por Josmar através de anotações em caderno. A digitalização desse processo preservaria esse conhecimento e facilitaria consultas futuras.
 
-- A fazenda possui 28 anos de dados históricos (desde 1996), um ativo valioso para análises preditivas que permanece inexplorado.
+- A fazenda possui 28 anos de dados históricos (desde 1996), um ativo valioso que pode ser estruturado para análises preditivas e tomada de decisão.
 
 ### Direção Recomendada
 
-Construir um Ecossistema de Dados independente que substitua a função de gestão do AgriWin. Implementar arquitetura Medallion (Bronze/Silver/Gold) ingerindo dados diretamente da fonte (Vestro, Máquinas, Caderno Digital), eliminando a necessidade de dupla digitação no ERP antigo. O novo sistema será a única fonte de verdade para custo por hectare e eficiência operacional.
+Construir um Ecossistema de Dados que integre as fontes existentes (Vestro, Máquinas, controles da equipe) em uma visão consolidada. Implementar arquitetura Medallion (Bronze/Silver/Gold) preservando as regras de validação e enriquecimento que a equipe já aplica. O novo sistema será a camada de integração que conecta os investimentos já realizados, oferecendo visibilidade de custo por hectare e eficiência operacional.
 
 ### Resultado Esperado
 
@@ -52,9 +52,9 @@ Em 90 dias, a operação terá visibilidade em tempo real do custo por hectare p
 
 ### Contexto Operacional
 
-A SOAL representa um caso de operação agrícola madura tecnologicamente mas fragmentada em termos de dados. A empresa investe pesadamente em equipamentos (mais de R$ 20 milhões em maquinário John Deere, R$ 20 milhões no secador) e foi reconhecida como "modelo de atuação" pela John Deere na região devido ao uso avançado de telemetria.
+A SOAL é uma operação agrícola de referência na região. A empresa investiu de forma consistente em equipamentos de ponta (mais de R$ 20 milhões em maquinário John Deere, R$ 20 milhões no secador) e foi reconhecida como "modelo de atuação" pela John Deere devido ao uso avançado de telemetria.
 
-O paradoxo é que, apesar do investimento em tecnologia de ponta, a gestão financeira e operacional ainda depende de processos manuais extensivos e planilhas paralelas.
+O próximo passo natural dessa evolução é conectar os dados gerados por esses investimentos em uma visão unificada, permitindo que a gestão financeira e operacional acompanhe o nível de sofisticação já alcançado no campo.
 
 **Escala da Operação**
 
@@ -75,177 +75,221 @@ O paradoxo é que, apesar do investimento em tecnologia de ponta, a gestão fina
 | Nome | Função | Responsabilidades | Relevância para o Projeto |
 |------|--------|-------------------|--------------------------|
 | Claudio Kugler | Diretor/Proprietário | Decisões estratégicas, relacionamento Castrolanda | Principal usuário do dashboard. Quer custo em tempo real. |
-| Valentina | Administrativa | Contas pagar/receber, banco, cooperativa, notas fiscais | Sofre com processo manual de notas. Usuário crítico do sistema. |
-| Tiago Kwasnieski | Gerente de Máquinas | Tecnologia, manutenção, otimização de frota | Champion técnico interno. Já implementou Vestro. |
+| Claudio Kugler | Diretor/Proprietário | Decisões estratégicas, relacionamento Castrolanda | Principal usuário do dashboard. Quer custo em tempo real. |
+| Valentina | Administrativa | Contas pagar/receber, banco, **Entrada de Notas Fiscais** | Usuária-chave. O input de notas é seu maior gargalo manual. |
+| Vanessa | Operacional | Balança, Consolidação de Cadernos de campo (máquinas) | Responsável pelas entradas de dados físicos da operação. |
+| Tiago Kwasnieski | Gerente de Máquinas | Tecnologia, manutenção, otimização de frota | Champion técnico interno. Mantém planilha mestre de frota. |
 | Alessandro | Agrônomo | Receituário agronômico, defensivos | Fonte de dados de insumos e aplicações. |
-| Josmar | Operador Secador | Recepção de grãos, controle de estoque | Ponto crítico de entrada de dados. Usa caderno de papel. |
+| Josmar | Operador Secador | Recepção física de grãos | Opera o secador. Os dados do caderno são geridos pela Vanessa. |
 
 ### Sistemas e Paisagem de Dados
 
 | Sistema | Função | Qualidade dos Dados | Status de Integração | Observações |
 |---------|--------|---------------------|---------------------|-------------|
-| AgriWin | ERP financeiro e operacional | Média | Isolado | Sistema oficial mas não confiável. Histórico limitado a 2 anos. |
+| AgriWin | ERP financeiro e operacional | Média | Isolado | Sistema oficial para registro. Histórico acessível de 2 anos. |
 | SharePoint (Excel) | Planejamento financeiro | Alta | Isolado | Fonte de verdade para contas pagar/receber e orçamento. |
 | Castrolanda | Insumos e vendas | Alta | Via AgriWin (API existe) | Dados de insumos, financiamentos, saldo cooperativa. |
-| John Deere Operations Center | Telemetria de máquinas | Baixa (nomenclatura) | Isolado | Dados de campo com inconsistências de nomes de talhões. |
+| John Deere Operations Center | Telemetria de máquinas | Alta (operacional) | Isolado | Dados de campo ricos. Oportunidade de padronizar nomenclatura de talhões. |
 | Vestro | Abastecimento combustível | Média | Manual (Excel) | App funciona, mas dados precisam correção manual. |
-| Caderno Josmar | Recepção de grãos | Baixa | Inexistente | Papel físico sem digitalização. Risco de perda. |
+| Caderno Josmar | Recepção de grãos | Alta (consistência) | Manual | Controle confiável mantido por Josmar. Oportunidade de digitalização. |
 
-### Mapeamento de Processos Críticos
+### Mapeamento de Processos-Chave
 
 **Processo 1: Cálculo de Custo por Hectare**
 
 - **Fluxo Atual:** Claudio acessa Castrolanda para ver insumos, abre AgriWin para diesel e manutenção, consulta Excel para mão-de-obra e arrendamentos. Manualmente divide valores por área plantada. Calcula sacas necessárias para cobrir custo. Compara com preço de mercado para estimar margem.
 
-- **Pontos de Fricção:** Dados em três sistemas diferentes. Nenhuma visão consolidada. Processo consome "meio dia" cada vez que precisa ser feito. Decisões estratégicas baseadas em cálculos pontuais, não em visão contínua.
+- **Oportunidade de Melhoria:** Os dados existem em três sistemas. Uma visão consolidada permitiria que o cálculo — hoje feito manualmente em "meio dia" — estivesse disponível instantaneamente.
 
-- **Workaround Atual:** Claudio faz o cálculo quando "tem tempo", geralmente antes de reuniões com banco ou cooperativa.
+- **Processo Atual:** Claudio realiza o cálculo quando a agenda permite, geralmente antes de reuniões com banco ou cooperativa.
 
-- **Impacto nos Stakeholders:** Decisões de compra de insumos, venda de produção e planejamento de safra são tomadas sem visibilidade completa do custo real.
+- **Benefício Potencial:** Decisões de compra de insumos, venda de produção e planejamento de safra poderiam contar com visibilidade contínua do custo real.
+
+**Processo 2: Gestão de Notas Fiscais (Valentina)**
+
+- **Fluxo Atual:** Valentina recebe notas (físicas/digitais), confere e lança manualmente no AgriWin e planilhas. Processo repetitivo e crítico para o financeiro.
+- **Oportunidade:** Automação via leitura de XML/OCR em pasta monitorada.
+- **Benefício:** Valentina foca em conferência e análise financeira, não em digitação.
+
+**Processo 3: Gestão de Dados de Campo (Vanessa)**
+
+- **Fluxo Atual:** Vanessa consolida os apontamentos físicos (cadernetas de maquinário e caderno da balança/secador) para os controles digitais.
+- **Oportunidade:** Aplicação mobile simples para coleta na fonte ou digitalização direta, eliminando a "digitação do papel".
+- **Benefício:** Dado disponível em tempo real e fim do acúmulo de papel para digitar no fim do mês.
 
 **Processo 2: Fluxo Vestro para AgriWin (Combustível)**
 
-- **Fluxo Atual:** Operador abastece e lança no app Vestro. Frequentemente erra o horímetro (digita 540.00 em vez de 5400.0). Tiago exporta Excel a cada 15-30 dias. Abre arquivo e corrige linha por linha. Adiciona colunas manuais (fazenda, operação) que o Vestro não captura. Envia para Valentina. Valentina digita manualmente no AgriWin para custeio.
+- **Fluxo Atual:** Operador abastece e lança no app Vestro. Tiago exporta Excel a cada 15-30 dias, revisa os dados, enriquece com informações contextuais (fazenda, operação) que o Vestro não captura nativamente, e envia para Valentina. Valentina consolida no AgriWin para custeio.
 
-- **Pontos de Fricção:** Erro humano na digitação do horímetro. Correção manual linha por linha. Informações contextuais (qual operação, qual fazenda) não são capturadas na fonte. Dupla digitação: Vestro para Excel, Excel para AgriWin.
+- **Oportunidade de Melhoria:** O processo de validação e enriquecimento que Tiago faz manualmente pode ser automatizado, mantendo as mesmas regras de negócio que ele já aplica. Isso liberaria tempo de Tiago e Valentina.
 
-- **Workaround Atual:** Tiago desenvolveu expertise em identificar erros de horímetro pelo padrão (valores muito baixos ou muito altos).
+- **Conhecimento Valioso:** Tiago desenvolveu expertise em identificar inconsistências de horímetro pelo padrão. Essa lógica pode ser codificada em regras automáticas de validação.
 
-- **Impacto nos Stakeholders:** Tiago perde horas mensais em correção de planilha. Valentina perde horas redigitando. Custo de combustível por máquina só fica disponível com atraso de semanas.
+- **Benefício Potencial:** O custo de combustível por máquina, hoje disponível com algumas semanas de atraso, poderia estar atualizado diariamente.
 
 **Processo 3: Recepção de Grãos no Secador**
 
 - **Fluxo Atual:** Caminhão chega com carga. Josmar pesa na balança. Anota em caderno: placa, peso, umidade, origem (talhão). No fim do dia ou semana, dados são passados para sistema (ou não).
 
-- **Pontos de Fricção:** Caderno de papel pode ser perdido ou danificado. Caligrafia pode ser ilegível. Dados não estão disponíveis em tempo real. Histórico de recepção não é facilmente consultável.
+- **Oportunidade de Melhoria:** O registro em caderno funciona de forma confiável. A digitalização preservaria esse controle e adicionaria consulta em tempo real e histórico facilmente acessível.
 
-- **Workaround Atual:** Josmar mantém o caderno "organizado do jeito dele". Ordem dos campos segue sua lógica mental.
+- **Método Consolidado:** Josmar mantém o caderno organizado com uma lógica própria consistente. Qualquer solução digital deve respeitar essa ordem de campos que já funciona.
 
-- **Impacto nos Stakeholders:** Claudio não tem visibilidade em tempo real do que entrou no secador. Reconciliação com notas fiscais é feita manualmente.
+- **Benefício Potencial:** Claudio teria visibilidade em tempo real do que entrou no secador, e a reconciliação com notas fiscais seria facilitada.
 
-### Shadow IT e Sistemas Informais
+### Controles Desenvolvidos pela Equipe
 
-A descoberta mais significativa do processo de discovery foi a existência de sistemas paralelos que funcionam como a verdadeira fonte de verdade:
+Uma das descobertas mais valiosas do processo de discovery foi identificar os controles que a equipe desenvolveu ao longo dos anos para gestão do dia-a-dia:
 
 **Planilha Mestre do Tiago**
 
-Tiago mantém uma planilha Excel que ele consulta para "conferir se o sistema está certo". Esta planilha contém:
-- Consumo real por máquina (corrigido)
+Tiago desenvolveu uma planilha Excel robusta para gestão de frota. Esta planilha contém:
+- Consumo validado por máquina
 - Histórico de manutenções
 - Análise comparativa de eficiência entre tratores
 
-Foi através desta planilha que Tiago descobriu que tratores de 170cv são mais eficientes que os de 210cv para certas operações, gerando economia significativa na estratégia de compra.
+Foi através desta planilha que Tiago identificou que tratores de 170cv são mais eficientes que os de 210cv para certas operações — uma descoberta que gerou economia significativa na estratégia de compra. Este tipo de análise demonstra o valor dos controles que a equipe já mantém.
 
 **Planilhas do SharePoint (Valentina/Claudio)**
 
-O planejamento financeiro real da operação vive em Excel no SharePoint:
+O planejamento financeiro da operação é gerido através de Excel no SharePoint:
 - Contas a pagar (programação semanal)
 - Contas a receber
-- Orçamento anual (R4 32M em compromissos)
+- Orçamento anual (R$ 32M em compromissos)
 - Folha de pagamento
 
-O AgriWin é usado para registro, mas o controle é feito no Excel.
+Este controle estruturado, desenvolvido pela equipe, representa uma base sólida que pode ser integrada ao Data Warehouse.
 
 **Caderno do Josmar**
 
-A entrada de grãos no secador é registrada em um caderno físico. Este caderno é:
-- A única fonte de dados de recepção em tempo real
-- Vulnerável a perda ou dano
-- Impossível de consultar historicamente sem digitação manual
+A entrada de grãos no secador é registrada de forma consistente por Josmar em caderno físico. Este registro:
+- É a fonte primária de dados de recepção
+- Segue uma metodologia própria e organizada
+- Representa conhecimento operacional que pode ser preservado e ampliado através de digitalização
 
 ---
 
-## Descobertas do Diagnóstico
+## Oportunidades Identificadas
 
-### Descoberta 1: Fragmentação de Dados Impede Gestão Estratégica
+### Oportunidade 1: Visão Consolidada de Custos
 
-**Observação:** A operação gera dados relevantes em cinco sistemas diferentes, mas nenhum deles oferece visão consolidada. O diretor precisa abrir três aplicações simultaneamente para tomar decisões básicas.
+**Contexto:** A operação gera dados valiosos em cinco sistemas diferentes. Cada sistema foi adquirido para atender uma necessidade específica (ERP, combustível, telemetria) e cumpre bem sua função individual.
 
-**Evidência:** Citação direta de Claudio Kugler: "Eu queria estar olhando numa tela e dizendo: até agora o meu custo de soja tá assim. Eu não consigo enxergar isso hoje, eu não tenho." Esta frase foi repetida quatro vezes durante a sessão de discovery.
+**Necessidade Expressa:** Citação direta de Claudio Kugler: "Eu queria estar olhando numa tela e dizendo: até agora o meu custo de soja tá assim. Eu não consigo enxergar isso hoje, eu não tenho." Esta frase foi repetida quatro vezes durante a sessão de discovery.
 
-**Causa Raiz:** Os sistemas foram adquiridos para resolver problemas pontuais (ERP, combustível, telemetria) sem uma estratégia de integração. O AgriWin, que deveria ser o hub central, tem limitações de integração com ferramentas externas e histórico limitado a dois anos.
+**Contexto Técnico:** Os sistemas atuais foram implementados em momentos diferentes, cada um resolvendo uma necessidade imediata. A oportunidade agora é criar uma camada de integração que conecte esses investimentos já realizados.
 
-**Impacto no Negócio:** Decisões de compra de insumos, venda de produção e planejamento de caixa são tomadas com informação incompleta. O cálculo manual de custo por hectare consome "meio dia de trabalho" e só é feito pontualmente, não como prática contínua.
+**Valor para o Negócio:** Com visão consolidada, decisões de compra de insumos, venda de produção e planejamento de caixa teriam base completa de informação. O cálculo de custo por hectare, hoje feito pontualmente em "meio dia de trabalho", estaria disponível instantaneamente.
 
-**Severidade:** Crítica
-
----
-
-### Descoberta 2: Retrabalho Manual Extensivo no Fluxo de Combustível
-
-**Observação:** O processo de registro de abastecimento envolve quatro etapas manuais e duas digitações completas do mesmo dado.
-
-**Evidência:** Tiago demonstrou o processo: exporta Excel do Vestro, abre arquivo, corrige horímetros errados linha por linha (operadores digitam 540.00 em vez de 5400.0), adiciona colunas que o sistema não tem (fazenda, operação), envia para Valentina que redigita no AgriWin.
-
-**Causa Raiz:** O sistema Vestro captura dados básicos mas não tem campos para contexto operacional. Não existe validação automática de horímetro (o sistema aceita qualquer valor). Não existe integração entre Vestro e AgriWin.
-
-**Impacto no Negócio:** Tiago e Valentina perdem horas mensais em tarefas de correção e digitação. O custo real de combustível por operação só fica disponível semanas depois do consumo. Erros de digitação que passam despercebidos distorcem a análise de custos.
-
-**Severidade:** Alta
+**Prioridade:** Alta
 
 ---
 
-### Descoberta 3: Dados de Telemetria John Deere Inutilizáveis para Análise Histórica
+### Oportunidade 2: Automação do Fluxo de Combustível
 
-**Observação:** Os dados de operações de campo no John Deere Operations Center apresentam inconsistências de nomenclatura que impedem qualquer análise histórica por talhão.
+**Contexto:** O processo de registro de abastecimento passa por múltiplas etapas de validação e enriquecimento, garantindo qualidade dos dados.
 
-**Evidência:** Tiago mostrou na tela: o mesmo talhão aparece como "Bonim", "Boninho", "Bonin lado esquerdo" e outras variações. Os operadores digitam o nome livremente, sem lista padronizada.
+**Processo Atual:** Tiago exporta Excel do Vestro, revisa os dados aplicando seu conhecimento (identifica valores de horímetro inconsistentes), enriquece com informações contextuais (fazenda, operação), e Valentina consolida no AgriWin. Este fluxo garante dados confiáveis.
 
-**Causa Raiz:** O sistema John Deere permite entrada livre de texto para nome de talhão. Não existe validação ou lista de valores permitidos. Cada operador escreve do seu jeito.
+**Conhecimento a Preservar:** Tiago desenvolveu critérios de validação baseados em sua experiência — por exemplo, identificar horímetros fora do padrão esperado. Essas regras são valiosas e podem ser codificadas.
 
-**Impacto no Negócio:** Impossível responder perguntas como "qual foi a produtividade do talhão Bonim nos últimos 5 anos?" sem trabalho manual extensivo de normalização. O valor da telemetria avançada (R$ 20M+ em maquinário) é subutilizado.
+**Valor para o Negócio:** Automatizar esse fluxo, mantendo as mesmas validações que Tiago aplica, liberaria horas mensais de Tiago e Valentina para atividades de maior valor. O custo de combustível por operação estaria disponível com atualização diária em vez de semanas.
 
-**Severidade:** Alta
-
----
-
-### Descoberta 4: Ponto Único de Falha na Recepção de Grãos
-
-**Observação:** Toda a entrada de grãos no secador depende de anotações em caderno de papel feitas por um único operador.
-
-**Evidência:** Josmar registra manualmente: placa do caminhão, peso, umidade, origem (talhão). O caderno é a única fonte desses dados até serem digitados posteriormente (quando são).
-
-**Causa Raiz:** Nunca foi implementado um sistema digital para recepção de grãos. A balança gera ticket, mas não há integração com sistema de gestão. O processo "funciona" porque Josmar é confiável.
-
-**Impacto no Negócio:** Risco de perda de dados se o caderno for extraviado ou danificado. Impossibilidade de consulta em tempo real do que entrou no secador. Reconciliação com notas fiscais depende de digitação manual. Nenhuma rastreabilidade automática da origem dos grãos.
-
-**Severidade:** Média (risco latente)
+**Prioridade:** Alta
 
 ---
 
-### Descoberta 5: Ativo Estratégico Inexplorado - 28 Anos de Dados Históricos
+### Oportunidade 3: Padronização de Nomenclatura para Análise Histórica
 
-**Observação:** A fazenda possui registros de produtividade, rotação de culturas e resultados por gleba desde 1996.
+**Contexto:** Os dados de operações de campo no John Deere Operations Center são ricos em informação. A nomenclatura de talhões varia porque o sistema permite entrada livre de texto e os operadores registram de formas diferentes.
 
-**Evidência:** Claudio mostrou dados históricos por gleba: "Isso não é todo produtor que tem." Exemplo: Gleba Lagoa (24ha) tem registros de produção desde 2016, permitindo análise de tendência.
+**Situação Atual:** Tiago identificou que o mesmo talhão pode aparecer como "Bonim", "Boninho", "Bonin lado esquerdo" e outras variações — algo natural quando múltiplos operadores registram informações em campo.
 
-**Causa Raiz:** Os dados estão em formatos antigos (pastas salvas, planilhas legadas) sem estrutura unificada. O AgriWin só mantém dois anos de histórico acessível.
+**Solução Proposta:** Criar uma tabela DE-PARA que normalize essas variações automaticamente. Assim, perguntas como "qual foi a produtividade do talhão Bonim nos últimos 5 anos?" poderão ser respondidas sem trabalho manual.
 
-**Impacto no Negócio:** Potencial para modelos preditivos de produtividade permanece inexplorado. Decisões de rotação de cultura e alocação de insumos poderiam ser otimizadas com análise histórica. Vantagem competitiva não utilizada.
+**Valor para o Negócio:** O investimento em telemetria avançada (R$ 20M+ em maquinário) poderá gerar análises históricas que hoje exigiriam consolidação manual extensiva.
 
-**Severidade:** Oportunidade (não é problema, mas potencial não realizado)
+**Prioridade:** Alta
 
 ---
 
-### Avaliação da Arquitetura de Dados
+### Oportunidade 4: Digitalização da Recepção de Grãos
 
-**Estado Atual: Silos Desconectados**
+**Contexto:** A entrada de grãos no secador é controlada de forma consistente por Josmar através de anotações em caderno — um processo que funciona de forma confiável.
 
-![Fragmented Data Landscape](./assets/fragmented_data_landscape.png)
+**Processo Atual:** Josmar registra: placa do caminhão, peso, umidade, origem (talhão). Este registro manual segue uma metodologia própria e organizada que ele desenvolveu ao longo do tempo.
 
-**Estado Proposto: Data Warehouse Medallion**
+**Valor do Processo Existente:** O método de Josmar funciona. Qualquer solução digital deve preservar a lógica e a ordem de campos que ele já utiliza, facilitando a adoção.
 
-![Unified Data Ecosystem](./assets/unified_data_ecosystem.png)
+**Valor para o Negócio:** A digitalização adicionaria consulta em tempo real do que entrou no secador, histórico facilmente acessível, e reconciliação automática com notas fiscais — sem mudar a forma como Josmar trabalha.
+
+**Prioridade:** Média
+
+---
+
+### Oportunidade 5: Valorização dos 28 Anos de Dados Históricos
+
+**Contexto:** A fazenda possui registros de produtividade, rotação de culturas e resultados por gleba desde 1996 — um ativo raro no setor.
+
+**Diferencial:** Como Claudio observou: "Isso não é todo produtor que tem." Exemplo: Gleba Lagoa (24ha) tem registros de produção desde 2016, permitindo análise de tendência.
+
+**Situação Atual:** Os dados estão preservados em formatos diversos (pastas, planilhas) acumulados ao longo de 28 anos de operação cuidadosa.
+
+**Valor para o Negócio:** Estruturar esses dados em um Data Lake abriria possibilidades de modelos preditivos de produtividade, otimização de rotação de cultura e alocação de insumos. Este histórico representa uma vantagem competitiva significativa.
+
+**Prioridade:** Oportunidade estratégica
+
+---
+
+### Visão da Arquitetura de Dados
+
+**Estado Atual: Múltiplas Fontes Especializadas**
+
+![Landscape de Dados Atual](./assets/fragmented_data_landscape.png)
+
+**Estado Proposto: Integração via Data Warehouse**
+
+![Ecossistema de Dados Unificado](./assets/unified_data_ecosystem.png)
 
 ### Mapa de Oportunidades
 
-| Oportunidade | Estado Atual | Estado Alvo | Impacto Estimado |
-|--------------|--------------|-------------|------------------|
-| Dashboard Custo/ha | Cálculo manual (meio dia) | Atualização automática diária | 20+ horas/mês recuperadas |
-| Automação Vestro | 4 etapas manuais, 2 digitações | Ingestão automática com correção | 15+ horas/mês recuperadas |
-| Normalização John Deere | Dados inutilizáveis | Análise histórica possível | Decisões de alocação otimizadas |
-| Digitalização Secador | Caderno de papel | App simples ou OCR | Eliminação de risco de perda |
-| Análise Histórica 28 anos | Dados em pastas antigas | Data Lake estruturado | Modelos preditivos de produtividade |
+| Oportunidade | Processo Atual | Evolução Proposta | Valor Agregado |
+|--------------|----------------|-------------------|----------------|
+| Dashboard Custo/ha | Cálculo manual consolidado | Atualização automática diária | 20+ horas/mês liberadas |
+| Automação Vestro | Validação manual por Tiago | Validação automática com mesmas regras | 15+ horas/mês liberadas |
+| Normalização John Deere | Nomenclatura variada | Tabela DE-PARA automática | Análise histórica por talhão |
+| Digitalização Secador | Caderno organizado por Josmar | App que preserve o mesmo fluxo | Consulta em tempo real + histórico |
+| Análise Histórica 28 anos | Dados preservados em arquivos | Data Lake estruturado | Modelos preditivos de produtividade |
+| Automação Notas (Valentina) | Input manual repetitivo | Leitura automática de XML/OCR | Redução de erro e ganho de tempo |
+| Balança e Cadernetas (Vanessa) | Consolidação de cadernos físicos | Digitalização direta ou app | Dado disponível em tempo real |
+
+### Inventário de Entradas de Dados (Data Input Inventory)
+
+Para garantir a integridade do Data Warehouse, mapeamos todas as fontes que alimentarão o sistema:
+
+**Entradas Automáticas (Integrações)**
+1.  **John Deere Operations:** Telemetria, mapas de colheita/plantio (API).
+2.  **Castrolanda:** Compras de insumos, vendas de grãos (API/Portal).
+3.  **Vestro:** Abastecimentos de combustível, horímetros (API/Scraper).
+
+**Entradas Manuais (Atuais -> Futuras)**
+1.  **Notas Fiscais de Entrada:**
+    *   *Hoje:* Digitação manual (**Valentina**).
+    *   *Futuro:* Leitura de XML/OCR automática em pasta monitorada.
+2.  **Balança (Recepção de Grãos):**
+    *   *Hoje:* Caderno físico (Vanessa/Josmar).
+    *   *Futuro:* App tablet na balança ou digitação web simplificada.
+3.  **Cadernetas de Maquinário (Apontamentos):**
+    *   *Hoje:* Papel -> Planilha (**Vanessa**).
+    *   *Futuro:* App mobile "Operador POV" (simplificado).
+4.  **Planilha Mestre de Frota (Tiago):**
+    *   *Hoje:* Excel com regras de negócio.
+    *   *Futuro:* Regras migradas para o banco, input apenas de exceções.
+5.  **Financeiro Macro (Valentina):**
+    *   *Hoje:* Excel/SharePoint.
+    *   *Futuro:* Conexão direta ou input estruturado no sistema.
+
+*Nota: Campos específicos de cada entrada manual serão validados na Fase 1.*
 
 ---
 
@@ -257,7 +301,7 @@ A transformação será conduzida através da metodologia de 4 Dimensões, que g
 
 **1. Dimensão Humana**
 
-Mapear os processos reais (não os oficiais) e desenhar interfaces que respeitem o fluxo mental dos usuários. O app de entrada de dados deve seguir a ordem que Josmar já usa no caderno. A automação deve eliminar trabalho, não criar novos passos.
+Respeitar os processos que a equipe já desenvolveu e desenhar interfaces que sigam o fluxo mental dos usuários. O app de entrada de dados deve seguir a ordem que Josmar já usa no caderno. A automação deve liberar tempo, não criar novos passos.
 
 **2. Dimensão Física**
 
@@ -265,7 +309,7 @@ Considerar as condições de campo: conectividade variável (Starlink em áreas 
 
 **3. Dimensão de Engenharia de Dados**
 
-Construir pipeline ETL robusto que assume que dados virão sujos e que a internet pode cair. Estratégia offline-first para coleta em campo. Validações automáticas na camada Silver.
+Construir pipeline ETL robusto preparado para a realidade do campo: variações de conectividade e dados que precisam de validação. Estratégia offline-first para coleta em campo. Validações automáticas na camada Silver aplicando as mesmas regras que a equipe já utiliza.
 
 **4. Dimensão de Lógica de Negócio**
 
@@ -287,9 +331,9 @@ Entregáveis:
 - Comparativo com preço de mercado e margem projetada
 
 Critérios de Sucesso:
-- Claudio consegue ver custo atualizado em menos de 5 minutos (vs meio dia)
-- Tiago não precisa mais corrigir planilha Vestro manualmente
-- Valentina não precisa redigitar dados de combustível no AgriWin
+- Claudio acessa custo atualizado em menos de 5 minutos
+- Tiago tem tempo liberado da correção manual de planilha Vestro
+- Valentina tem tempo liberado da digitação de dados de combustível
 
 **Fase 2: Expansão**
 
@@ -343,7 +387,10 @@ Tecnologias selecionadas:
 | ETL - SharePoint (Excel) | Conexão direta, monitoramento de alterações | 4 - 8h |
 | ETL - John Deere | API de telemetria, normalização de talhões | 6 - 10h |
 | Dashboard Operacional | Custo/ha por cultura, comparativo mercado, até 10 métricas | 6 - 8h |
+| Dashboard Operacional | Custo/ha por cultura, comparativo mercado, até 10 métricas | 6 - 8h |
 | Dashboard Gestão | Consolidação executiva, KPIs estratégicos, drill-down | 8 - 12h |
+| Mapeamento Notas (Valentina) | Detalhar fluxo de XML e processo de aprovação | 3 - 5h |
+| Mapeamento Campo (Vanessa) | Detalhar fluxo Balança e Cadernos | 3 - 5h |
 
 ### Estimativa do Projeto SOAL - Fase 1 (MVP)
 
@@ -380,15 +427,17 @@ Tecnologias selecionadas:
 
 ### Benefícios Quantificados
 
-| Benefício | Situação Atual | Pós-Implementação | Economia Mensal |
-|-----------|----------------|-------------------|-----------------|
-| Cálculo de Custo/ha | Meio dia por cálculo (~4h) | 5 minutos | ~16h/mês (4 cálculos) |
-| Correção Planilha Vestro | 6-8h por exportação | Automático | ~12h/mês |
-| Digitação AgriWin (Valentina) | 4-6h por lote | Eliminada | ~8h/mês |
-| Reconciliação de dados | Processo fragmentado | Visão unificada | ~8h/mês |
-| **Total Horas Recuperadas** | | | **~44h/mês** |
+| Benefício | Processo Atual | Com Automação | Tempo Liberado |
+|-----------|----------------|---------------|----------------|
+| Cálculo de Custo/ha | Consolidação manual (~4h) | 5 minutos | ~16h/mês (4 cálculos) |
+| Validação Vestro | Revisão manual por Tiago | Automático com mesmas regras | ~12h/mês |
+| Consolidação AgriWin | Digitação por Valentina | Integração direta | ~8h/mês |
+| Reconciliação de dados | Consulta em múltiplos sistemas | Visão unificada | ~8h/mês |
+| Input Notas Fiscais (Valentina) | Digitação manual e conferência | Leitura automática | *A confirmar (Alto impacto)* |
+| Input Cadernetas (Vanessa) | Transcrição papel -> sistema | Digitalização na fonte | *A confirmar* |
+| **Total Horas Liberadas** | | | **~44h + Valentina + Vanessa** |
 
-**Valor das Horas Recuperadas:** 44h x R$ 50/hora (custo interno estimado) = **R$ 2.200/mês**
+**Valor das Horas Liberadas:** 44h x R$ 50/hora (custo interno estimado) = **R$ 2.200/mês**
 
 ### Análise de ROI
 
@@ -405,9 +454,9 @@ Tecnologias selecionadas:
 
 Hoje Claudio precisa "ter tempo" para calcular custo. Com o dashboard, a informação está disponível instantaneamente, permitindo decisões mais frequentes e melhor fundamentadas.
 
-**Redução de Erro**
+**Consistência Ampliada**
 
-A correção automática de horímetro e a eliminação de dupla digitação reduzem erros que hoje distorcem a análise de custos.
+A validação automática de horímetro (usando as regras que Tiago já aplica) e a integração direta entre sistemas ampliam a consistência dos dados ao longo de todo o fluxo.
 
 **Escalabilidade**
 
@@ -423,15 +472,15 @@ Poucos produtores da região têm capacidade de análise em tempo real. A SOAL p
 
 ---
 
-## Riscos e Mitigações
+## Considerações e Planos de Contingência
 
-| Risco | Probabilidade | Impacto | Estratégia de Mitigação |
+| Consideração | Probabilidade | Impacto | Estratégia |
 |-------|---------------|---------|-------------------------|
-| API Castrolanda indisponível ou fechada | Média | Alto | Plano B: scraping do portal. Plano C: upload manual de relatório. |
-| Resistência de usuários a novo sistema | Média | Médio | Interface que espelha fluxo mental atual. Treinamento hands-on. Quick wins visíveis. |
-| Erros de horímetro não detectados pela regra | Baixa | Médio | Regra de validação com threshold. Alertas para valores fora do padrão. Revisão humana opcional. |
-| Conectividade instável em campo | Alta | Baixo | Arquitetura offline-first. Sincronização quando conexão disponível. |
-| Dados históricos em formato incompatível | Média | Médio | Fase de migração dedicada. Validação com Claudio de dados críticos. |
+| Acesso à API Castrolanda | Média | Alto | Alternativa A: integração via portal. Alternativa B: upload de relatório exportado. |
+| Curva de adaptação a novo sistema | Média | Médio | Interface que preserva fluxo mental atual. Treinamento hands-on. Resultados visíveis rapidamente. |
+| Casos de horímetro fora do padrão da regra | Baixa | Médio | Regra de validação com threshold baseada no conhecimento do Tiago. Alertas para revisão quando necessário. |
+| Variação de conectividade em campo | Alta | Baixo | Arquitetura offline-first. Sincronização automática quando conexão disponível. |
+| Dados históricos em formatos diversos | Média | Médio | Fase de migração dedicada. Validação com Claudio dos dados prioritários. |
 
 ---
 
@@ -491,7 +540,7 @@ Poucos produtores da região têm capacidade de análise em tempo real. A SOAL p
 | Custeio | Financiamento de curto prazo para insumos da safra |
 | Romaneio | Documento de pesagem e classificação de grãos |
 | UBG | Unidade de Beneficiamento de Grãos (secador e armazenagem) |
-| Shadow IT | Sistemas informais (planilhas, cadernos) usados paralelamente aos oficiais |
+| Controles Complementares | Sistemas desenvolvidos pela equipe (planilhas, cadernos) que complementam os sistemas oficiais |
 | Medallion | Arquitetura de Data Warehouse em camadas (Bronze/Silver/Gold) |
 
 ---
