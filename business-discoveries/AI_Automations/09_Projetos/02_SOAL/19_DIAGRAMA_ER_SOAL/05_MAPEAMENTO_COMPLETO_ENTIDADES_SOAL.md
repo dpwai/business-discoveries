@@ -363,6 +363,53 @@ TALHAO_SAFRA
 
 **Descricao:** Tabela N:N que registra o que foi plantado em cada talhao por safra.
 
+### 3.7 Colheita
+
+```
+COLHEITA
+├── colheita_id (PK, UUID)
+├── plantio_id (FK -> PLANTIO)
+├── talhao_id (FK -> TALHOES)
+├── safra_cultura_id (FK -> SAFRA_CULTURA)
+├── maquina_id (FK -> MAQUINAS)
+├── operador_id (FK -> USERS)
+├── data_inicio (TIMESTAMP)
+├── data_fim (TIMESTAMP)
+├── area_colhida_ha (DECIMAL 10,2)
+├── producao_total_kg (DECIMAL 12,2)
+├── produtividade_kg_ha (DECIMAL 10,2)
+├── produtividade_sacas_ha (DECIMAL 10,2)
+├── umidade_media_percent (DECIMAL 5,2)
+├── perdas_estimadas_percent (DECIMAL 5,2)
+├── velocidade_media_kmh (DECIMAL 6,2)
+├── horimetro_inicio (DECIMAL 12,2)
+├── horimetro_fim (DECIMAL 12,2)
+├── condicoes_climaticas (JSONB)
+├── observacoes (TEXT)
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+```
+
+**Descricao:** Registra cada operacao de colheita, conectando PLANTIO com ENTRADA_GRAO.
+
+**Relacionamentos:**
+- PLANTIO (1) → COLHEITA (0..n): Um plantio pode ter multiplas colheitas (parciais ou por maquina)
+- COLHEITA (1) → ENTRADA_GRAO (1..n): Uma colheita gera uma ou mais entradas de grao no silo
+
+**Metricas Calculadas:**
+```
+produtividade_kg_ha = producao_total_kg / area_colhida_ha
+produtividade_sacas_ha = produtividade_kg_ha / 60  (soja/milho = 60kg/saca)
+```
+
+**Fluxo Operacional:**
+```
+PLANTIO → COLHEITA → ENTRADA_GRAO → ESTOQUE_SILO
+   ↓          ↓           ↓              ↓
+ O que    Quanto      Pesagem       Saldo
+plantou   colheu     na balanca    atualizado
+```
+
 ---
 
 ## 4. Camada Operacoes de Graos
@@ -375,6 +422,7 @@ TALHAO_SAFRA
 ```
 ENTRADAS_GRAOS
 ├── entrada_id (PK, UUID)
+├── colheita_id (FK -> COLHEITA) -- CONECTA COM COLHEITA
 ├── data_hora (TIMESTAMP)
 ├── operador_id (FK -> USERS)
 ├── placa_caminhao (VARCHAR)
