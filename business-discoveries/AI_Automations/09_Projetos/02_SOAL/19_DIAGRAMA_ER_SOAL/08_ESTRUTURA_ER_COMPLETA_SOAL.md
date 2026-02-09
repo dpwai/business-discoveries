@@ -1,7 +1,7 @@
 # ESTRUTURA ER COMPLETA - SOAL
 
-**Data:** 06/02/2026
-**Versão:** 1.0
+**Data:** 06/02/2026 (atualizado 09/02/2026)
+**Versao:** 1.1 - Modulo Insumos e Estoque incorporado (doc 15)
 **Board Miro:** https://miro.com/app/board/uXjVGE__XFQ=
 
 ---
@@ -160,24 +160,47 @@ SAIDA_GRAO
 | MOVIMENTACAO_SILO | tipo (entrada/saida/transferencia/quebra), quantidade_kg |
 | SAIDA_GRAO | quantidade_kg, destino, nota_fiscal_id |
 
-### Insumos (x=-6000, y=2000)
+### Modulo Insumos e Estoque (x=-5000, y=2000-4500) [doc 15]
 
 ```
-INSUMO (semente, fertilizante, defensivo, adjuvante)
+PRODUTO_INSUMO (catalogo: semente, fertilizante, defensivo, adjuvante, etc.)
    │
-   ├──► APLICACAO_INSUMO
+   ├──► COMPRA_INSUMO (registro compra: Castrolanda, revenda, barter, etc.)
+   │       │
+   │       └──► MOVIMENTACAO_INSUMO (tipo: entrada_compra)
+   │                   │
+   │                   ▼
+   ├──► ESTOQUE_INSUMO (saldo por produto + local, custo medio ponderado)
+   │       │
+   │       └──► MOVIMENTACAO_INSUMO (tipo: saida_aplicacao)
+   │                   │
+   │                   ▼
+   ├──► APLICACAO_INSUMO (uso no campo/pecuaria/manutencao)
+   │       │
+   │       └──► CUSTO_OPERACAO (tipo: insumo)
    │
-   └──► RECEITUARIO_AGRONOMICO (P0 - Compliance MAPA)
-           │
-           └──► numero_art, responsavel_tecnico, crea
+   └──► RECEITUARIO_AGRONOMICO (Compliance MAPA)
 ```
 
 **Entidades:**
-| Entidade | Campos Chave |
-|----------|--------------|
-| INSUMO | nome, tipo (semente/fertilizante/defensivo/adjuvante), unidade, estoque_atual |
-| APLICACAO_INSUMO | insumo_id, talhao_id, data_aplicacao, dose_ha, area_aplicada |
-| RECEITUARIO_AGRONOMICO | numero_receita, numero_art, responsavel_tecnico, crea, data_validade, praga_alvo |
+| Entidade | Campos Chave | Status |
+|----------|--------------|--------|
+| PRODUTO_INSUMO | codigo, nome, principio_ativo, tipo (21 ENUMs), grupo (agricola/pecuario/geral), unidade_medida, fabricante, registro_mapa, classe_toxicologica, carencia_dias, dose_recomendada_min/max | NOVA (substitui INSUMO) |
+| COMPRA_INSUMO | produto_insumo_id, nota_fiscal_item_id, parceiro_id, safra_id, fonte (ENUM), data_compra, quantidade, valor_unitario, valor_total, lote_fabricante, data_validade, castrolanda_sync_id, contrato_barter_id, status | NOVA (substitui INSUMOS_CASTROLANDA) |
+| ESTOQUE_INSUMO | produto_insumo_id, fazenda_id, local_armazenamento, quantidade_atual, custo_medio_unitario, valor_total_estoque, quantidade_minima, validade_mais_proxima, status | NOVA |
+| MOVIMENTACAO_INSUMO | estoque_insumo_id, tipo (12 ENUMs), quantidade, custo_unitario, saldo_anterior/posterior, custo_medio_anterior/posterior, compra_insumo_id, aplicacao_insumo_id | NOVA |
+| APLICACAO_INSUMO | produto_insumo_id, estoque_insumo_id, operacao_campo_id, talhao_safra_id, manejo_sanitario_id, manutencao_id, receituario_id, dose_por_ha, area_aplicada_ha, quantidade_total, custo_unitario, custo_total, metodo_aplicacao (ENUM), contexto (ENUM) | REFATORADA |
+| RECEITUARIO_AGRONOMICO | produto_insumo_id, numero_receita, numero_art, responsavel_tecnico, crea, cultura_id, dose_prescrita, intervalo_seguranca_dias, arquivo_url | AJUSTADA (FK renomeada) |
+
+**Ciclo de Vida do Insumo:** Compra → Estoque → Aplicacao → Custo
+**Custeio:** Custo Medio Ponderado
+
+**Regra:** 1 OPERACAO_CAMPO pode ter N APLICACAO_INSUMO
+- Ex: Plantio = semente + inoculante + adubo base + tratamento semente
+- Ex: Pulverizacao = fungicida + adjuvante
+
+**Nota:** PULVERIZACAO_DETALHE = dados TECNICOS (pressao, vazao, clima)
+         APLICACAO_INSUMO = dados de PRODUTO (qual, quanto, custo) — Complementam, nao duplicam.
 
 ### Solo (x=-6000, y=5000)
 
@@ -412,7 +435,7 @@ DIETA
 | Entidade | Campos Chave |
 |----------|--------------|
 | DIETA | nome, categoria_destino, objetivo, ms_kg_animal_dia, custo_kg_ms, gmd_esperado |
-| DIETA_INGREDIENTE | dieta_id, insumo_id, percentual_ms, kg_por_animal_dia |
+| DIETA_INGREDIENTE | dieta_id, produto_insumo_id *(renomeado de insumo_id)*, percentual_ms, kg_por_animal_dia |
 | TRATO_ALIMENTAR | lote_id, dieta_id, data_trato, quantidade_total_kg, consumo_por_animal |
 | COCHO | codigo, tipo (volumoso/concentrado/sal/agua), capacidade_kg |
 
@@ -507,28 +530,35 @@ SESSION_LOG
 |--------|-----------|-----|--------------|
 | Sistema | 11 | Azul (#c6dcff) | -6000 |
 | Territorial | 8 | Verde Limao (#dbfaad) | -2000 |
-| Agricola | 14 | Amarelo (#fff6b6) | 2000-5000 |
+| Agricola | 16 | Amarelo (#fff6b6) | 2000-5000 |
 | Operacional | 7 | Ciano (#ccf4ff) | 2000-5000 |
 | Financeiro | 11 | Laranja (#f8d3af) | 8000 |
 | Pecuaria | 26 | Verde (#adf0c7) | 12000 |
 | Infraestrutura | 11 | Cinza/Vermelho (#e7e7e7/#ffc6c6) | 16000 |
-| **TOTAL** | **~88** | - | - |
+| **TOTAL** | **~90** | - | - |
+
+> **Nota v1.1 (09/02/2026):** Camada Agricola atualizada de 14→16 entidades.
+> INSUMO substituido por PRODUTO_INSUMO. INSUMOS_CASTROLANDA substituido por COMPRA_INSUMO.
+> Novas: ESTOQUE_INSUMO, MOVIMENTACAO_INSUMO. Refatorada: APLICACAO_INSUMO. Detalhes em doc 15.
 
 ---
 
 ## FLUXOS PRINCIPAIS
 
-### Fluxo de Graos
+### Fluxo de Graos (atualizado v1.1)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  PLANTIO → COLHEITA → ENTRADA_GRAO → ESTOQUE_SILO → SAIDA_GRAO  │
-│     ↓           ↓           ↓              ↓            ↓        │
-│  INSUMO    TICKET     CLASSIFICACAO   MOVIMENTACAO   CONTRATO   │
-│     ↓      BALANCA                                   COMERCIAL  │
-│ RECEITUARIO                                              ↓      │
-│ AGRONOMICO                                          NOTA_FISCAL │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│  PLANTIO → COLHEITA → ENTRADA_GRAO → ESTOQUE_SILO → SAIDA_GRAO          │
+│     ↓           ↓           ↓              ↓            ↓                │
+│ APLICACAO   TICKET     CLASSIFICACAO   MOVIMENTACAO   CONTRATO           │
+│ _INSUMO     BALANCA                    _SILO          COMERCIAL          │
+│     ↓                                                     ↓              │
+│ PRODUTO_INSUMO ← COMPRA_INSUMO ← NOTA_FISCAL_ITEM → NOTA_FISCAL        │
+│     ↓                   ↓                                                │
+│ RECEITUARIO      ESTOQUE_INSUMO ← MOVIMENTACAO_INSUMO                   │
+│ AGRONOMICO       (custo medio ponderado)                                 │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Fluxo de Pecuaria
@@ -544,16 +574,21 @@ SESSION_LOG
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Fluxo Financeiro
+### Fluxo Financeiro (atualizado v1.1)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  NOTA_FISCAL → CONTA_PAGAR/RECEBER → CENTRO_CUSTO → CUSTO_OP    │
-│       ↓                ↓                   ↓             ↓       │
-│    ITENS          PAGAMENTO           ORCAMENTO      RATEIO     │
-│       ↓                ↓                                ↓        │
-│   INSUMO          PARCEIRO            TALHAO/SAFRA    $/HA      │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│  NOTA_FISCAL → CONTA_PAGAR/RECEBER → CENTRO_CUSTO → CUSTO_OPERACAO      │
+│       ↓                ↓                   ↓             ↓               │
+│ NF_ITEM           PAGAMENTO           ORCAMENTO      RATEIO             │
+│       ↓                ↓                                ↓                │
+│ COMPRA_INSUMO     PARCEIRO_           TALHAO_SAFRA    $/HA              │
+│       ↓           COMERCIAL                                              │
+│ PRODUTO_INSUMO                                                           │
+│       ↓                                                                  │
+│ ESTOQUE_INSUMO → MOVIMENTACAO → APLICACAO_INSUMO → CUSTO_OPERACAO       │
+│ (custo medio)     _INSUMO        (tipo: insumo)                          │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -594,3 +629,4 @@ SESSION_LOG
 ---
 
 *Documento gerado em 06/02/2026 - DeepWork AI Flows*
+*Atualizado em 09/02/2026 - Modulo Insumos e Estoque (doc 15) incorporado, contagem atualizada para ~90 entidades*
