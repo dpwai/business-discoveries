@@ -61,7 +61,7 @@ This agent generates professional diagnostic documents for business cases. It pr
 ### 1. Cover Page
 
 ```
-[DeepWork AI Flows Logo]
+[DeepWork AI Flows Logo] 
 
 DIAGNOSTIC REPORT
 [Client Name]
