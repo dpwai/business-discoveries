@@ -1,0 +1,6583 @@
+[
+  {
+    "id": "3458764658632925590",
+    "type": "diagram",
+    "data": {
+      "title": "Diagram"
+    },
+    "geometry": {
+      "width": 57417.794277228604,
+      "height": 45142.167309257915
+    },
+    "position": {
+      "x": -10764.732546147494,
+      "y": 4477.9580548870545,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/diagrams/3458764658632925590"
+    },
+    "createdAt": "2026-02-06T14:09:18Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:12Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658633530690",
+    "type": "diagram",
+    "data": {
+      "title": "Diagram"
+    },
+    "geometry": {
+      "width": 1422.3778776961594,
+      "height": 2686.549090344799
+    },
+    "position": {
+      "x": -4394.348541294925,
+      "y": 14462.10808415215,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/diagrams/3458764658633530690"
+    },
+    "createdAt": "2026-02-06T14:12:08Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:29:22Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289688",
+    "type": "shape",
+    "geometry": {
+      "width": 752.0,
+      "height": 1202.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 796.2414110023369,
+      "y": 2824.565913732194,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289688"
+    },
+    "createdAt": "2026-02-06T14:50:22Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289689",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 626.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 638.9487099421935,
+      "y": 4059.999898249456,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289689"
+    },
+    "createdAt": "2026-02-06T14:50:22Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289732",
+    "type": "shape",
+    "geometry": {
+      "width": 568.0,
+      "height": 258.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 2077.7095164749776,
+      "y": 1468.7941637729764,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289732"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289733",
+    "type": "shape",
+    "geometry": {
+      "width": 568.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 1434.2573537296873,
+      "y": 487.5003694878435,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289733"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289734",
+    "type": "shape",
+    "geometry": {
+      "width": 660.0,
+      "height": 322.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 443.29266098143376,
+      "y": 487.5003694878435,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289734"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289735",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 258.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 1502.4546279705962,
+      "y": 1336.4787353642625,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289735"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289736",
+    "type": "shape",
+    "geometry": {
+      "width": 640.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 1165.7278959525272,
+      "y": 1878.2741994694027,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289736"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289737",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 338.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 899.7955381494583,
+      "y": 2599.8785528107637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289737"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289738",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 260.0000000000007,
+      "y": 2575.8785528107637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289738"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289739",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 226.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 1558.3827487764017,
+      "y": 2674.419029833278,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289739"
+    },
+    "createdAt": "2026-02-06T14:50:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289768",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 322.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 1187.1661880429015,
+      "y": 3242.5990085650046,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289768"
+    },
+    "createdAt": "2026-02-06T14:50:29Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289769",
+    "type": "shape",
+    "geometry": {
+      "width": 508.0,
+      "height": 226.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2008.2857918636207,
+      "y": 3405.472147845776,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289769"
+    },
+    "createdAt": "2026-02-06T14:50:29Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289787",
+    "type": "shape",
+    "geometry": {
+      "width": 920.0,
+      "height": 626.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 946.2802389382987,
+      "y": 648.907377702858,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289787"
+    },
+    "createdAt": "2026-02-06T14:50:30Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289788",
+    "type": "shape",
+    "geometry": {
+      "width": 652.0,
+      "height": 482.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 2063.045358664217,
+      "y": 1543.2013613740392,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289788"
+    },
+    "createdAt": "2026-02-06T14:50:30Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289789",
+    "type": "shape",
+    "geometry": {
+      "width": 804.0,
+      "height": 562.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 557.3401482145409,
+      "y": 1567.877690735394,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289789"
+    },
+    "createdAt": "2026-02-06T14:50:30Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289790",
+    "type": "shape",
+    "geometry": {
+      "width": 808.0,
+      "height": 690.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 3203.079373411055,
+      "y": 715.5982447117467,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289790"
+    },
+    "createdAt": "2026-02-06T14:50:30Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289821",
+    "type": "shape",
+    "geometry": {
+      "width": 872.0,
+      "height": 658.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862812934"
+      },
+      "id": "3458764658862812934"
+    },
+    "position": {
+      "x": 833.8083279044115,
+      "y": 825.3420418718681,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289821"
+    },
+    "createdAt": "2026-02-06T14:50:31Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:29:22Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641289822",
+    "type": "shape",
+    "geometry": {
+      "width": 724.0,
+      "height": 690.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862812934"
+      },
+      "id": "3458764658862812934"
+    },
+    "position": {
+      "x": 833.8083279044115,
+      "y": 1789.342041871868,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641289822"
+    },
+    "createdAt": "2026-02-06T14:50:31Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:29:22Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757304",
+    "type": "shape",
+    "geometry": {
+      "width": 820.0,
+      "height": 626.0
+    },
+    "position": {
+      "x": 8072.065197813532,
+      "y": 3176.3781438053484,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757304"
+    },
+    "createdAt": "2026-02-06T14:52:35Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757305",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 674.0
+    },
+    "position": {
+      "x": 9691.674166335284,
+      "y": 3539.068642261009,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757305"
+    },
+    "createdAt": "2026-02-06T14:52:35Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757306",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 770.0
+    },
+    "position": {
+      "x": 10612.712808630571,
+      "y": 2875.9932302692323,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757306"
+    },
+    "createdAt": "2026-02-06T14:52:35Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757878",
+    "type": "shape",
+    "geometry": {
+      "width": 828.0,
+      "height": 834.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 1423.3204611394813,
+      "y": 1181.8895322167227,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757878"
+    },
+    "createdAt": "2026-02-06T14:53:29Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757879",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 546.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 1047.3204611394813,
+      "y": 2185.8895322167227,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757879"
+    },
+    "createdAt": "2026-02-06T14:53:29Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658641757880",
+    "type": "shape",
+    "geometry": {
+      "width": 764.0,
+      "height": 594.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 1799.3204611394813,
+      "y": 2185.8895322167227,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658641757880"
+    },
+    "createdAt": "2026-02-06T14:53:29Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658642333122",
+    "type": "text",
+    "data": {
+      "content": "<p>CONTRATOS</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 611.4285714285714
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 1111.606175425195,
+      "y": 2590.2065110496405,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658642333122"
+    },
+    "createdAt": "2026-02-06T14:55:04Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658642333562",
+    "type": "text",
+    "data": {
+      "content": "<p>CUSTOM FORMS</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 628.5714285714286
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 1253.6975294948647,
+      "y": 2886.971588934397,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658642333562"
+    },
+    "createdAt": "2026-02-06T14:55:35Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658642575074",
+    "type": "text",
+    "data": {
+      "content": "<p>MECANIZAÇÃO</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 571.4285714285714
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 3839.2494761349035,
+      "y": 273.3281002291669,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658642575074"
+    },
+    "createdAt": "2026-02-06T14:56:21Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658642794669",
+    "type": "text",
+    "data": {
+      "content": "<p>TRABALHADOR RURAL</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 851.4285714285714
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862812934"
+      },
+      "id": "3458764658862812934"
+    },
+    "position": {
+      "x": 833.8083279044115,
+      "y": 2266.894249195587,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658642794669"
+    },
+    "createdAt": "2026-02-06T14:58:19Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:29:22Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670191076",
+    "type": "shape",
+    "geometry": {
+      "width": 832.0,
+      "height": 754.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 2716.0716962897222,
+      "y": 1201.5437971847423,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670191076"
+    },
+    "createdAt": "2026-02-06T17:30:16Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670191077",
+    "type": "shape",
+    "geometry": {
+      "width": 964.0,
+      "height": 626.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 3264.5909428547293,
+      "y": 2145.8895322167227,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670191077"
+    },
+    "createdAt": "2026-02-06T17:30:16Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670362171",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 354.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 1648.0051290061263,
+      "y": 3148.5614826066176,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670362171"
+    },
+    "createdAt": "2026-02-06T17:31:26Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670362172",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 3764.8156663782415,
+      "y": 478.9132499632774,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670362172"
+    },
+    "createdAt": "2026-02-06T17:31:26Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670362174",
+    "type": "shape",
+    "geometry": {
+      "width": 512.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 2310.9476295433274,
+      "y": 401.0909860079714,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670362174"
+    },
+    "createdAt": "2026-02-06T17:31:26Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670362175",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 2306.9476295433274,
+      "y": 1487.7534136223162,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670362175"
+    },
+    "createdAt": "2026-02-06T17:31:26Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658670362176",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 4153.28303327677,
+      "y": 1079.3012925563758,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658670362176"
+    },
+    "createdAt": "2026-02-06T17:31:26Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658674903261",
+    "type": "diagram",
+    "data": {
+      "title": "Diagram"
+    },
+    "geometry": {
+      "width": 1714.4465918994624,
+      "height": 2137.280701634536
+    },
+    "position": {
+      "x": -13893.2995260303,
+      "y": 11586.82900553703,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/diagrams/3458764658674903261"
+    },
+    "createdAt": "2026-02-06T18:04:41Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T00:28:57Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658674903357",
+    "type": "diagram",
+    "data": {
+      "title": "Diagram"
+    },
+    "geometry": {
+      "width": 1128.0,
+      "height": 2163.0037654635835
+    },
+    "position": {
+      "x": -10221.60909287363,
+      "y": 11433.143419761764,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/diagrams/3458764658674903357"
+    },
+    "createdAt": "2026-02-06T18:04:48Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T00:27:46Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658674903442",
+    "type": "diagram",
+    "data": {
+      "title": "Diagram"
+    },
+    "geometry": {
+      "width": 1768.0,
+      "height": 1706.3786811250911
+    },
+    "position": {
+      "x": -10982.499824760489,
+      "y": 6213.263750998849,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/diagrams/3458764658674903442"
+    },
+    "createdAt": "2026-02-06T18:04:55Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:28:11Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091624",
+    "type": "shape",
+    "geometry": {
+      "width": 764.0,
+      "height": 930.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1951.0002133106618,
+      "y": 1376.8724697385524,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091624"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091625",
+    "type": "shape",
+    "geometry": {
+      "width": 724.0,
+      "height": 242.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 987.0002133106618,
+      "y": 2224.818354540964,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091625"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091626",
+    "type": "shape",
+    "geometry": {
+      "width": 768.0,
+      "height": 466.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1951.0002133106618,
+      "y": 2504.063869259703,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091626"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091627",
+    "type": "shape",
+    "geometry": {
+      "width": 796.0,
+      "height": 338.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 2973.2828840602606,
+      "y": 2288.818354540964,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091627"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091636",
+    "type": "shape",
+    "geometry": {
+      "width": 684.0,
+      "height": 546.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1338.0769193975293,
+      "y": 4825.709309607159,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091636"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091637",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1022.0769193975293,
+      "y": 5541.709309607159,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091637"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091638",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 354.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1654.0769193975293,
+      "y": 5541.709309607159,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091638"
+    },
+    "createdAt": "2026-02-06T18:06:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091645",
+    "type": "shape",
+    "geometry": {
+      "width": 724.0,
+      "height": 578.0
+    },
+    "position": {
+      "x": 483.9999999999998,
+      "y": 441.03146013187325,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091645"
+    },
+    "createdAt": "2026-02-06T18:06:55Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T20:59:17Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091646",
+    "type": "shape",
+    "geometry": {
+      "width": 576.0,
+      "height": 482.0
+    },
+    "position": {
+      "x": 409.9999999999998,
+      "y": 1592.3581647150709,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091646"
+    },
+    "createdAt": "2026-02-06T18:06:55Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T20:59:15Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091647",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 386.0
+    },
+    "position": {
+      "x": 1309.9246932466715,
+      "y": 619.3772961956201,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091647"
+    },
+    "createdAt": "2026-02-06T18:06:55Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T20:59:19Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091648",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 386.0
+    },
+    "position": {
+      "x": 1137.9999999999998,
+      "y": 1592.3581647150709,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091648"
+    },
+    "createdAt": "2026-02-06T18:06:55Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T20:59:15Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091655",
+    "type": "shape",
+    "geometry": {
+      "width": 1072.0,
+      "height": 658.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 7117.581877143101,
+      "y": 1677.3279105517258,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091655"
+    },
+    "createdAt": "2026-02-06T18:06:56Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091656",
+    "type": "shape",
+    "geometry": {
+      "width": 884.0,
+      "height": 562.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 7023.581877143109,
+      "y": 3018.86902926894,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091656"
+    },
+    "createdAt": "2026-02-06T18:06:56Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091657",
+    "type": "shape",
+    "geometry": {
+      "width": 776.0,
+      "height": 370.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6969.581877143109,
+      "y": 2392.749767715007,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091657"
+    },
+    "createdAt": "2026-02-06T18:06:56Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091675",
+    "type": "shape",
+    "geometry": {
+      "width": 1032.0,
+      "height": 434.0
+    },
+    "position": {
+      "x": 564.0,
+      "y": 370.685585775268,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091675"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T20:31:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091676",
+    "type": "shape",
+    "geometry": {
+      "width": 776.0,
+      "height": 434.0
+    },
+    "position": {
+      "x": 564.0000000000001,
+      "y": 970.0,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091676"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T19:25:54Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091677",
+    "type": "shape",
+    "geometry": {
+      "width": 740.0,
+      "height": 402.0
+    },
+    "position": {
+      "x": 564.0000000000001,
+      "y": 1602.0,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091677"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-06T19:25:54Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091684",
+    "type": "shape",
+    "geometry": {
+      "width": 808.0,
+      "height": 466.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 3560.8700202625923,
+      "y": 3598.9955534286755,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091684"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091685",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 3204.8700202625923,
+      "y": 4294.9955534286755,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091685"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091686",
+    "type": "shape",
+    "geometry": {
+      "width": 640.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 3440.8700202625923,
+      "y": 4950.9955534286755,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091686"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091687",
+    "type": "shape",
+    "geometry": {
+      "width": 696.0,
+      "height": 418.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 3016.8700202625923,
+      "y": 5586.9955534286755,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091687"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091688",
+    "type": "shape",
+    "geometry": {
+      "width": 796.0,
+      "height": 402.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 3870.439417534407,
+      "y": 5578.9955534286755,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091688"
+    },
+    "createdAt": "2026-02-06T18:06:57Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091718",
+    "type": "shape",
+    "geometry": {
+      "width": 848.0,
+      "height": 466.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 4593.302914465131,
+      "y": 1157.8093177326637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091718"
+    },
+    "createdAt": "2026-02-06T18:06:59Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091719",
+    "type": "shape",
+    "geometry": {
+      "width": 516.0,
+      "height": 290.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 4509.302914465131,
+      "y": 1853.8093177326637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091719"
+    },
+    "createdAt": "2026-02-06T18:06:59Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091720",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 5141.302914465131,
+      "y": 1853.8093177326637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091720"
+    },
+    "createdAt": "2026-02-06T18:06:59Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091721",
+    "type": "shape",
+    "geometry": {
+      "width": 704.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 5141.302914465131,
+      "y": 2509.8093177326637,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091721"
+    },
+    "createdAt": "2026-02-06T18:06:59Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091730",
+    "type": "shape",
+    "geometry": {
+      "width": 784.0,
+      "height": 802.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6023.581877143101,
+      "y": 4610.719529066221,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091730"
+    },
+    "createdAt": "2026-02-06T18:07:00Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091731",
+    "type": "shape",
+    "geometry": {
+      "width": 572.0,
+      "height": 354.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 5345.581877143101,
+      "y": 5536.89727610046,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091731"
+    },
+    "createdAt": "2026-02-06T18:07:00Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091732",
+    "type": "shape",
+    "geometry": {
+      "width": 732.0,
+      "height": 562.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6105.581877143101,
+      "y": 5536.89727610046,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091732"
+    },
+    "createdAt": "2026-02-06T18:07:00Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091733",
+    "type": "shape",
+    "geometry": {
+      "width": 656.0,
+      "height": 482.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6909.581877143101,
+      "y": 5536.89727610046,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091733"
+    },
+    "createdAt": "2026-02-06T18:07:00Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091769",
+    "type": "shape",
+    "geometry": {
+      "width": 856.0,
+      "height": 434.0
+    },
+    "position": {
+      "x": 476.0,
+      "y": 941.8473940694315,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091769"
+    },
+    "createdAt": "2026-02-06T18:07:02Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:28:03Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091770",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 258.0
+    },
+    "position": {
+      "x": 476.0,
+      "y": 1369.4814916328473,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091770"
+    },
+    "createdAt": "2026-02-06T18:07:02Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:28:03Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091771",
+    "type": "shape",
+    "geometry": {
+      "width": 700.0,
+      "height": 418.0
+    },
+    "position": {
+      "x": 1364.0,
+      "y": 941.8473940694315,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091771"
+    },
+    "createdAt": "2026-02-06T18:07:02Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:28:03Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675091772",
+    "type": "shape",
+    "geometry": {
+      "width": 712.0,
+      "height": 418.0
+    },
+    "position": {
+      "x": 1364.0,
+      "y": 1369.4814916328473,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658675091772"
+    },
+    "createdAt": "2026-02-06T18:07:02Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T01:28:03Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675471196",
+    "type": "text",
+    "data": {
+      "content": "<p>ALERTAS</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 325.7142857142857
+    },
+    "position": {
+      "x": 387.90726645666393,
+      "y": 2010.6422587678505,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658675471196"
+    },
+    "createdAt": "2026-02-06T18:09:53Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-06T19:25:54Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675779840",
+    "type": "text",
+    "data": {
+      "content": "<p>INTEGRAÇÕES</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 542.8571428571429
+    },
+    "position": {
+      "x": 529.4356153602218,
+      "y": 1962.8819970773125,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658675779840"
+    },
+    "createdAt": "2026-02-06T18:13:04Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-06T20:59:15Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658675906119",
+    "type": "text",
+    "data": {
+      "content": "<p>AUDIT</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 245.71428571428572
+    },
+    "position": {
+      "x": 240.3889224373488,
+      "y": 1587.5947755560323,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658675906119"
+    },
+    "createdAt": "2026-02-06T18:13:27Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:28:03Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676128988",
+    "type": "text",
+    "data": {
+      "content": "<p>PECUÁRIA DE CORTE</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 782.8571428571429
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1096.2143337073076,
+      "y": 743.5038822748111,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676128988"
+    },
+    "createdAt": "2026-02-06T18:15:11Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676129264",
+    "type": "text",
+    "data": {
+      "content": "<p>MONTA</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 291.42857142857144
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 4122.725131820124,
+      "y": 4700.8526962858205,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676129264"
+    },
+    "createdAt": "2026-02-06T18:15:31Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676129481",
+    "type": "text",
+    "data": {
+      "content": "<p>MANEJO</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 325.7142857142857
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6744.439020000246,
+      "y": 1206.9105369558501,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676129481"
+    },
+    "createdAt": "2026-02-06T18:15:48Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676129723",
+    "type": "text",
+    "data": {
+      "content": "<p>DIETA</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 228.57142857142858
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 5235.689035730765,
+      "y": 969.015326881411,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676129723"
+    },
+    "createdAt": "2026-02-06T18:16:02Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676129900",
+    "type": "text",
+    "data": {
+      "content": "<p>GTA</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 611.4285714285714
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 6972.4579039108585,
+      "y": 4525.673455100944,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676129900"
+    },
+    "createdAt": "2026-02-06T18:16:17Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658676256716",
+    "type": "text",
+    "data": {
+      "content": "<p>PASTO</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 251.42857142857144
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 1378.3385644223172,
+      "y": 4384.778901725608,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658676256716"
+    },
+    "createdAt": "2026-02-06T18:17:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658685375993",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517636728368?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 655.0,
+      "height": 130.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2728.018875709394,
+      "y": 4406.930477410198,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658685375993"
+    },
+    "createdAt": "2026-02-06T19:55:53Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658687845800",
+    "type": "text",
+    "data": {
+      "content": "<p>verificar se existe possibilidade encaixar em b2c com o contador</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "138",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2103.5871945862873
+    },
+    "position": {
+      "x": 12487.41704919611,
+      "y": 7337.556146477731,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658687845800"
+    },
+    "createdAt": "2026-02-06T20:34:00Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:03:44Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658688371498",
+    "type": "text",
+    "data": {
+      "content": "<p>DPWAI</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "288",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 946.2857142857143
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 2077.7095164749776,
+      "y": 1193.4922454849475,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658688371498"
+    },
+    "createdAt": "2026-02-06T20:41:43Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658688571242",
+    "type": "text",
+    "data": {
+      "content": "<p>ARQUIVO DA NF</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 617.1428571428571
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 1527.5636564492556,
+      "y": 1158.0089572135248,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658688571242"
+    },
+    "createdAt": "2026-02-06T20:44:27Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658688681380",
+    "type": "text",
+    "data": {
+      "content": "<p>DADOS X FOTO/ARQUIVO EM TUDO </p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "288",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 4916.571428571429
+    },
+    "position": {
+      "x": 3164.3945225189855,
+      "y": 28059.54888142228,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658688681380"
+    },
+    "createdAt": "2026-02-06T20:46:23Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658689350579",
+    "type": "paint",
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 3752.305368117383,
+      "y": 343.7552312907369,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658689350579"
+    },
+    "createdAt": "2026-02-06T20:58:11Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346378",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 546.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 3207.0887711351324,
+      "y": 383.1328748606029,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346378"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346379",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2198.336474574663,
+      "y": 373.24307587400835,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346379"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346380",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 578.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2353.0832605895457,
+      "y": 1214.9131091675808,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346380"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346381",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 706.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 1599.373344707089,
+      "y": 2147.8891495062853,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346381"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346382",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 674.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2531.481969747686,
+      "y": 2531.427819323784,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346382"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346383",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 3422.503513235161,
+      "y": 3151.9104803942464,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346383"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346384",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 418.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 2752.2698347324394,
+      "y": 3904.032483233914,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346384"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346385",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 610.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 4445.262409968141,
+      "y": 2195.8891495062853,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346385"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658844346386",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 4020.2698347324413,
+      "y": 3920.032483233914,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658844346386"
+    },
+    "createdAt": "2026-02-08T18:25:50Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358366",
+    "type": "shape",
+    "geometry": {
+      "width": 459.0,
+      "height": 610.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 3773.8274565117304,
+      "y": 2388.5440096509715,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358366"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358367",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 2544.327456511732,
+      "y": 3168.565913732194,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358367"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358368",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 354.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 3176.327456511732,
+      "y": 3152.565913732194,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358368"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358369",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 450.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 3822.6759448802695,
+      "y": 3604.4459619285385,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358369"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358370",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 386.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 4482.874545870343,
+      "y": 3651.800501060877,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358370"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658847358371",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 482.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 5059.635261560063,
+      "y": 3948.2189206759554,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658847358371"
+    },
+    "createdAt": "2026-02-08T19:11:38Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658860811647",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640207205?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 628.5714285714286,
+      "height": 589.6
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862125244"
+      },
+      "id": "3458764658862125244"
+    },
+    "position": {
+      "x": 3156.803056849418,
+      "y": 1220.7131091675801,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658860811647"
+    },
+    "createdAt": "2026-02-09T00:34:01Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862052106",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640201795?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 8423.943902700496,
+      "height": 5095.127360504332
+    },
+    "position": {
+      "x": 15937.703359530073,
+      "y": 38446.77408145426,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658862052106"
+    },
+    "createdAt": "2026-02-09T01:08:49Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862125244",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "ENTIDADE UBG",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 5035.909981590112,
+      "height": 4517.889626091055
+    },
+    "position": {
+      "x": 23087.033654647097,
+      "y": 23102.07346065355,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658862125244",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658862125244&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:11:21Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862125569",
+    "type": "text",
+    "data": {
+      "content": "<p>cargo ?</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 219.42857142857142
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 2063.045358664217,
+      "y": 1230.9058108990948,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862125569"
+    },
+    "createdAt": "2026-02-09T01:12:15Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862125681",
+    "type": "text",
+    "data": {
+      "content": "<p>aqui nao seria um cargo</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 731.4285714285713
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 2063.045358664217,
+      "y": 1120.7154553364899,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862125681"
+    },
+    "createdAt": "2026-02-09T01:12:34Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862125889",
+    "type": "text",
+    "data": {
+      "content": "<p>Data onde foi feita nota fiscal ?, como funciona esse processo ?</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 946.2857142857142
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863284508"
+      },
+      "id": "3458764658863284508"
+    },
+    "position": {
+      "x": 3023.1211185147104,
+      "y": 211.85474326391432,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862125889"
+    },
+    "createdAt": "2026-02-09T01:12:54Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862224179",
+    "type": "text",
+    "data": {
+      "content": "<p>entidade forte!</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 452.57142857142856
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 2160.8445044193368,
+      "y": 3186.934797905962,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862224179"
+    },
+    "createdAt": "2026-02-09T01:13:31Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862224467",
+    "type": "text",
+    "data": {
+      "content": "<p>1xn</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 114.28571428571428
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 2028.2994653516023,
+      "y": 1849.767541670137,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862224467"
+    },
+    "createdAt": "2026-02-09T01:13:53Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862290126",
+    "type": "text",
+    "data": {
+      "content": "<p>safra é uma data que gira primeiro de julho e acaba dia 30 de junho 25/26 - 26/26</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2450.285714285714
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414697"
+      },
+      "id": "3458764658863414697"
+    },
+    "position": {
+      "x": 2032.6207375107983,
+      "y": 140.83816379825066,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862290126"
+    },
+    "createdAt": "2026-02-09T01:15:41Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862493624",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640232334?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1200.0,
+      "height": 1141.0
+    },
+    "position": {
+      "x": 3221.074379355705,
+      "y": 21693.467616102767,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658862493624"
+    },
+    "createdAt": "2026-02-09T01:22:15Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862493767",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640232334?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1200.0,
+      "height": 1141.0
+    },
+    "position": {
+      "x": 18107.405438058628,
+      "y": 8308.322393812172,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658862493767"
+    },
+    "createdAt": "2026-02-09T01:22:48Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862603929",
+    "type": "text",
+    "data": {
+      "content": "<p>é cliente dpwai ? (possivel lead)</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 937.1428571428571
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 3819.4129233412477,
+      "y": 1831.5969438998054,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862603929"
+    },
+    "createdAt": "2026-02-09T01:23:21Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862604531",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade Pecuario ?",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 9156.702985607846,
+      "height": 6704.270897449927
+    },
+    "position": {
+      "x": 36438.53927192374,
+      "y": 21063.39375522057,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658862604531",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658862604531&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:24:30Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862604813",
+    "type": "text",
+    "data": {
+      "content": "<p>A NF É EMITIDA NA ORG OU FAZENDA ?</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1184.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 1766.8169563725928,
+      "y": 1400.8134357305526,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862604813"
+    },
+    "createdAt": "2026-02-09T01:25:19Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862684084",
+    "type": "text",
+    "data": {
+      "content": "<p>nem toda fazenda tem pecuaria mas acho ideal atrelar a uma fazenda afinal o animal estava la ne ?</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2742.8571428571427
+    },
+    "position": {
+      "x": 20989.735392854738,
+      "y": 15613.27732446561,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862684084"
+    },
+    "createdAt": "2026-02-09T01:26:09Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862684258",
+    "type": "text",
+    "data": {
+      "content": "<p>Acho que existe transporte aqui ne</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1051.4285714285713
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862604531"
+      },
+      "id": "3458764658862604531"
+    },
+    "position": {
+      "x": 2685.066459259796,
+      "y": 77.95596616908824,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862684258"
+    },
+    "createdAt": "2026-02-09T01:26:47Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862684372",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade Contratos",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 5653.042419535504,
+      "height": 3349.400438689103
+    },
+    "position": {
+      "x": 34784.419119269,
+      "y": 14031.513978480732,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658862684372",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658862684372&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:27:06Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862684661",
+    "type": "text",
+    "data": {
+      "content": "<p>deixe por ultimo ta perdendo o sentido isso</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1312.0
+    },
+    "position": {
+      "x": 913.5755831453316,
+      "y": 188.65560995638634,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862684661"
+    },
+    "createdAt": "2026-02-09T01:28:11Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:28:19Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862812934",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade RH",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 1342.3778776961594,
+      "height": 2606.5490903447994
+    },
+    "position": {
+      "x": 711.1889388480797,
+      "y": 1343.2745451723977,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658862812934",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658862812934&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:29:22Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T01:30:10Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862813244",
+    "type": "text",
+    "data": {
+      "content": "<p>GERA NF E VOLTA ARQUVO</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 845.7142857142857
+    },
+    "position": {
+      "x": 18892.837289558913,
+      "y": 10108.624374572099,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862813244"
+    },
+    "createdAt": "2026-02-09T01:30:24Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862813439",
+    "type": "text",
+    "data": {
+      "content": "<p>FALTA FOLHA DE PAGAMENTO<br />ACORDOR<br />ACERTOS</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 909.7142857142857
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 4910.233453927951,
+      "y": 2049.7952639243404,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862813439"
+    },
+    "createdAt": "2026-02-09T01:31:02Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862927991",
+    "type": "text",
+    "data": {
+      "content": "<p>CONTRATO TRABALHADOR RURAL</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "64",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1028.5714285714284
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658862684372"
+      },
+      "id": "3458764658862684372"
+    },
+    "position": {
+      "x": 4483.701205529136,
+      "y": 522.5844096850669,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862927991"
+    },
+    "createdAt": "2026-02-09T01:32:53Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862928047",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640232334?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1200.0,
+      "height": 1141.0
+    },
+    "position": {
+      "x": 30776.56085082774,
+      "y": 8878.41173938198,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658862928047"
+    },
+    "createdAt": "2026-02-09T01:33:08Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862928279",
+    "type": "text",
+    "data": {
+      "content": "<p>API de assinatura digital e contatos,</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "288",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 4854.857142857143
+    },
+    "position": {
+      "x": 31985.415425782707,
+      "y": 9940.08540705216,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862928279"
+    },
+    "createdAt": "2026-02-09T01:33:24Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658862928407",
+    "type": "text",
+    "data": {
+      "content": "<p>aqui por experiencia eu recomendo ser TUDO arquivo e nao tabela</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "270",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 8491.999999999956
+    },
+    "position": {
+      "x": 33364.94032903677,
+      "y": 10158.513978480732,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658862928407"
+    },
+    "createdAt": "2026-02-09T01:33:51Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863008872",
+    "type": "text",
+    "data": {
+      "content": "<p>tudo sobre nf deve ser arquivo</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "138",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2004.3613835209167
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 5457.557002831267,
+      "y": 184.09191113605903,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863008872"
+    },
+    "createdAt": "2026-02-09T01:38:00Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863129275",
+    "type": "shape",
+    "geometry": {
+      "width": 660.0,
+      "height": 322.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 347.17733846786086,
+      "y": 1606.2371008750943,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863129275"
+    },
+    "createdAt": "2026-02-09T01:39:12Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863283934",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade DPWAI",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 3158.953976065551,
+      "height": 2024.6598321161694
+    },
+    "position": {
+      "x": 15118.68763452203,
+      "y": 9469.637354117765,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658863283934",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658863283934&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:43:16Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863283977",
+    "type": "text",
+    "data": {
+      "content": "<p>contrato dpwai</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "139",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 992.8571428571429
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 2819.5641155454955,
+      "y": 283.86058417700235,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863283977"
+    },
+    "createdAt": "2026-02-09T01:43:25Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863284006",
+    "type": "text",
+    "data": {
+      "content": "<p>funcionarios dpwai</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "139",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1251.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 991.672698575309,
+      "y": 270.7266053478653,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863284006"
+    },
+    "createdAt": "2026-02-09T01:43:32Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863284058",
+    "type": "text",
+    "data": {
+      "content": "<p>contatos dpwai</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "139",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 1002.7857142857143
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 897.166342728746,
+      "y": 482.7340198703006,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863284058"
+    },
+    "createdAt": "2026-02-09T01:43:39Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863284272",
+    "type": "text",
+    "data": {
+      "content": "<p>fazemos o software pra um cliente!<br />não para uma org!<br /><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "139",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2293.5
+    },
+    "position": {
+      "x": 16479.670162964234,
+      "y": 7154.706295592403,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863284272"
+    },
+    "createdAt": "2026-02-09T01:44:15Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:03:47Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863284508",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade maquinario",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 4157.562513756913,
+      "height": 2202.9913722529545
+    },
+    "position": {
+      "x": 16550.109504781336,
+      "y": 20879.41225444143,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658863284508",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658863284508&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:45:11Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863284576",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640232334?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1200.0,
+      "height": 1141.0
+    },
+    "position": {
+      "x": 16102.485862227557,
+      "y": 24495.22765617303,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764658863284576"
+    },
+    "createdAt": "2026-02-09T01:45:27Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T22:44:02Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863414582",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Entidade CLIENTE",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 3158.953976065551,
+      "height": 3454.4516625701403
+    },
+    "position": {
+      "x": 14321.443174931455,
+      "y": 13551.359811711838,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658863414582",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658863414582&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:48:49Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863414697",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "ENTIDADE AGRICULTURA",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 5385.6119989227855,
+      "height": 4826.233812217232
+    },
+    "position": {
+      "x": 9575.303505319942,
+      "y": 22004.481024911034,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658863414697",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658863414697&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T01:49:15Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633373",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 610.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 608.6905116091398,
+      "y": 1945.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633373"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633374",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 578.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 2776.69051160914,
+      "y": 685.8661000706679,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633374"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633375",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 706.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 3504.69051160914,
+      "y": 437.8661000706679,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633375"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633376",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 674.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 2776.69051160914,
+      "y": 2353.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633376"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633377",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 578.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 4043.6614557770495,
+      "y": 2979.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633377"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T20:41:26Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633378",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 738.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 3504.69051160914,
+      "y": 1469.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633378"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633379",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 770.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 3504.69051160914,
+      "y": 4021.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633379"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633380",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 770.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 1304.6905116091398,
+      "y": 3181.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633380"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633381",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 738.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 2213.768648823581,
+      "y": 3437.995475916673,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633381"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T20:33:21Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863633382",
+    "type": "shape",
+    "geometry": {
+      "width": 528.0,
+      "height": 706.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658910666873"
+      },
+      "id": "3458764658910666873"
+    },
+    "position": {
+      "x": 2052.69051160914,
+      "y": 2353.866100070668,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863633382"
+    },
+    "createdAt": "2026-02-09T01:54:14Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863753413",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v0</span></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "1802",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 12055.691186092858
+    },
+    "position": {
+      "x": 16239.441598859961,
+      "y": 35122.70383955949,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863753413"
+    },
+    "createdAt": "2026-02-09T01:56:56Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658863814316",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v1</span></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "1802",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 12055.691186092858
+    },
+    "position": {
+      "x": 36907.40748142097,
+      "y": 36022.79168567524,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658863814316"
+    },
+    "createdAt": "2026-02-09T01:58:32Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658868251165",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 258.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863414582"
+      },
+      "id": "3458764658863414582"
+    },
+    "position": {
+      "x": 2327.325786873723,
+      "y": 1049.2322628265795,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658868251165"
+    },
+    "createdAt": "2026-02-09T03:53:21Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:03:50Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658910666873",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "FINANCEIRO 2.0",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 5740.148869992342,
+      "height": 4621.153565683688
+    },
+    "position": {
+      "x": 22069.010241705357,
+      "y": 13782.843433169819,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764658910666873",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764658910666873&limit=10&cursor="
+    },
+    "createdAt": "2026-02-09T11:25:10Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658961892264",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v0</span></p><p><br /></p><p><span style=\"background-color:rgb(231,231,231)\">APOIO TOTAL DE TI<br /></span><br /><br />-Login<br />-Criar Usuarios<br />-Cargos de users</p><p>-gestão org</p><p>-Gestão Fazenda</p><p>-Dados</p><p>-Chat com IA</p><p>-Dahsboards e Relatorios</p><p>-Emissao de nota fiscal</p><p>-financeiro</p><p>-Agricultura</p><p>-UBG</p><p>-Safra</p><p>-Formularios compeltos</p><p>-site</p><p>-app iphone</p><p>-app android</p><p>-funciona na TV pelo browser da tv</p><p>-apoio contabil</p><p><br /></p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": -44238.952816886434,
+      "y": 162141.270496769,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658961892264"
+    },
+    "createdAt": "2026-02-09T15:42:16Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:49:40Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658962230057",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v1</span><br /><br /></p><p>-Pecuaria</p><p>-Contratos</p><p>-Gestão de RH</p><p>-Integraçoes com plataformas externas</p><p>-formularios custumizados</p><p>-dashs custumizados</p><p>-apoio juridico</p><p>-laudos</p><p>-engernhaia agronoma</p><p>-chat no whatsapp</p><p>-preenchimento e interaçao da plataforma com ia</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": 13063.861101199414,
+      "y": 147570.66126009476,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658962230057"
+    },
+    "createdAt": "2026-02-09T15:43:22Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:52:15Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658963011534",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v2</span><br /><br /></p><p>-sensoramento e iot(parceiros)</p><p>-automaçao industrial</p><p>-automaçao de coleta de dados</p><p>-visao computacional</p><p>-machine learning ( previsibildaide com modelos Arrima e arrima plus)</p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span>a ia preve dados para  de faturamenteo e outros com aprendizado de maquina</li></ol><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": 61030.865476448176,
+      "y": 142962.5619456572,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658963011534"
+    },
+    "createdAt": "2026-02-09T15:46:40Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:52:31Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658963435546",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"background-color:rgb(231,231,231)\">dpwai v3</span><br /><br /></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span>reenvestimento no agro (baracoes fazenda proprias, fazendas de energia, datacenter proprios, energia solar)</li><li data-list=\"bullet\"><span class=\"ql-ui\"></span>cooperativa de energia e dados</li><li data-list=\"bullet\"><span class=\"ql-ui\"></span>agente agronomo treinado com llm</li></ol><p><br /></p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#ff6464"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": 116736.07944167391,
+      "y": 139126.82023543477,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658963435546"
+    },
+    "createdAt": "2026-02-09T15:48:16Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:50:15Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658963897151",
+    "type": "text",
+    "data": {
+      "content": "<p>1-10 clientes</p><p>faturamento 10 K</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "3599",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 52004.47688518779
+    },
+    "position": {
+      "x": -41884.1363226083,
+      "y": 93140.79964708716,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658963897151"
+    },
+    "createdAt": "2026-02-09T15:49:52Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:51:12Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658963997589",
+    "type": "text",
+    "data": {
+      "content": "<p>11- 50 clientes</p><p>daturamento 50 k</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 41871.80814573352
+    },
+    "position": {
+      "x": 16893.951256086828,
+      "y": 90034.53560675915,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658963997589"
+    },
+    "createdAt": "2026-02-09T15:50:17Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:51:22Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658964104023",
+    "type": "text",
+    "data": {
+      "content": "<p>50&#43; clientes</p><p>faturamento 100k</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": 61030.865476448176,
+      "y": 91952.40646187034,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658964104023"
+    },
+    "createdAt": "2026-02-09T15:50:29Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:51:26Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764658964104422",
+    "type": "text",
+    "data": {
+      "content": "<p>50&#43; clientes</p><p>faturamento 100k</p><p><br /></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "2983",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 34211.62783568627
+    },
+    "position": {
+      "x": 116736.0794416739,
+      "y": 90735.27111855443,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764658964104422"
+    },
+    "createdAt": "2026-02-09T15:50:51Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T15:51:30Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659025148637",
+    "type": "text",
+    "data": {
+      "content": "<p>SEM </p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "14",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 29.0
+    },
+    "position": {
+      "x": -75741.51682997007,
+      "y": 69900.47775283804,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659025148637"
+    },
+    "createdAt": "2026-02-09T22:58:54Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T22:58:57Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659025148742",
+    "type": "text",
+    "data": {
+      "content": "<p>INICIAR SEM INTEGRAÇAO COM FORMS PADRAO E DASH PADRAO</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "3599",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 52004.47688518779
+    },
+    "position": {
+      "x": -44238.95281688642,
+      "y": 66765.06756356005,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659025148742"
+    },
+    "createdAt": "2026-02-09T22:59:01Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T22:59:16Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659025148895",
+    "type": "paint",
+    "position": {
+      "x": -8782.280461172288,
+      "y": 77874.72304274153,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659025148895"
+    },
+    "createdAt": "2026-02-09T22:59:20Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-09T22:59:20Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028328273",
+    "type": "embed",
+    "data": {
+      "contentType": "link",
+      "description": "REST API para emissão de Documentos Fiscais (NFe, NFSe, NFCe, CTe e MDFe). Integre a seu sistema independente da linguagem que utilize.",
+      "html": "<iframe src=\"https://focusnfe.com.br/\" width=\"100%\" height=\"100%\" frameborder=\"0\"></iframe>",
+      "previewUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517644940168?format=preview&redirect=false",
+      "providerName": "Focusnfe",
+      "providerUrl": "",
+      "title": "API para emissão de Notas Fiscais Eletrônicas - Focus NFe",
+      "url": "https://focusnfe.com.br/"
+    },
+    "geometry": {
+      "width": 321.0,
+      "height": 483.0
+    },
+    "position": {
+      "x": 90730.71829977792,
+      "y": 26291.60488959761,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/embeds/3458764659028328273"
+    },
+    "createdAt": "2026-02-09T23:53:32Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-09T23:53:32Z",
+    "modifiedBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028328305",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517640232334?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1200.0,
+      "height": 1141.0
+    },
+    "position": {
+      "x": 8733.725583939435,
+      "y": 8108.46727017585,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764659028328305"
+    },
+    "createdAt": "2026-02-09T23:53:40Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028328548",
+    "type": "text",
+    "data": {
+      "content": "<p>pagamentos da dpwai<br /><a href=\"https://www.asaas.com/\">https://www.asaas.com/</a></p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "200",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 3157.1428571428573
+    },
+    "position": {
+      "x": 8733.725583939435,
+      "y": 7517.286524982575,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659028328548"
+    },
+    "createdAt": "2026-02-09T23:54:04Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028328805",
+    "type": "embed",
+    "data": {
+      "contentType": "link",
+      "description": "Ofereça diferentes formas de pagamento, gerencie cobranças, emita notas, antecipe recebíveis e pague fornecedores. Tudo em um só lugar.",
+      "html": "<iframe src=\"https://www.asaas.com/\" width=\"100%\" height=\"100%\" frameborder=\"0\"></iframe>",
+      "previewUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517644919637?format=preview&redirect=false",
+      "providerName": "Asaas",
+      "providerUrl": "",
+      "title": "Conta digital PJ completa e sem mensalidade",
+      "url": "https://www.asaas.com"
+    },
+    "geometry": {
+      "width": 2248.3075901269526,
+      "height": 3382.9674954246666
+    },
+    "position": {
+      "x": 5879.228174419179,
+      "y": 7088.840398738203,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/embeds/3458764659028328805"
+    },
+    "createdAt": "2026-02-09T23:54:41Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028437240",
+    "type": "embed",
+    "data": {
+      "contentType": "link",
+      "description": "REST API para emissão de Documentos Fiscais (NFe, NFSe, NFCe, CTe e MDFe). Integre a seu sistema independente da linguagem que utilize.",
+      "html": "<iframe src=\"https://focusnfe.com.br/\" width=\"100%\" height=\"100%\" frameborder=\"0\"></iframe>",
+      "previewUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517644889908?format=preview&redirect=false",
+      "providerName": "Focusnfe",
+      "providerUrl": "",
+      "title": "API para emissão de Notas Fiscais Eletrônicas - Focus NFe",
+      "url": "https://focusnfe.com.br/"
+    },
+    "geometry": {
+      "width": 942.5873651373636,
+      "height": 1418.2856615618275
+    },
+    "position": {
+      "x": 19502.776074687343,
+      "y": 8035.981543791184,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/embeds/3458764659028437240"
+    },
+    "createdAt": "2026-02-09T23:55:26Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028539125",
+    "type": "text",
+    "data": {
+      "content": "<p>&#x1f9fe; FocusNFe — Emissão de Nota</p><p>Mensalidade</p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong>≈ R$59,90</strong></li></ol><p>NF-e (produto)</p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong>≈ R$0,15 por nota</strong></li></ol><p>NFS-e (serviço)</p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong>≈ R$0,20 – R$0,29 por nota</strong></li></ol><p>Sem custo por empresa.<br /> Sem custo por XML / DANFE / webhook.</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#659df2"
+    },
+    "geometry": {
+      "width": 2194.285714285714
+    },
+    "position": {
+      "x": 20726.49946315844,
+      "y": 9691.48151742924,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659028539125"
+    },
+    "createdAt": "2026-02-09T23:56:52Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028539745",
+    "type": "embed",
+    "data": {
+      "contentType": "link",
+      "description": "A D4Sign é a maior plataforma de assinatura eletrônica e digital do Brasil. A melhor opção para assinar documento digitalmente. Saiba mais!",
+      "html": "<iframe src=\"https://d4sign.com.br/\" width=\"100%\" height=\"100%\" frameborder=\"0\"></iframe>",
+      "previewUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517644920736?format=preview&redirect=false",
+      "providerName": "D4Sign",
+      "providerUrl": "",
+      "title": "Plataforma de assinatura eletrônica e digital | D4Sign",
+      "url": "https://d4sign.com.br/"
+    },
+    "geometry": {
+      "width": 1642.4970485028002,
+      "height": 2471.420792607017
+    },
+    "position": {
+      "x": 32294.31371720024,
+      "y": 7072.20134307847,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/embeds/3458764659028539745"
+    },
+    "createdAt": "2026-02-09T23:57:53Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028629967",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517644908909?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 1324.0,
+      "height": 846.0
+    },
+    "position": {
+      "x": 33968.61823225838,
+      "y": 8160.822393812172,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764659028629967"
+    },
+    "createdAt": "2026-02-09T23:58:16Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028630252",
+    "type": "text",
+    "data": {
+      "content": "<p><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">O custo da </span><a href=\"https://d4sign.com.br/\" style=\"color:rgb(153,195,255);background-color:rgb(31,31,31)\">D4Sign</a><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> para envio de documentos começa em torno de R$ 39,90/mês no plano Starter, que inclui cerca de 20 documentos. Planos mais avançados ou ilimitados estão disponíveis, com opções variando conforme o volume de documentos e funcionalidades, incluindo um período de teste gratuito de 30 dias com 5 envios. </span></p><p><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Principais Informações sobre Custo e Planos:</strong></p><ol><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Plano de Entrada (Starter):</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> Aproximadamente R$ 39,90/mês para 20 documentos.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Plano Profissional/Individual:</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> Opções a partir de R$ 21,17 por mês, com volumes limitados.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Envio Ilimitado:</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> A plataforma oferece planos personalizados e ilimitados.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Custo para o Signatário:</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> </span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Zero.</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> Não há custos para quem apenas assina o documento.</span></li><li data-list=\"bullet\"><span class=\"ql-ui\"></span><strong style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\">Funcionalidades Incluídas:</strong><span style=\"color:rgb(230,232,240);background-color:rgb(31,31,31)\"> Uso de templates em Word e banco de minutas sem custo adicional. </span></li></ol>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "gravitas_one",
+      "fontSize": "80",
+      "textAlign": "left",
+      "color": "#e6e8f0"
+    },
+    "geometry": {
+      "width": 3434.285714285714
+    },
+    "position": {
+      "x": 35238.741972173244,
+      "y": 6078.298208624481,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659028630252"
+    },
+    "createdAt": "2026-02-09T23:58:43Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T00:59:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659028630797",
+    "type": "shape",
+    "geometry": {
+      "width": 660.0,
+      "height": 322.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764658863283934"
+      },
+      "id": "3458764658863283934"
+    },
+    "position": {
+      "x": 764.8812871490197,
+      "y": 961.5539996378776,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659028630797"
+    },
+    "createdAt": "2026-02-09T23:59:33Z",
+    "createdBy": {
+      "id": "3458764658310831853",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-10T19:50:11Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085730",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 642.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 1754.3646415711555,
+      "y": 555.3352218573709,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085730"
+    },
+    "createdAt": "2026-02-10T01:41:46Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:32:46Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085732",
+    "type": "shape",
+    "geometry": {
+      "width": 512.0,
+      "height": 674.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 338.49313084057576,
+      "y": 2126.251353508156,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085732"
+    },
+    "createdAt": "2026-02-10T01:41:47Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:46:51Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085734",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 514.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 756.4820734132954,
+      "y": 491.3352218573709,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085734"
+    },
+    "createdAt": "2026-02-10T01:41:47Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:06:01Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085735",
+    "type": "shape",
+    "geometry": {
+      "width": 508.0,
+      "height": 546.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 1116.5556862955673,
+      "y": 2443.335221857371,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085735"
+    },
+    "createdAt": "2026-02-10T01:41:47Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:06:01Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085736",
+    "type": "shape",
+    "geometry": {
+      "width": 512.0,
+      "height": 674.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 2510.72581246323,
+      "y": 1517.9486823152583,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085736"
+    },
+    "createdAt": "2026-02-10T01:41:47Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:36:24Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085738",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 578.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 2127.384510757719,
+      "y": 2411.259512446828,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085738"
+    },
+    "createdAt": "2026-02-10T01:41:48Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:06:01Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085739",
+    "type": "shape",
+    "geometry": {
+      "width": 512.0,
+      "height": 546.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 3225.202660159399,
+      "y": 1331.3471861388352,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085739"
+    },
+    "createdAt": "2026-02-10T01:41:48Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:40:43Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659034085741",
+    "type": "shape",
+    "geometry": {
+      "width": 520.0,
+      "height": 610.0
+    },
+    "parent": {
+      "links": {
+        "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659192570051"
+      },
+      "id": "3458764659192570051"
+    },
+    "position": {
+      "x": 3003.124557835845,
+      "y": 600.5886047167951,
+      "origin": "center",
+      "relativeTo": "parent_top_left"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items/3458764659034085741"
+    },
+    "createdAt": "2026-02-10T01:41:48Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "isSupported": false,
+    "modifiedAt": "2026-02-11T00:06:01Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659035029450",
+    "type": "text",
+    "data": {
+      "content": "<p>Fundação ABC, Lucas Hubert e Alessandro</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "288",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 5718.857142857143
+    },
+    "position": {
+      "x": 3671.2878889161984,
+      "y": 20468.99165447998,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659035029450"
+    },
+    "createdAt": "2026-02-10T01:59:54Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T02:00:29Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659035218568",
+    "type": "image",
+    "data": {
+      "imageUrl": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/resources/images/3458764517645085703?format=preview&redirect=false"
+    },
+    "geometry": {
+      "width": 915.7798986256072,
+      "height": 465.78460361130016
+    },
+    "position": {
+      "x": 16154.204966537423,
+      "y": 25417.95142682387,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/images/3458764659035218568"
+    },
+    "createdAt": "2026-02-10T02:04:53Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T22:44:17Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659192570051",
+    "type": "frame",
+    "data": {
+      "format": "custom",
+      "showContent": true,
+      "title": "Consumo e estoque",
+      "type": "unknown"
+    },
+    "style": {
+      "fillColor": "#ffffff"
+    },
+    "geometry": {
+      "width": 3614.1583477968124,
+      "height": 2885.827204684065
+    },
+    "position": {
+      "x": 17224.687660739586,
+      "y": 17644.146719396125,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/frames/3458764659192570051",
+      "related": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/items?parent_item_id=3458764659192570051&limit=10&cursor="
+    },
+    "createdAt": "2026-02-10T20:29:42Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-11T00:06:01Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  },
+  {
+    "id": "3458764659203235833",
+    "type": "text",
+    "data": {
+      "content": "<p>IOT / JOHN DEERE</p>"
+    },
+    "style": {
+      "fillColor": "#ffffff",
+      "fillOpacity": "0.0",
+      "fontFamily": "noto_sans",
+      "fontSize": "288",
+      "textAlign": "left",
+      "color": "#1a1a1a"
+    },
+    "geometry": {
+      "width": 2427.4285714285716
+    },
+    "position": {
+      "x": 34860.79114396933,
+      "y": 28269.737713391074,
+      "origin": "center",
+      "relativeTo": "canvas_center"
+    },
+    "links": {
+      "self": "https://api.miro.com/v2/boards/uXjVGE__XFQ%3D/texts/3458764659203235833"
+    },
+    "createdAt": "2026-02-10T22:45:23Z",
+    "createdBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    },
+    "modifiedAt": "2026-02-10T22:45:53Z",
+    "modifiedBy": {
+      "id": "3458764658312154526",
+      "type": "user"
+    }
+  }
+]

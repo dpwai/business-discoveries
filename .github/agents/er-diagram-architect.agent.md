@@ -58,6 +58,100 @@ EXTERNAL (Limited Control - Abstract!)
 
 > "Se a gente nao escopar e desenhar bem isso aqui, vai dar merda. Eu ja trabalhei em tanto projeto que a empresa foi fazendo na louca. E depois e foda de arrumar." - Joao Balzer
 
+### 4. Dijkstra's Shortest Path for FK Validation
+
+**Use graph theory to eliminate redundant foreign keys. The ER model IS a directed graph.**
+
+> "Estou desenvolvendo minha entidade e relacionamento seguindo as boas praticas do algoritmo de Dijkstra. Utilize o algoritmo de Dijkstra dentro do seu pensamento para encontrar o shortest path entre duas entidades dentro da minha arquitetura de dados." - Joao Balzer (11/02/2026)
+
+#### Graph Representation
+
+```
+Nodes  = Entities (~90 in SOAL)
+Edges  = Foreign Keys (directed: child → parent)
+Weight = 1 per hop (uniform)
+org_id = Weight ∞ (excluded from pathfinding — multi-tenancy filter only)
+```
+
+#### The Redundancy Check Algorithm
+
+```
+FOR each proposed FK (edge) from entity A to entity C:
+  1. REMOVE the proposed edge A→C temporarily
+  2. FIND shortest path from A to C using BFS on remaining edges
+  3. DECIDE:
+     ┌────────────────────┬────────────────────────────────────────────┐
+     │ Path Result        │ Action                                     │
+     ├────────────────────┼────────────────────────────────────────────┤
+     │ No path exists     │ ESSENTIAL — draw it (removing disconnects) │
+     │ Path length = 2    │ REDUNDANT — do NOT draw on diagram         │
+     │ Path length = 3    │ GRAY ZONE — flag for review                │
+     │ Path length ≥ 4    │ Consider as DENORMALIZATION in DDL only    │
+     └────────────────────┴────────────────────────────────────────────┘
+  4. IF redundant for diagram, the FK MAY still exist in DDL for query
+     performance, but annotate it: "-- DENORM: derivable via X→Y→Z"
+```
+
+#### Key Patterns
+
+**1. Hub Entity Pattern**
+When an entity has 8+ connections (OPERACAO_CAMPO, APLICACAO_INSUMO), it's a HUB.
+Entities on opposite sides of a hub do NOT need direct connections.
+
+```
+PULVERIZACAO_DETALHE ──► OPERACAO_CAMPO ◄── APLICACAO_INSUMO ──► PRODUTO_INSUMO
+                         (HUB)
+Therefore: PULVERIZACAO_DETALHE → PRODUTO_INSUMO is REDUNDANT (2 hops via hub)
+```
+
+**2. Leaf Isolation Pattern**
+Detail/child entities (1:0..1 relationship) connect ONLY to their parent.
+Everything else is accessed through the parent. Never add FKs to leaf entities.
+
+```
+PLANTIO_DETALHE ──► OPERACAO_CAMPO (ONLY connection)
+   ❌ PLANTIO_DETALHE → TALHAO_SAFRA (derivable via parent)
+   ❌ PLANTIO_DETALHE → MAQUINAS (derivable via parent)
+```
+
+**3. Transitive Closure**
+If A→B and B→C exist, then A→C is redundant (shortest path = 2).
+
+```
+APLICACAO_INSUMO → OPERACAO_CAMPO → TALHAO_SAFRA
+Therefore: APLICACAO_INSUMO → TALHAO_SAFRA is REDUNDANT
+```
+
+**4. org_id Bypass**
+The organization_id FK exists on ALL entities for multi-tenancy.
+It is NEVER a valid path for shortest-path analysis.
+It is NEVER drawn on the diagram. Use a board note instead.
+
+```
+COMPRA_INSUMO.organization_id → ORGANIZATIONS
+   Path: COMPRA_INSUMO → PARCEIRO_COMERCIAL → ... → FAZENDAS → ORGANIZATIONS
+   org_id is a SHORTCUT, not a domain chain. Ignore in graph analysis.
+```
+
+#### Validation Checklist (Dijkstra)
+
+Before drawing ANY connector on the Miro board:
+
+- [ ] Can entity A reach entity C through existing paths? (BFS/trace)
+- [ ] If yes, is the path ≤ 2 hops? → Do NOT draw direct FK
+- [ ] If yes, is the path 3 hops? → Review: is it worth the diagram noise?
+- [ ] Is this an org_id link? → Do NOT draw (use board note)
+- [ ] Is this entity a leaf/detail? → It should only connect to its parent
+- [ ] Does adding this FK create a shortcut around a hub? → Likely redundant
+
+#### Diagram Conventions Derived from Dijkstra
+
+1. **One Source of Truth:** Each data point flows through exactly ONE path. Two paths = one is redundant.
+2. **Draw the minimum spanning tree** of domain relationships, not all FKs.
+3. **org_id note:** Place ONE sticky note on the board: *"All entities carry organization_id → ORGANIZATIONS for multi-tenancy. Not drawn."*
+4. **Denormalization annotation:** When a redundant FK exists in DDL for performance, add a comment: `-- DENORM: derivable via chain X→Y→Z`
+5. **Module-by-module analysis:** Before drawing connectors for any module, run the redundancy check on ALL proposed FKs. Document what was kept and what was removed.
+
 ---
 
 ## Entity Design Standards
@@ -440,6 +534,10 @@ CREATE TRIGGER update_[table]_updated_at
 - [ ] ON DELETE behavior defined (CASCADE, SET NULL, RESTRICT)
 - [ ] No circular dependencies
 - [ ] Can navigate from User → any entity
+- [ ] **Dijkstra check:** Each FK passes the shortest-path redundancy test
+- [ ] **No org_id connectors** drawn (use board note convention)
+- [ ] **Leaf entities** connect only to their parent (no bypass FKs)
+- [ ] **Hub entities** identified — no cross-hub shortcuts drawn
 
 ### Before Finalizing the Diagram
 
@@ -524,6 +622,10 @@ harvest_id UUID REFERENCES harvests(harvest_id)
 | **Composite Key** | PK made of multiple columns |
 | **Normalization** | Process of organizing to reduce redundancy (1NF, 2NF, 3NF) |
 | **Denormalization** | Strategic redundancy for query performance |
+| **Dijkstra's Algorithm** | Finds shortest path between nodes in a weighted graph. Applied to ER: if a path A→C exists via intermediate entities, direct FK A→C is redundant |
+| **Hub Entity** | Entity with 8+ connections that acts as a routing node. Cross-hub shortcuts are usually redundant |
+| **Leaf Entity** | Detail/child entity with 1:0..1 relationship to parent. Should only connect to parent |
+| **Adjacency List** | Graph representation listing each node's direct neighbors. Used to trace paths for redundancy checks |
 
 ---
 
@@ -821,6 +923,8 @@ After Claude validates, export:
 
 ---
 
-**Version:** 1.0
+**Version:** 1.1
 **Created:** 2026-02-04
+**Updated:** 2026-02-10
 **Maintained by:** DeepWork AI Flows
+**Changelog v1.1:** Added Dijkstra's Shortest Path framework for FK validation (per Joao's directive 11/02/2026). Added hub/leaf/transitive closure patterns. Updated validation checklist.
