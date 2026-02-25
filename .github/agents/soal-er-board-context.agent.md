@@ -30,28 +30,37 @@ This agent provides complete, real-time context about the SOAL project ER diagra
 ## Board Frame Map
 
 ### Frame 1: ENTIDADE UBG
-**Domain:** Grain processing, post-harvest, silos, custom forms
+**Domain:** Grain processing, post-harvest, silos, drying, custom forms
 **Layer:** Agricola (y=2000-5000)
 **Color:** Mixed (Yellow primary)
+**Secondary Board:** https://miro.com/app/board/uXjVGCOBuw4= (isolated frame)
 **Contains:**
-- Grain processing entities (Ticket Balanca, Entrada Grao, Classificacao Grao)
-- Silo management (Estoque Silo, Movimentacao Silo, Saida Grao)
+- UBG physical unit (structure, dryer, scale, responsible)
+- Grain processing entities (Ticket Balanca, Recebimento Grao, Controle Secagem)
+- Silo management (Estoque Silo, Movimentacao Silo, Saida Grao, Quebra Producao)
 - Custom Forms section (Custom Forms, Form Entries)
-- UBG logo and visual identity
-- Color-coded sub-groups: Blue (system), Green (forms), Orange (operations), Pink (alerts), Cyan (integration)
-- Legend box at bottom
+- 9 connectors forming linear flow + custom forms
+- LENHA flow (wood for drying via PRODUTO_INSUMO → ESTOQUE_INSUMO → MOVIMENTACAO_INSUMO)
+- RACAO flow (grain to livestock feed via SAIDA_GRAO tipo_destino=racao)
 
 **Key Entities:**
 | Entity | Function |
 |--------|----------|
+| UBG | Physical grain processing unit (capacidade, secador, balanca, responsavel_tecnico) — NEW |
 | TICKET_BALANCA | Weighing records (numero, peso_bruto, tara, liquido, placa) |
-| ENTRADA_GRAO | Grain intake (quantidade_kg, umidade, impurezas, origem) |
-| CLASSIFICACAO_GRAO | Quality grading (ph, ardidos, quebrados, mofados) |
-| ESTOQUE_SILO | Current silo inventory (silo_id, cultura_id, quantidade_atual_kg) |
-| MOVIMENTACAO_SILO | Silo movements (entrada/saida/transferencia/quebra) |
-| SAIDA_GRAO | Grain dispatch (quantidade_kg, destino, nota_fiscal_id) |
+| RECEBIMENTO_GRAO | Grain intake + classification (quantidade_kg, umidade, PH, impurezas, descontos) — RENAMED from ENTRADA_GRAO, absorbs CLASSIFICACAO_GRAO |
+| CONTROLE_SECAGEM | Drying monitoring (leituras 30min, temp P1/P2/P3, lenha_m3, I.N.029/2011) — NEW |
+| ESTOQUE_SILO | Current silo inventory (silo_id, cultura_id, quantidade_atual_kg, virtual vs real) |
+| MOVIMENTACAO_SILO | Silo movements (transferencia/secagem/aeracao, silo_origem, silo_destino) |
+| SAIDA_GRAO | Grain dispatch (quantidade_kg, tipo_destino: commodities/sementes/racao/plantio, nota_fiscal_id) |
+| QUEBRA_PRODUCAO | Production losses (secagem/armazenagem/transporte, virtual vs real) — NEW |
 | CUSTOM_FORMS | Form definitions (organization_id, name, type) |
 | FORM_ENTRIES | Form submissions (form_id, user_id, data JSONB) |
+
+**Name Reconciliation (Doc 08 → Doc 10/22):**
+- ENTRADA_GRAO → RECEBIMENTO_GRAO (Doc 10 field-validated name)
+- CLASSIFICACAO_GRAO → DROPPED (merged into RECEBIMENTO_GRAO)
+- UBG, CONTROLE_SECAGEM, QUEBRA_PRODUCAO → NEW entities added
 
 ---
 
@@ -403,10 +412,48 @@ TRABALHADOR_RURAL (Operacional)
 | ABASTECIMENTOS → FAZENDAS | ABASTECIMENTOS → MAQUINAS → FAZENDAS | 2 | Transitive closure |
 | MANUTENCOES → FAZENDAS | MANUTENCOES → MAQUINAS → FAZENDAS | 2 | Transitive closure |
 
+**Confirmed Redundant FKs — Financeiro (Doc 21):**
+
+| Removed FK | Shortest Path (w/o this FK) | Hops | Pattern |
+|-----------|---------------------------|------|---------|
+| NOTA_FISCAL_ITEM → PARCEIRO_COMERCIAL | NFI → NF → PARCEIRO | 2 | Transitive closure |
+| CPR_DOCUMENTO → PARCEIRO_COMERCIAL | CPR → CONTRATO_COMERCIAL → PARCEIRO | 2 | Transitive closure |
+| CONTRATO_ENTREGA → PARCEIRO_COMERCIAL | CE → CONTRATO_COMERCIAL → PARCEIRO | 2 | Transitive closure |
+
+**Conditional Redundancy — Financeiro (Doc 21):**
+CONTA_PAGAR.parceiro_id and CONTA_RECEBER.parceiro_id are derivable (2 hops via NF/CONTRATO) BUT intermediary FKs are OPTIONAL. KEPT because conditional paths don't guarantee reachability.
+
+**Confirmed Redundant FKs — UBG (Doc 22):**
+
+| Removed FK | Shortest Path (w/o this FK) | Hops | Pattern |
+|-----------|---------------------------|------|---------|
+| RECEBIMENTO_GRAO → UBG | RECEBIMENTO → TICKET_BALANCA → UBG | 2 | Transitive closure |
+| RECEBIMENTO_GRAO → CULTURAS | RECEBIMENTO → TALHAO_SAFRA → CULTURAS | 2 | Transitive closure |
+| SAIDA_GRAO → CULTURAS | SAIDA → ESTOQUE_SILO → CULTURAS | 2 | Transitive closure |
+| QUEBRA_PRODUCAO → CULTURAS | QUEBRA → ESTOQUE_SILO → CULTURAS | 2 | Transitive closure |
+| QUEBRA_PRODUCAO → SAFRAS | QUEBRA → ESTOQUE_SILO → SAFRAS | 2 | Transitive closure |
+| TICKET_BALANCA → FAZENDAS | TICKET → UBG → FAZENDAS | 2 | Transitive closure |
+
+**UBG Name Changes Applied (Doc 22):**
+ENTRADA_GRAO → RECEBIMENTO_GRAO (rename), CLASSIFICACAO_GRAO → dropped (merged), +UBG, +CONTROLE_SECAGEM, +QUEBRA_PRODUCAO.
+
+**Confirmed Redundant FKs — DPWAI/Sistema (Doc 23):**
+
+| Removed FK | Shortest Path (w/o this FK) | Hops | Pattern |
+|-----------|---------------------------|------|---------|
+| USER_ROLES → ORGANIZATIONS | USER_ROLES → USERS → ORGANIZATIONS | 2 | Transitive closure |
+| USER_PERMISSIONS → ORGANIZATIONS | USER_PERMISSIONS → USERS → ORGANIZATIONS | 2 | Transitive closure |
+| INVITE_TOKENS → OWNERS | INVITE_TOKENS → ORGANIZATIONS → OWNERS | 2 | Transitive closure |
+| ORGANIZATION_SETTINGS → OWNERS | ORG_SETTINGS → ORGANIZATIONS → OWNERS | 2 | Transitive closure |
+
+**DPWAI Adjacency Correction (Doc 23):**
+FK directions in the original DPWAI section were INVERTED — followed Doc 08 hierarchy diagram (top-down) instead of FK convention. Corrected: ADMINS→[], OWNERS→[], ORGANIZATIONS→[OWNERS], USERS→[ORGANIZATIONS], ROLES→[]. Added ORGANIZATION_SETTINGS, USER_PERMISSIONS, CUSTOM_FORMS, FORM_ENTRIES.
+
 **Org_id links NOT drawn (convention — ALL modules):**
 Every entity carries `organization_id` but it is NEVER drawn. Derivable via domain chains.
+**Exceptions for Camada Sistema:** USERS.organization_id and FAZENDAS.organization_id ARE drawn (real business relationships, not just filtering).
 
-> **TODO:** Apply Dijkstra analysis to remaining modules: Pecuaria, Financeiro, UBG, RH, DPWAI/Sistema.
+> **TODO:** Apply Dijkstra analysis to remaining modules: Pecuaria, RH.
 
 ### Cross-Frame Connectors (diagonal arrows on Miro)
 
@@ -422,7 +469,7 @@ Every entity carries `organization_id` but it is NEVER drawn. Derivable via doma
 | Pecuario (2) | Consumo e estoque (10) | Dieta_Ingrediente → Produto_Insumo | N:1 | DRAW |
 | Pecuario (2) | Consumo e estoque (10) | Manejo_Sanitario → Aplicacao_Insumo | 1:N | DRAW |
 | RH (4) | FINANCEIRO (9) | Apontamento_Mao_Obra → Centro_Custo | N:1 | DRAW |
-| UBG (1) | AGRICULTURA (8) | Entrada_Grao ← Colheita | N:1 | DRAW |
+| UBG (1) | AGRICULTURA (8) | Recebimento_Grao ← Colheita (via Ticket_Balanca → Operacao_Campo) | N:1 | DRAW |
 | Contratos (3) | FINANCEIRO (9) | Contrato_Comercial → Conta_Receber | 1:N | DRAW |
 | Contratos (3) | CLIENTE (7) | Contrato_Arrendamento → Talhoes | N:N | DRAW |
 
@@ -444,18 +491,23 @@ ENTITY → [list of entities it points TO via FK]
 
 Each arrow = 1 hop. To check redundancy of proposed FK A→C, find A in the list and trace paths to C.
 
-### Validated Adjacency List (Docs 17 + 19 + 20)
+### Validated Adjacency List (Docs 17 + 19 + 20 + 21 + 22 + 23)
 
 ```
-# ═══ CAMADA SISTEMA ═══
-ADMINS → [OWNERS]
-OWNERS → [ORGANIZATIONS]
-ORGANIZATIONS → [FAZENDAS, USERS]                    # real ownership chains
-USERS → [ROLES]
-ROLES → [PERMISSIONS]
-USER_ROLES → [USERS, ROLES]
-ROLE_PERMISSIONS → [ROLES, PERMISSIONS]
-INVITE_TOKENS → [ORGANIZATIONS]
+# ═══ CAMADA SISTEMA (Doc 23 — FK directions CORRECTED) ═══
+ADMINS → []                                              # CORRECTED: standalone, no FK out (was [OWNERS])
+OWNERS → []                                              # CORRECTED: standalone, no FK out (was [ORGANIZATIONS])
+ORGANIZATIONS → [OWNERS]                                 # CORRECTED: org.owner_id (was [FAZENDAS, USERS] — inverted)
+ORGANIZATION_SETTINGS → [ORGANIZATIONS]                  # NEW entry: 1:1 config (D02)
+USERS → [ORGANIZATIONS]                                  # CORRECTED: users.organization_id (was [ROLES] — inverted)
+ROLES → []                                               # CORRECTED: root entity (was [PERMISSIONS] — inverted)
+PERMISSIONS → []                                         # Root entity, no FK out
+USER_ROLES → [USERS, ROLES]                              # Unchanged (was correct)
+ROLE_PERMISSIONS → [ROLES, PERMISSIONS]                   # Unchanged (was correct)
+USER_PERMISSIONS → [USERS, PERMISSIONS]                   # NEW entry (was missing)
+INVITE_TOKENS → [ORGANIZATIONS, USERS*]                  # UPDATED: +USERS(criado_por_id)
+CUSTOM_FORMS → [USERS*]                                   # Sistema layer, criado_por_id (Doc 23 D14)
+FORM_ENTRIES → [CUSTOM_FORMS, USERS]                      # Sistema layer, submitter (Doc 23 D12)
 
 # ═══ CAMADA TERRITORIAL ═══
 FAZENDAS → [ORGANIZATIONS]
@@ -485,13 +537,17 @@ TRANSPORTE_COLHEITA_DETALHE → [OPERACAO_CAMPO, OPERACAO_CAMPO(colheita), TICKE
 ANALISE_SOLO → [TALHOES]
 RECOMENDACAO_ADUBACAO → [ANALISE_SOLO, CULTURAS]
 
-# ═══ CAMADA AGRICOLA (UBG/Silos) ═══
-TICKET_BALANCA → [FAZENDAS]                          # TODO: validate in UBG module mapping
-ENTRADA_GRAO → [TICKET_BALANCA]
-CLASSIFICACAO_GRAO → [ENTRADA_GRAO]
-ESTOQUE_SILO → [SILOS, CULTURAS, SAFRAS]
-MOVIMENTACAO_SILO → [ESTOQUE_SILO]
-SAIDA_GRAO → [ESTOQUE_SILO, NOTA_FISCAL*]
+# ═══ CAMADA AGRICOLA (UBG/Silos - Doc 22) ═══
+UBG → [FAZENDAS]                                             # NEW entity (U10)
+SILOS → [UBG]                                                # UPDATED: was [FAZENDAS], now via UBG
+TICKET_BALANCA → [UBG, OPERACAO_CAMPO*, OPERADORES]          # UPDATED: replaced FAZENDAS with UBG (redundant 2h)
+RECEBIMENTO_GRAO → [TICKET_BALANCA, TALHAO_SAFRA]           # RENAMED from ENTRADA_GRAO, +TALHAO_SAFRA (U18)
+# CLASSIFICACAO_GRAO → DROPPED (merged into RECEBIMENTO_GRAO — Doc 10/22)
+CONTROLE_SECAGEM → [RECEBIMENTO_GRAO]                       # NEW entity (U04)
+ESTOQUE_SILO → [SILOS, CULTURAS, SAFRAS]                    # VALIDATED (unchanged)
+MOVIMENTACAO_SILO → [SILOS(origem), SILOS(destino), OPERADORES]  # CORRECTED: was [ESTOQUE_SILO], actual FKs point to SILOS
+SAIDA_GRAO → [ESTOQUE_SILO, PARCEIRO_COMERCIAL*, NOTA_FISCAL*, OPERADORES]  # UPDATED: +PARCEIRO(U19), +OPERADORES(U21)
+QUEBRA_PRODUCAO → [ESTOQUE_SILO, OPERADORES]                # NEW entity (U08)
 
 # ═══ CAMADA OPERACIONAL (Maquinario - Doc 20) ═══
 MAQUINAS → [FAZENDAS]                                # VALIDATED (M05)
@@ -501,16 +557,17 @@ MANUTENCOES → [MAQUINAS, OPERADORES*, CENTRO_CUSTO*] # UPDATED: +OPERADORES* (
 TRABALHADOR_RURAL → [FAZENDAS]                       # TODO: validate
 APONTAMENTO_MAO_OBRA → [TRABALHADOR_RURAL, CENTRO_CUSTO]
 
-# ═══ CAMADA FINANCEIRO ═══
-NOTA_FISCAL → [PARCEIRO_COMERCIAL]                   # TODO: validate in Financeiro module
-NOTA_FISCAL_ITEM → [NOTA_FISCAL, PRODUTO_INSUMO]
-CONTA_PAGAR → [NOTA_FISCAL*, CENTRO_CUSTO]
-CONTA_RECEBER → [CONTRATO_COMERCIAL*, CENTRO_CUSTO]
-CENTRO_CUSTO → [CENTRO_CUSTO(parent)*]               # hierarchical self-ref
-CUSTO_OPERACAO → [CENTRO_CUSTO, APLICACAO_INSUMO*]
-CONTRATO_COMERCIAL → [PARCEIRO_COMERCIAL, SAFRAS, PRODUTO_INSUMO*]
-CONTRATO_ENTREGA → [CONTRATO_COMERCIAL]
-CPR_DOCUMENTO → [CONTRATO_COMERCIAL]
+# ═══ CAMADA FINANCEIRO (Doc 21) ═══
+NOTA_FISCAL → [PARCEIRO_COMERCIAL]                                       # VALIDATED (F01)
+NOTA_FISCAL_ITEM → [NOTA_FISCAL, PRODUTO_INSUMO]                        # VALIDATED (F02, F17)
+CONTA_PAGAR → [NOTA_FISCAL*, PARCEIRO_COMERCIAL, CENTRO_CUSTO*, CONTRATO_ARRENDAMENTO*]  # UPDATED: +PARCEIRO(F05), +ARRENDAMENTO(F22)
+CONTA_RECEBER → [NOTA_FISCAL*, PARCEIRO_COMERCIAL, CONTRATO_COMERCIAL*] # UPDATED: +PARCEIRO(F06), +NF(F04)
+CENTRO_CUSTO → [CENTRO_CUSTO(parent)*]                                   # VALIDATED (F07) self-ref hierarchy
+CUSTO_OPERACAO → [CENTRO_CUSTO, APLICACAO_INSUMO*]                      # VALIDATED (F08)
+CONTRATO_COMERCIAL → [PARCEIRO_COMERCIAL, SAFRAS, PRODUTO_INSUMO*]      # VALIDATED (F10, F15, F16)
+CONTRATO_ENTREGA → [CONTRATO_COMERCIAL, NOTA_FISCAL*, TICKET_BALANCA*, SAIDA_GRAO*]  # UPDATED: +NF(F14), +TB(F18), +SG(F19)
+CPR_DOCUMENTO → [CONTRATO_COMERCIAL]                                     # VALIDATED (F11)
+CONTRATO_ARRENDAMENTO → [PARCEIRO_COMERCIAL, TALHOES]                   # VALIDATED (F20, F21)
 
 # ═══ CAMADA PECUARIA ═══                            # TODO: full validation in Pecuaria module
 RACA → []
@@ -578,21 +635,21 @@ Result: ESSENTIAL. Draw it.
 
 ## Principal Data Flows
 
-### Flow 1: Grain Lifecycle
+### Flow 1: Grain Lifecycle (updated Doc 22)
 ```
-PLANTIO -> COLHEITA -> TICKET_BALANCA -> ENTRADA_GRAO -> CLASSIFICACAO_GRAO
-    |                                                          |
-    v                                                          v
-APLICACAO_INSUMO                                        ESTOQUE_SILO
-    |                                                          |
-    v                                                          v
+PLANTIO -> COLHEITA -> TICKET_BALANCA -> RECEBIMENTO_GRAO -> CONTROLE_SECAGEM
+    |                       |                  |                    |
+    v                       v                  v                   v
+APLICACAO_INSUMO          UBG           TALHAO_SAFRA          ESTOQUE_SILO
+    |                                  (rastreabilidade)           |
+    v                                                              v
 PRODUTO_INSUMO <- COMPRA_INSUMO <- NF_ITEM            MOVIMENTACAO_SILO
     |                    |                                     |
     v                    v                                     v
-RECEITUARIO        ESTOQUE_INSUMO                        SAIDA_GRAO
+RECEITUARIO        ESTOQUE_INSUMO                   SAIDA_GRAO + QUEBRA_PRODUCAO
                    (custo medio)                              |
                                                               v
-                                                    CONTRATO_COMERCIAL
+                                                    CONTRATO_COMERCIAL / RACAO
 ```
 
 ### Flow 2: Input Lifecycle (Doc 15)
@@ -684,16 +741,19 @@ COMPRA_INSUMO   PARCEIRO_COMERCIAL
 | 17 | Relacionamentos Consumo Estoque | Complete | 33 relationships mapped → 24 after redundancy analysis |
 | 19 | Relacionamentos Agricultura | Complete | 25 analyzed → 13 to draw, 4 redundant removed |
 | 20 | Relacionamentos Maquinario | Complete | 22 analyzed → 6 to draw, 2 redundant removed, 4 already on board |
+| 21 | Relacionamentos Financeiro | Complete | ~56 analyzed → 22 to draw, 3 redundant removed, 14 already on board |
+| 22 | Relacionamentos UBG | Complete | ~54 analyzed → 22 to draw, 6 redundant removed, 9 already on board. 3 new entities, 1 rename, 1 drop |
+| 23 | Relacionamentos DPWAI/Sistema | Complete | ~37 analyzed → 13 to draw, 4 redundant removed. Adjacency FK directions CORRECTED. Frame needs expansion (3→11 shapes) |
 
 ### Miro Board Implementation Status
 
 | Frame | Board Status | Doc Alignment |
 |-------|-------------|---------------|
-| 1 - UBG | Implemented | Matches Doc 10 |
+| 1 - UBG | RELATIONSHIPS MAPPED (Doc 22: 22 connectors) | Matches Docs 10, 22. Secondary board: uXjVGCOBuw4= |
 | 2 - Pecuario | Implemented (needs validation) | Matches Doc 06 |
 | 3 - Contratos | Implemented | Partially matches Doc 08 |
 | 4 - RH | Implemented (minimal) | Matches Doc 08 |
-| 5 - DPWAI | Implemented | Matches Doc 05 |
+| 5 - DPWAI | RELATIONSHIPS MAPPED (Doc 23: 13 connectors). Frame needs expansion: 3→11 shapes | Matches Docs 05, 08, 23 |
 | 6 - Maquinario | Implemented (has open questions) | Matches Doc 05/08 |
 | 7 - CLIENTE | Implemented | Matches Doc 08 |
 | 8 - AGRICULTURA | Implemented | Matches Docs 08, 09 |
@@ -707,6 +767,7 @@ COMPRA_INSUMO   PARCEIRO_COMERCIAL
 | 04/02/2026 | ~53 | Doc 05 - first complete mapping |
 | 06/02/2026 | ~88 | Doc 08 - full ER with pecuaria + infra |
 | 09/02/2026 | ~90 | Doc 15 - insumos module (+2 new, 2 replaced, 1 refactored) |
+| 11/02/2026 | ~92 | Doc 22 - UBG validated (+3 new: UBG, CONTROLE_SECAGEM, QUEBRA_PRODUCAO; -1 dropped: CLASSIFICACAO_GRAO; 1 renamed: ENTRADA→RECEBIMENTO) |
 
 ---
 
@@ -848,10 +909,10 @@ in business terms, not technical jargon."
 | 1 | Draw Consumo e Estoque connectors on Miro (24 relationships) | In progress (manual) | Rodrigo |
 | 2 | Map relationships for Agricultura module | Complete (Doc 19: 13 connectors) | Claude + Rodrigo |
 | 3 | Map relationships for Pecuaria module | Not started | Claude + Rodrigo |
-| 4 | Map relationships for Financeiro module | Not started | Claude + Rodrigo |
-| 5 | Map relationships for UBG module | Not started | Claude + Rodrigo |
+| 4 | Map relationships for Financeiro module | Complete (Doc 21: 22 connectors, 14 exist + 8 new) | Claude + Rodrigo |
+| 5 | Map relationships for UBG module | Complete (Doc 22: 22 connectors, 9 exist + 2 redesign + 11 new) | Claude + Rodrigo |
 | 6 | Map relationships for Maquinario module | Complete (Doc 20: 6 connectors, 4 exist + 2 new) | Claude + Rodrigo |
-| 7 | Map relationships for DPWAI/Sistema module | Not started | Claude + Rodrigo |
+| 7 | Map relationships for DPWAI/Sistema module | Complete (Doc 23: 13 connectors, 1 exist + 12 new. FK directions corrected) | Claude + Rodrigo |
 | 7 | Rename FKs in 3 existing entities (insumo_id -> produto_insumo_id) | Pending | Rodrigo |
 | 8 | Resolve open questions (NF org/fazenda, cargo, payroll) | Pending stakeholder meetings | Rodrigo + Claudio/Valentina |
 | 9 | Generate full DDL SQL for all layers | Partial (Doc 16 covers insumos only) | Claude + Joao |
@@ -859,12 +920,15 @@ in business terms, not technical jargon."
 
 ---
 
-**Version:** 1.3
+**Version:** 1.6
 **Created:** 10/02/2026
-**Updated:** 11/02/2026
-**Last Board Audit:** 11/02/2026 (Maquinario frame via Miro API)
+**Updated:** 12/02/2026
+**Last Board Audit:** 12/02/2026 (DPWAI frame via Miro API — main board uXjVGE__XFQ=)
 **Maintained by:** Rodrigo Kugler & DeepWork AI Flows
 **Changelog:**
+- **v1.6:** Validated DPWAI/Sistema module (Doc 23). **CRITICAL FIX:** Corrected inverted FK directions in Camada Sistema adjacency list — ADMINS, OWNERS, ORGANIZATIONS, USERS, ROLES all had reversed arrows. Added ORGANIZATION_SETTINGS, USER_PERMISSIONS, CUSTOM_FORMS, FORM_ENTRIES entries. Added 4 DPWAI redundancy findings. Noted org_id exceptions for Sistema layer. Updated milestones (DPWAI complete). Remaining: Pecuaria, RH.
+- **v1.5:** Validated UBG module adjacency list (Doc 22). Major restructure: ENTRADA_GRAO→RECEBIMENTO_GRAO (rename), CLASSIFICACAO_GRAO dropped (merged), 3 new entities (UBG, CONTROLE_SECAGEM, QUEBRA_PRODUCAO). Corrected MOVIMENTACAO_SILO edges (was [ESTOQUE_SILO], now [SILOS(origem), SILOS(destino)]). SILOS now points to UBG instead of FAZENDAS. TICKET_BALANCA now points to UBG. Added 6 UBG redundancy findings. Updated Grain Lifecycle flow. Updated entity count (~92). LENHA + RACAO flows documented.
+- **v1.4:** Validated Financeiro module adjacency list (Doc 21). Major update: CONTA_PAGAR +PARCEIRO +ARRENDAMENTO edges, CONTA_RECEBER +PARCEIRO +NF edges, CONTRATO_ENTREGA +NF +TICKET_BALANCA +SAIDA_GRAO edges, CONTRATO_ARRENDAMENTO fully validated. Added 3 Financeiro redundancy findings + conditional redundancy pattern. Updated milestones (Financeiro complete).
 - **v1.3:** Validated Maquinario module adjacency list (Doc 20). Added OPERADORES to ABASTECIMENTOS and MANUTENCOES edges. Added Maquinario redundancy findings (2 FKs). Updated milestones (Maquinario complete). Added Doc 20 to documentation table.
 - **v1.2:** Added Dijkstra's Shortest Path framework (per Joao's directive 11/02/2026). Added full Entity Graph adjacency list with hub identification. Added Agricultura redundancy findings (Doc 19). Updated diagram conventions with Dijkstra/hub/leaf rules.
 - **v1.1:** Applied redundancy analysis (Doc 17). Added Diagram Conventions. Updated FK Renames (5→3). Updated milestones for module-by-module relationship mapping.
