@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOAL — Plano de Coleta V0</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117; color: #c9d1d9;
+      height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    header {
+      padding: 10px 20px; background: #161b22; border-bottom: 1px solid #21262d;
+      display: flex; align-items: center; gap: 20px; flex-shrink: 0;
+    }
+    header h1 { font-size: 15px; font-weight: 700; color: #f0f6fc; white-space: nowrap; }
+    header p  { font-size: 11px; color: #6e7681; }
+    .progress-wrap {
+      flex: 1; max-width: 360px; display: flex; flex-direction: column; gap: 3px;
+    }
+    .progress-bar {
+      height: 8px; background: #21262d; border-radius: 4px; overflow: hidden;
+      display: flex;
+    }
+    .progress-seg { height: 100%; transition: width .4s ease; }
+    .progress-label {
+      font-size: 10px; color: #8b949e; display: flex; gap: 12px;
+    }
+    .progress-label span { white-space: nowrap; }
+    .body { display: flex; flex: 1; overflow: hidden; }
+    .canvas-area { flex: 1; position: relative; overflow: hidden; background: #0d1117; }
+    canvas { position: absolute; top: 0; left: 0; cursor: default; }
+
+    .sidebar {
+      width: 280px; background: #161b22; border-left: 1px solid #21262d;
+      display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+    }
+    .sb-title {
+      padding: 10px 14px; border-bottom: 1px solid #21262d;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: #6e7681;
+    }
+    .stats { display: flex; gap: 4px; padding: 8px 10px; border-bottom: 1px solid #21262d; }
+    .stat {
+      flex: 1; text-align: center; padding: 6px 2px; border-radius: 6px;
+      cursor: pointer; border: 1.5px solid transparent; transition: all .15s;
+    }
+    .stat:hover { background: #21262d; }
+    .stat.active { border-color: currentColor; background: rgba(255,255,255,.05); }
+    .stat-n { display: block; font-size: 20px; font-weight: 800; line-height: 1.1; }
+    .stat-l { display: block; font-size: 9px; margin-top: 2px; color: #6e7681; text-transform: uppercase; letter-spacing: .04em; }
+    .node-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+    .node-list::-webkit-scrollbar { width: 5px; }
+    .node-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    .phase-h {
+      padding: 10px 14px 4px; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .node-row {
+      display: flex; align-items: center; gap: 8px; padding: 5px 14px;
+      cursor: pointer; transition: background .1s;
+    }
+    .node-row:hover { background: #21262d; }
+    .node-row.sel  { background: #1f3145; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .node-name {
+      font-size: 12px; font-family: ui-monospace, Consolas, monospace;
+      flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .rec-badge {
+      font-size: 9px; padding: 1px 6px; border-radius: 3px;
+      background: rgba(46,160,67,.15); color: #3fb950; flex-shrink: 0;
+      font-family: ui-monospace, Consolas, monospace; font-weight: 600;
+    }
+    .cat-badge {
+      font-size: 9px; padding: 1px 5px; border-radius: 3px;
+      background: #21262d; color: #8b949e; flex-shrink: 0;
+    }
+    .actions {
+      padding: 8px 14px; border-top: 1px solid #21262d;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    button {
+      width: 100%; padding: 7px 10px; border: 1px solid #21262d; border-radius: 6px;
+      background: #21262d; color: #c9d1d9; font-size: 11px;
+      cursor: pointer; transition: background .15s; font-family: inherit;
+    }
+    button:hover { background: #2d333b; }
+    .prompt-panel {
+      border-top: 1px solid #21262d; background: #0a0e17;
+      padding: 10px 16px; flex-shrink: 0;
+    }
+    .prompt-top {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+    }
+    .prompt-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6e7681; }
+    .copy-btn { width: auto; padding: 3px 12px; font-size: 10px; }
+    .prompt-text {
+      font-size: 12px; line-height: 1.55; color: #8b949e;
+      max-height: 80px; overflow-y: auto; min-height: 36px;
+    }
+    #tooltip {
+      position: absolute; display: none; z-index: 50;
+      background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+      padding: 10px 13px; font-size: 12px; color: #c9d1d9; max-width: 280px;
+      pointer-events: none; line-height: 1.5; box-shadow: 0 6px 24px rgba(0,0,0,.6);
+    }
+    .tt-id   { display: block; margin-bottom: 4px; font-size: 14px; color: #f0f6fc; font-family: monospace; font-weight: 700; }
+    .tt-meta { font-size: 10px; color: #6e7681; margin-bottom: 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tt-meta-tag { padding: 1px 6px; border-radius: 3px; background: #21262d; }
+    .tt-records { font-size: 12px; color: #3fb950; font-weight: 600; margin-bottom: 5px; }
+    .tt-desc { font-size: 11px; color: #8b949e; }
+    .legend {
+      position: absolute; bottom: 10px; left: 10px; z-index: 10;
+      background: rgba(22,27,34,.94); border: 1px solid #21262d; border-radius: 6px;
+      padding: 8px 12px; display: flex; flex-direction: column; gap: 5px;
+    }
+    .leg { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #8b949e; }
+    .leg-d { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .phase-legend {
+      position: absolute; top: 10px; left: 10px; z-index: 10;
+      background: rgba(22,27,34,.94); border: 1px solid #21262d; border-radius: 6px;
+      padding: 8px 12px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .ph-leg { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #8b949e; }
+    .ph-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .detail-panel {
+      border-top: 1px solid #21262d; padding: 10px 14px; background: #0d1117;
+      max-height: 140px; overflow-y: auto; display: none;
+    }
+    .detail-panel.show { display: block; }
+    .detail-title { font-size: 13px; font-weight: 700; color: #f0f6fc; margin-bottom: 4px; font-family: monospace; }
+    .detail-status { font-size: 11px; margin-bottom: 6px; }
+    .detail-desc { font-size: 11px; color: #8b949e; line-height: 1.5; }
+    .detail-records { font-size: 12px; font-weight: 600; color: #3fb950; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>SOAL — Plano de Coleta V0</h1>
+    <p>Clique para mudar status | Arraste para mover | Hover para detalhes</p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="progress-label" id="progress-label"></div>
+  </div>
+</header>
+
+<div class="body">
+  <div class="canvas-area" id="wrap">
+    <canvas id="c"></canvas>
+    <div id="tooltip"></div>
+    <div class="phase-legend" id="phase-legend"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-d" style="background:#2ea043"></div><span>Coletado</span></div>
+      <div class="leg"><div class="leg-d" style="background:#d29922"></div><span>Parcial</span></div>
+      <div class="leg"><div class="leg-d" style="background:#484f58"></div><span>Pendente</span></div>
+      <div class="leg"><div class="leg-d" style="background:#f85149"></div><span>Bloqueado</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sb-title">Status da Coleta</div>
+    <div class="stats" id="stats"></div>
+    <div class="detail-panel" id="detail-panel">
+      <div class="detail-title" id="detail-title"></div>
+      <div class="detail-records" id="detail-records"></div>
+      <div class="detail-status" id="detail-status"></div>
+      <div class="detail-desc" id="detail-desc"></div>
+    </div>
+    <div class="node-list" id="node-list"></div>
+    <div class="actions">
+      <button id="btn-layout">Auto-layout</button>
+      <button id="btn-all">Mostrar todos</button>
+    </div>
+  </div>
+</div>
+
+<div class="prompt-panel">
+  <div class="prompt-top">
+    <span class="prompt-label">Prompt gerado</span>
+    <button class="copy-btn" id="copy-btn">Copiar</button>
+  </div>
+  <div class="prompt-text" id="prompt-text"></div>
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+var STATUS_CYCLE = ['pendente', 'parcial', 'coletado', 'bloqueado'];
+var STATUS = {
+  coletado:  { fill: '#238636', ring: '#2ea043', label: 'Coletado' },
+  parcial:   { fill: '#9e6a03', ring: '#d29922', label: 'Parcial' },
+  pendente:  { fill: '#3d444d', ring: '#484f58', label: 'Pendente' },
+  bloqueado: { fill: '#b91c1c', ring: '#f85149', label: 'Bloqueado' },
+};
+
+var PHASE_COLORS = ['#3b82f6','#8b5cf6','#22c55e','#06b6d4','#f97316','#eab308','#ec4899','#94a3b8'];
+var PHASE_SHORT  = ['F0 Seed','F1 Sistema','F2 Territorio','F3 Operacional','F4 Financeiro','F5 Safra','F6 Continuo','F7 Auto'];
+var PHASE_LONG   = [
+  'Fase 0 — Seed (raizes)', 'Fase 1 — Sistema / Plataforma', 'Fase 2 — Territorio',
+  'Fase 3 — Cadastros Operacionais', 'Fase 4 — Financeiro Base',
+  'Fase 5 — Planejamento Safra', 'Fase 6 — Operacoes Continuas', 'Fase 7 — Auto-calculado',
+];
+var CAT_LABEL = { A:'Seed', B:'CSV', C:'Form', D:'API', E:'Auto' };
+
+var NODES = [
+  // ── Fase 0: Seeds ──
+  { id:'CULTURAS',          phase:0, cat:'A', status:'coletado',  records: 9,
+    desc:'Seed completo (01_culturas.csv). 9 culturas: soja, milho, trigo, feijao, aveia_branca, aveia_preta, azevem, milheto, soja_semente. Schema: name, display_name, group, harvest_unit.' },
+  { id:'PRODUTO_INSUMO',    phase:0, cat:'B', status:'coletado',  records: 18538,
+    desc:'38 seed (combustiveis, lubrificantes) + 18.499 AgriWin (200 xlsx). 99.8% classificado. 162 variantes unidade → 55 canonicas. Schema: 12 campos incluindo tipo, grupo, ncm, custo_medio.' },
+  { id:'ROLES',             phase:0, cat:'A', status:'pendente',  records: 0,
+    desc:'Papeis do sistema: admin, manager, operator, viewer. Joao faz o seed SQL.' },
+
+  // ── Fase 1: Sistema ──
+  { id:'OWNERS',            phase:1, cat:'A', status:'parcial',   records: 1,
+    desc:'Claudio Kugler. Owner da SOAL. Nome OK, falta email/telefone. Prisma: User.isSuperProprietario.' },
+  { id:'ORGANIZATIONS',     phase:1, cat:'A', status:'parcial',   records: 1,
+    desc:'Serra da Onca Agropecuaria. CSV 01_organizations.csv criado. Nome/slug/UF OK. FALTA: CNPJ (com CNPJ, ReceitaWS preenche 80% — razao social, endereco, CNAE, porte). Prisma: Tenant.' },
+  { id:'USERS',             phase:1, cat:'A', status:'parcial',   records: 8,
+    desc:'8 usuarios: Claudio(OWNER), Tiago/Rodrigo/Joao(ADMIN), Valentina/Alessandro/Josmar/Vanessa(MEMBER). CSV 02_users.csv criado. Nomes e roles OK. FALTA: email e telefone de 6 stakeholders. Prisma: User + Membership.' },
+
+  // ── Fase 2: Territorio ──
+  { id:'FAZENDAS',          phase:2, cat:'A', status:'coletado',  records: 8,
+    desc:'8 fazendas (02_fazendas.csv): Santana do Iapo, Cavernoso, Candido, Espigao, Marrecas, Paulao, Guaiaca, Terra Roxa. Schema: name, cnpj, municipality, total_area_ha.' },
+  { id:'SAFRAS',            phase:2, cat:'A', status:'coletado',  records: 11,
+    desc:'11 safras (01_safras.csv): 2020/21 a 2030/31. Ano fiscal Jul-Jun. Schema: season_code, fiscal_year_start/end, status.' },
+  { id:'TALHOES',           phase:2, cat:'B', status:'coletado',  records: 72,
+    desc:'72 talhoes (03_talhoes.csv) + 184 mapeamentos de nome (03b_mapping.csv). 7 fazendas. Falta KML/CAR para geodata. Schema: 7 campos.' },
+  { id:'TALHAO_MAPPING',    phase:2, cat:'B', status:'coletado',  records: 184,
+    desc:'184 mapeamentos de-para de nomes (03b_talhao_nome_mapping.csv). Reconcilia naming AgriWin, Plantio e canonico. Essencial para importacao cruzada.' },
+  { id:'UBG',               phase:2, cat:'A', status:'parcial',   records: 19177,
+    desc:'Unidade de Beneficiamento de Graos. Historico caixa 19.177 reg (2011-2026). CSV 01_ubg.csv criado. Nome/balanca/tombador/secador OK. FALTA: capacidade recepcao/secagem t/dia, fazenda sede, responsavel tecnico, CREA, GPS. Prisma: UBG (6 entidades filhas). Coletar com Josmar.' },
+  { id:'SILOS',             phase:2, cat:'A', status:'parcial',  records: 8,
+    desc:'CSV 02_silos_ubg.csv criado com 8 linhas (estimativa Josmar). FALTA: nome, tipo (CONVENCIONAL/SEMENTES/ESPECIAL), capacidade_ton, capacidade_m3, material (METALICO/MADEIRA/CONCRETO), aeracao, termometria. Prisma: SiloUBG. Coletar com Josmar.' },
+  { id:'PARCEIRO_COMERCIAL',phase:2, cat:'B', status:'coletado',  records: 2210,
+    desc:'8 seed manuais + 2.201 AgriWin (23 xlsx). 830 CNPJ + 206 CPF. 1.825 sem tipo (Valentina classificar). Schema: 14 campos incl. doc_type.' },
+
+  // ── Fase 3: Operacional ──
+  { id:'MAQUINAS',          phase:3, cat:'B', status:'parcial',   records: 183,
+    desc:'183 maquinas (04_maquinas.csv): 156 ativo, 27 vendido. 30/42 tags Vestro RFID matched. 9 questoes Tiago pendentes. Schema: 15 campos incl. rfidTag, purchaseValue.' },
+  { id:'OPERADORES',        phase:3, cat:'B', status:'parcial',   records: 62,
+    desc:'30 Vestro (04_operadores_vestro.csv) + 31 parcial (05_operadores_parcial.csv). Falta CPF, cargo, fazenda base — Valentina completar. Schema: incl. matricula_vestro.' },
+  { id:'TAGS_VESTRO',       phase:3, cat:'B', status:'coletado',  records: 42,
+    desc:'42 tags RFID Vestro (05_tags_maquinas_vestro.csv): 26 horimetro, 12 hodometro, 2 tanque fixo. 30/42 match com maquinas.csv.' },
+  { id:'TANQUES_COMBUSTIVEL',phase:3, cat:'B', status:'coletado', records: 5,
+    desc:'5 tanques (06_fuel_tanks.csv): name, fazenda, fuel_type, capacity_liters. Coletado no discovery com Tiago.' },
+  { id:'CENTRO_CUSTO',      phase:3, cat:'A', status:'coletado',  records: 387,
+    desc:'387 registros (07_centro_custo.csv). 6 niveis hierarquicos: Org > Fazenda > Safra > Cultura > Talhao > Tipo. Schema: 10 campos.' },
+  { id:'TRABALHADOR_RURAL', phase:3, cat:'B', status:'pendente',  records: 0,
+    desc:'Valentina confirmar: CLT, PJ, temporarios. CSV nao coletado.' },
+
+  // ── Fase 4: Financeiro / Castrolanda ──
+  { id:'EXTRATO_COOPERATIVA',phase:4, cat:'B', status:'coletado', records: 8211,
+    desc:'8.211 transacoes por cultura (07_castrolanda_extrato.csv). 9 contas: SOJA, MILHO, TRIGO, FEIJAO, CEVADA, etc. fev/2020→fev/2026. ETL validado 24/24.' },
+  { id:'CC_COOPERATIVA',    phase:4, cat:'B', status:'coletado',  records: 2889,
+    desc:'2.889 transacoes C/C geral (09_castrolanda_cc_completo.csv). 6 anos fev/2020→jan/2026. PDF 214 pags. ~33 tipos. Cross-validated 12/14 meses PERFEITO.' },
+  { id:'CONTA_CAPITAL',     phase:4, cat:'B', status:'coletado',  records: 77,
+    desc:'77 registros (12_castrolanda_capital_html.csv). 2 contas: Mat.Prima + UBC (R$435k). Validado ALL PASS contra RESUMO HTML.' },
+  { id:'FINANCIAMENTO_COOP',phase:4, cat:'B', status:'coletado',  records: 220,
+    desc:'220 movimentacoes, 22 contratos (11_castrolanda_financiamentos.csv). 9 ativos, 13 quitados. Capital de Giro, Nota Promissoria, Calcario, Custeio.' },
+  { id:'VENDA_GRAO',        phase:4, cat:'B', status:'coletado',  records: 170,
+    desc:'170 vendas (13_castrolanda_vendas.csv). 6 culturas, 13 safras (18/19→25/25). R$99.3M bruto. Schema: 24 campos incl. frete, desconto, data_credito.' },
+  { id:'CARGA_A_CARGA',     phase:4, cat:'B', status:'coletado',  records: 1337,
+    desc:'1.337 cargas (14_castrolanda_carga_a_carga.csv). 7 culturas, 6 safras (20/21→25/26), 42.4k ton. Perspectiva Castrolanda — reconcilia com SAIDA_GRAO da UBG. Falta safra 22/23 Soja Intacta IPRO (erro 500). Schema: 20 campos, qualidade em JSON.' },
+  { id:'NOTA_FISCAL',       phase:4, cat:'D', status:'pendente',  records: 0,
+    desc:'Via SEFAZ API (XML DFe). Joao criar crawler. Historico AgriWin nao exportado.' },
+  { id:'CONTA_PAGAR',       phase:4, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina. Depende de PARCEIRO_COMERCIAL + NOTA_FISCAL.' },
+  { id:'CONTA_RECEBER',     phase:4, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina. Depende de PARCEIRO_COMERCIAL.' },
+
+  // ── Fase 5: Planejamento Safra ──
+  { id:'TALHAO_SAFRA',      phase:5, cat:'B', status:'parcial',   records: 251,
+    desc:'24/25: 196 reg (63 safra + 63 safrinha + 70 outras, 2.464ha). 25/26: 55 reg (1.996ha). Historico 20/21→23/24 pendente — coletar com Claudio esta semana. Schema: precisa FK culturaId (hoje String livre) + ENUM tipoSafra.' },
+  { id:'ANALISE_SOLO',      phase:5, cat:'B', status:'pendente',  records: 0,
+    desc:'Laudos com Alessandro. CSV nao coletado. Depende de TALHAO_SAFRA.' },
+  { id:'RECEITUARIO',       phase:5, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Alessandro. Bloqueador: Alessandro prescreve TODAS as aplicacoes?' },
+
+  // ── Fase 6: Operacoes Continuas ──
+  { id:'OPERACAO_CAMPO',    phase:6, cat:'C', status:'parcial',   records: 31,
+    desc:'31 reg historicos (out/2024) + CSVs templates criados: 01_colheita (~150 derivar de 548 tickets), 02_plantio (117 das listagens). HUB CENTRAL (8+ conexoes). Reuniao Tiago: vincular maquina+operador a cada operacao. Prisma: OperacaoCampo + PlantioDetalhe + ColheitaDetalhe + PulverizacaoDetalhe.' },
+  { id:'TICKET_BALANCA',    phase:6, cat:'C', status:'parcial',   records: 548,
+    desc:'548 registros 23/24 (09_ticket_balanca.csv): soja 332, milho 164, feijao 52. 24/25 milho FALTANDO (arquivo duplicado). Perspectiva UBG — reconcilia com CARGA_A_CARGA Castrolanda. Schema: 22 campos incl. gleba, is_seed, qualidade.' },
+  { id:'ABASTECIMENTOS',    phase:6, cat:'B', status:'coletado',  records: 23790,
+    desc:'1.173 recentes Vestro (10_fuel_supplies.csv) + 22.617 historicos (12_abastecimentos_historico.csv, 2009→2026, 11 xlsx). Schema: 17 campos.' },
+  { id:'MANUTENCOES',       phase:6, cat:'B', status:'coletado',  records: 9871,
+    desc:'9.871 registros historicos (11_manutencoes_historico.csv, 1997→2026, 11 xlsx, 101 abas). 8 layouts detectados dinamicamente. Schema: 18 campos.' },
+  { id:'HISTORICO_MAQUINAS', phase:6, cat:'B', status:'coletado',  records: 32516,
+    desc:'32.516 registros (1997-2026, 11 xlsx, 101 abas). Consolida horimetro, hodometro, diesel, operacoes. Inclui abastecimentos + manutencoes + operacoes. ETL: etl_maquinario.py.' },
+  { id:'COMPRA_INSUMO',     phase:6, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina + historico AgriWin. Depende de PRODUTO_INSUMO + PARCEIRO_COMERCIAL.' },
+  { id:'SAIDA_GRAO',        phase:6, cat:'C', status:'pendente',  records: 0,
+    desc:'Saida de graos da UBG. Perspectiva SOAL — reconcilia com CARGA_A_CARGA (perspectiva Castrolanda). Form para Josmar/Vanessa.' },
+
+  // ── Fase 7: Auto-calculado ──
+  { id:'ESTOQUE_INSUMO',    phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via triggers. Custo medio ponderado. Depende de COMPRA_INSUMO + APLICACAO_INSUMO.' },
+  { id:'CUSTO_OPERACAO',    phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via stored procedure apos OPERACAO_CAMPO. Alimenta CENTRO_CUSTO nivel 6.' },
+  { id:'ESTOQUE_SILO',      phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via triggers apos TICKET_BALANCA + SAIDA_GRAO. Depende de SILOS.' },
+];
+
+var EDGES = [
+  // Sistema
+  ['OWNERS','ORGANIZATIONS'], ['ORGANIZATIONS','FAZENDAS'],
+  ['ORGANIZATIONS','SAFRAS'], ['ORGANIZATIONS','USERS'],
+  ['ORGANIZATIONS','MAQUINAS'], ['ORGANIZATIONS','CENTRO_CUSTO'],
+  // Territorial
+  ['FAZENDAS','TALHOES'], ['FAZENDAS','UBG'], ['FAZENDAS','PARCEIRO_COMERCIAL'],
+  ['TALHOES','TALHAO_MAPPING'],
+  ['UBG','SILOS'],
+  // Planejamento
+  ['CULTURAS','TALHAO_SAFRA'], ['TALHOES','TALHAO_SAFRA'], ['SAFRAS','TALHAO_SAFRA'],
+  ['TALHAO_SAFRA','ANALISE_SOLO'],
+  // Operacional
+  ['MAQUINAS','TAGS_VESTRO'], ['MAQUINAS','OPERACAO_CAMPO'],
+  ['MAQUINAS','ABASTECIMENTOS'], ['MAQUINAS','MANUTENCOES'], ['MAQUINAS','HISTORICO_MAQUINAS'],
+  ['TANQUES_COMBUSTIVEL','ABASTECIMENTOS'],
+  ['OPERADORES','OPERACAO_CAMPO'],
+  ['TALHAO_SAFRA','OPERACAO_CAMPO'],
+  // Financeiro / Castrolanda
+  ['PARCEIRO_COMERCIAL','EXTRATO_COOPERATIVA'], ['PARCEIRO_COMERCIAL','CC_COOPERATIVA'],
+  ['PARCEIRO_COMERCIAL','CONTA_CAPITAL'], ['PARCEIRO_COMERCIAL','FINANCIAMENTO_COOP'],
+  ['PARCEIRO_COMERCIAL','NOTA_FISCAL'], ['PARCEIRO_COMERCIAL','VENDA_GRAO'],
+  ['NOTA_FISCAL','CONTA_PAGAR'],
+  ['PRODUTO_INSUMO','COMPRA_INSUMO'],
+  ['COMPRA_INSUMO','ESTOQUE_INSUMO'],
+  // Fluxo UBG → Castrolanda (reconciliacao)
+  ['UBG','TICKET_BALANCA'],
+  ['TALHAO_SAFRA','TICKET_BALANCA'],
+  ['TICKET_BALANCA','SAIDA_GRAO'],
+  ['SAIDA_GRAO','CARGA_A_CARGA'],  // reconciliacao: UBG despacha ↔ Castrolanda recebe
+  ['TICKET_BALANCA','ESTOQUE_SILO'],
+  ['TALHAO_SAFRA','CARGA_A_CARGA'],
+  ['VENDA_GRAO','CARGA_A_CARGA'],
+  // Auto
+  ['OPERACAO_CAMPO','CUSTO_OPERACAO'],
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+
+var nodeMap = {};
+NODES.forEach(function(n) { nodeMap[n.id] = n; n.x = 0; n.y = 0; n.vx = 0; n.vy = 0; });
+
+var selectedId  = null;
+var filterStat  = null;
+var dragging    = null;
+var dragOff     = { x: 0, y: 0 };
+var dragStartX  = 0;
+var dragStartY  = 0;
+var hovering    = null;
+var initialized = false;
+
+// ─── Canvas ───────────────────────────────────────────────────────────────────
+
+var wrap   = document.getElementById('wrap');
+var canvas = document.getElementById('c');
+var ctx    = canvas.getContext('2d');
+var tipEl  = document.getElementById('tooltip');
+var W = 0, H = 0, dpr = 1;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W   = wrap.offsetWidth;
+  H   = wrap.offsetHeight;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (!initialized) { doAutoLayout(); initialized = true; }
+  else draw();
+}
+
+window.addEventListener('resize', resize);
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+
+var NODE_R = 34;
+
+function initPositions() {
+  var byPhase = {};
+  NODES.forEach(function(n) { if (!byPhase[n.phase]) byPhase[n.phase] = []; byPhase[n.phase].push(n); });
+  var phases = Object.keys(byPhase).map(Number).sort(function(a, b) { return a - b; });
+  var cols   = phases.length;
+  NODES.forEach(function(n) {
+    var phaseList = byPhase[n.phase];
+    var phaseIdx  = phases.indexOf(n.phase);
+    var nodeIdx   = phaseList.indexOf(n);
+    var total     = phaseList.length;
+    n.x  = 80 + phaseIdx * (W - 160) / (cols - 1);
+    n.y  = H * 0.12 + nodeIdx * (H * 0.76 / Math.max(total - 1, 1));
+    n.vx = 0; n.vy = 0;
+  });
+}
+
+function runForce(iters) {
+  var byPhase = {};
+  NODES.forEach(function(n) { if (!byPhase[n.phase]) byPhase[n.phase] = 0; byPhase[n.phase]++; });
+  var phases = Object.keys(byPhase).map(Number).sort(function(a, b) { return a - b; });
+  var phaseX = {};
+  phases.forEach(function(p, i) { phaseX[p] = 80 + i * (W - 160) / (phases.length - 1); });
+
+  for (var it = 0; it < iters; it++) {
+    for (var i = 0; i < NODES.length; i++) {
+      for (var j = i + 1; j < NODES.length; j++) {
+        var a = NODES[i], b = NODES[j];
+        var dx = b.x - a.x, dy = b.y - a.y;
+        var d2 = Math.max(dx * dx + dy * dy, 1);
+        var d  = Math.sqrt(d2);
+        var f  = 8000 / d2;
+        a.vx -= (dx / d) * f; a.vy -= (dy / d) * f;
+        b.vx += (dx / d) * f; b.vy += (dy / d) * f;
+      }
+    }
+    EDGES.forEach(function(edge) {
+      var a = nodeMap[edge[0]], b = nodeMap[edge[1]];
+      if (!a || !b) return;
+      var dx = b.x - a.x, dy = b.y - a.y;
+      var d  = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+      var f  = (d - 120) * 0.025;
+      a.vx += (dx / d) * f; a.vy += (dy / d) * f;
+      b.vx -= (dx / d) * f; b.vy -= (dy / d) * f;
+    });
+    NODES.forEach(function(n) { n.vx += (phaseX[n.phase] - n.x) * 0.05; });
+    NODES.forEach(function(n) {
+      n.vx *= 0.80; n.vy *= 0.80;
+      n.x   = Math.max(NODE_R + 6, Math.min(W - NODE_R - 6, n.x + n.vx));
+      n.y   = Math.max(NODE_R + 6, Math.min(H - NODE_R - 6, n.y + n.vy));
+    });
+  }
+  draw();
+}
+
+function doAutoLayout() {
+  initPositions();
+  runForce(250);
+}
+
+// ─── Drawing ─────────────────────────────────────────────────────────────────
+
+function nodeLines(id) {
+  var parts = id.split('_');
+  if (parts.length === 1 || id.length <= 10) return [id];
+  if (parts.length === 2) return [parts[0], parts[1]];
+  var mid = Math.ceil(parts.length / 2);
+  return [parts.slice(0, mid).join('_'), parts.slice(mid).join('_')];
+}
+
+function formatRecords(n) {
+  if (n === 0) return '';
+  if (n >= 10000) return (n / 1000).toFixed(1).replace('.0','') + 'k';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function drawArrow(x1, y1, x2, y2) {
+  var angle = Math.atan2(y2 - y1, x2 - x1);
+  var ex    = x2 - Math.cos(angle) * (NODE_R + 3);
+  var ey    = y2 - Math.sin(angle) * (NODE_R + 3);
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - 10 * Math.cos(angle - 0.4), ey - 10 * Math.sin(angle - 0.4));
+  ctx.lineTo(ex - 10 * Math.cos(angle + 0.4), ey - 10 * Math.sin(angle + 0.4));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function isVisible(n) { return !filterStat || n.status === filterStat; }
+
+function draw() {
+  if (!W || !H) return;
+  ctx.clearRect(0, 0, W, H);
+
+  // Edges
+  EDGES.forEach(function(edge) {
+    var a = nodeMap[edge[0]], b = nodeMap[edge[1]];
+    if (!a || !b) return;
+    var vis = isVisible(a) && isVisible(b);
+    ctx.globalAlpha = vis ? 0.22 : 0.04;
+    ctx.strokeStyle  = '#636e7b';
+    ctx.lineWidth    = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+    if (vis) {
+      ctx.globalAlpha = 0.28;
+      ctx.fillStyle   = '#636e7b';
+      drawArrow(a.x, a.y, b.x, b.y);
+    }
+  });
+
+  // Nodes
+  NODES.forEach(function(n) {
+    var vis = isVisible(n);
+    var st  = STATUS[n.status];
+    var pc  = PHASE_COLORS[n.phase];
+
+    // Phase ring
+    ctx.globalAlpha = vis ? 0.28 : 0.05;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, NODE_R + 5, 0, Math.PI * 2);
+    ctx.strokeStyle = pc;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    // Node body
+    ctx.globalAlpha = vis ? 1 : 0.1;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, NODE_R, 0, Math.PI * 2);
+    ctx.fillStyle = '#161b22';
+    ctx.fill();
+    ctx.strokeStyle = st.ring;
+    ctx.lineWidth   = 2.5;
+    ctx.stroke();
+
+    // Selection ring
+    if (n.id === selectedId) {
+      ctx.globalAlpha = 0.75;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, NODE_R + 8, 0, Math.PI * 2);
+      ctx.strokeStyle = '#f0f6fc';
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+      ctx.globalAlpha = vis ? 1 : 0.1;
+    }
+
+    // Status dot (top)
+    ctx.beginPath();
+    ctx.arc(n.x, n.y - NODE_R + 8, 5, 0, Math.PI * 2);
+    ctx.fillStyle = st.fill;
+    ctx.fill();
+
+    // Records badge (bottom)
+    if (n.records > 0) {
+      var recText = formatRecords(n.records);
+      ctx.font = 'bold 8px ui-monospace, Consolas, monospace';
+      var tw = ctx.measureText(recText).width;
+      var bw = tw + 8;
+      var bx = n.x - bw / 2;
+      var by = n.y + NODE_R - 14;
+      ctx.fillStyle = 'rgba(46,160,67,.2)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, bw, 12, 3);
+      ctx.fill();
+      ctx.fillStyle = '#3fb950';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(recText, n.x, by + 6);
+    }
+
+    // Label
+    ctx.fillStyle    = n.id === selectedId ? '#e6edf3' : '#8b949e';
+    ctx.font         = 'bold 8.5px ui-monospace, Consolas, monospace';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    var lines  = nodeLines(n.id);
+    var lh     = 11;
+    var yOff   = n.records > 0 ? -2 : 1;
+    var yStart = n.y - ((lines.length - 1) * lh) / 2 + yOff;
+    lines.forEach(function(line, i) { ctx.fillText(line, n.x, yStart + i * lh); });
+  });
+
+  ctx.globalAlpha = 1;
+}
+
+// ─── Interaction ─────────────────────────────────────────────────────────────
+
+function hitTest(x, y) {
+  for (var i = NODES.length - 1; i >= 0; i--) {
+    var n  = NODES[i];
+    var dx = x - n.x, dy = y - n.y;
+    if (dx * dx + dy * dy <= (NODE_R + 5) * (NODE_R + 5)) return n;
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', function(e) {
+  var r  = canvas.getBoundingClientRect();
+  var x  = e.clientX - r.left;
+  var y  = e.clientY - r.top;
+  var n  = hitTest(x, y);
+  if (n) { dragging = n; dragOff = { x: x - n.x, y: y - n.y }; dragStartX = x; dragStartY = y; }
+});
+
+canvas.addEventListener('mousemove', function(e) {
+  var r = canvas.getBoundingClientRect();
+  var x = e.clientX - r.left;
+  var y = e.clientY - r.top;
+  if (dragging) {
+    dragging.x = Math.max(NODE_R + 6, Math.min(W - NODE_R - 6, x - dragOff.x));
+    dragging.y = Math.max(NODE_R + 6, Math.min(H - NODE_R - 6, y - dragOff.y));
+    draw(); return;
+  }
+  var n = hitTest(x, y);
+  if (n !== hovering) {
+    hovering = n;
+    if (n) {
+      tipEl.style.display = 'block';
+      tipEl.textContent   = '';
+
+      var idEl = document.createElement('span');
+      idEl.className = 'tt-id';
+      idEl.textContent = n.id;
+
+      var meta = document.createElement('div');
+      meta.className = 'tt-meta';
+      var phTag = document.createElement('span');
+      phTag.className = 'tt-meta-tag';
+      phTag.style.color = PHASE_COLORS[n.phase];
+      phTag.textContent = PHASE_SHORT[n.phase];
+      var catTag = document.createElement('span');
+      catTag.className = 'tt-meta-tag';
+      catTag.textContent = 'Cat ' + n.cat + ' (' + CAT_LABEL[n.cat] + ')';
+      var stTag = document.createElement('span');
+      stTag.className = 'tt-meta-tag';
+      stTag.style.color = STATUS[n.status].ring;
+      stTag.textContent = STATUS[n.status].label;
+      meta.appendChild(phTag);
+      meta.appendChild(catTag);
+      meta.appendChild(stTag);
+
+      tipEl.appendChild(idEl);
+      tipEl.appendChild(meta);
+
+      if (n.records > 0) {
+        var rec = document.createElement('div');
+        rec.className = 'tt-records';
+        rec.textContent = n.records.toLocaleString('pt-BR') + ' registros';
+        tipEl.appendChild(rec);
+      }
+
+      var desc = document.createElement('div');
+      desc.className = 'tt-desc';
+      desc.textContent = n.desc;
+      tipEl.appendChild(desc);
+    } else {
+      tipEl.style.display = 'none';
+    }
+  }
+  if (n) {
+    tipEl.style.left = Math.min(x + 16, W - 300) + 'px';
+    tipEl.style.top  = Math.min(y + 16, H - 180) + 'px';
+  }
+});
+
+canvas.addEventListener('mouseup', function(e) {
+  if (!dragging) return;
+  var r  = canvas.getBoundingClientRect();
+  var x  = e.clientX - r.left;
+  var y  = e.clientY - r.top;
+  if (Math.sqrt(Math.pow(x - dragStartX, 2) + Math.pow(y - dragStartY, 2)) < 5) {
+    var idx = STATUS_CYCLE.indexOf(dragging.status);
+    dragging.status = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
+    selectNode(dragging.id);
+    updateSidebar();
+    updatePrompt();
+    updateProgressBar();
+  }
+  dragging = null; draw();
+});
+
+canvas.addEventListener('mouseleave', function() { tipEl.style.display = 'none'; hovering = null; });
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+
+function selectNode(id) {
+  selectedId = id;
+  document.querySelectorAll('.node-row').forEach(function(el) { el.classList.toggle('sel', el.dataset.id === id); });
+
+  var panel = document.getElementById('detail-panel');
+  if (id && nodeMap[id]) {
+    var n = nodeMap[id];
+    document.getElementById('detail-title').textContent = n.id;
+    document.getElementById('detail-records').textContent = n.records > 0 ? n.records.toLocaleString('pt-BR') + ' registros' : '';
+    var stEl = document.getElementById('detail-status');
+    stEl.textContent = STATUS[n.status].label + '  |  ' + PHASE_SHORT[n.phase] + '  |  Cat ' + n.cat + ' (' + CAT_LABEL[n.cat] + ')';
+    stEl.style.color = STATUS[n.status].ring;
+    document.getElementById('detail-desc').textContent = n.desc;
+    panel.classList.add('show');
+  } else {
+    panel.classList.remove('show');
+  }
+
+  draw();
+}
+
+function filterStatus(stat) {
+  filterStat = stat;
+  document.querySelectorAll('.stat').forEach(function(el) { el.classList.toggle('active', el.dataset.stat === stat); });
+  draw();
+}
+
+function updateSidebar() {
+  var counts = { coletado: 0, parcial: 0, pendente: 0, bloqueado: 0 };
+  NODES.forEach(function(n) { counts[n.status]++; });
+
+  var statsEl = document.getElementById('stats');
+  statsEl.textContent = '';
+  [
+    { s: 'coletado',  c: '#2ea043' },
+    { s: 'parcial',   c: '#d29922' },
+    { s: 'pendente',  c: '#656d76' },
+    { s: 'bloqueado', c: '#f85149' },
+  ].forEach(function(item) {
+    var el = document.createElement('div');
+    el.className    = 'stat' + (filterStat === item.s ? ' active' : '');
+    el.dataset.stat = item.s;
+    el.style.color  = item.c;
+    el.addEventListener('click', function() { filterStatus(filterStat === item.s ? null : item.s); });
+    var n1 = document.createElement('span'); n1.className = 'stat-n'; n1.textContent = counts[item.s];
+    var n2 = document.createElement('span'); n2.className = 'stat-l'; n2.textContent = STATUS[item.s].label;
+    el.appendChild(n1); el.appendChild(n2);
+    statsEl.appendChild(el);
+  });
+
+  var listEl = document.getElementById('node-list');
+  listEl.textContent = '';
+  var byPhase = {};
+  NODES.forEach(function(n) { if (!byPhase[n.phase]) byPhase[n.phase] = []; byPhase[n.phase].push(n); });
+
+  Object.keys(byPhase).map(Number).sort(function(a, b) { return a - b; }).forEach(function(phase) {
+    var ph = document.createElement('div');
+    ph.className    = 'phase-h';
+    ph.style.color  = PHASE_COLORS[phase];
+    ph.textContent  = PHASE_LONG[phase];
+    listEl.appendChild(ph);
+
+    byPhase[phase].forEach(function(n) {
+      var row = document.createElement('div');
+      row.className  = 'node-row' + (n.id === selectedId ? ' sel' : '');
+      row.dataset.id = n.id;
+
+      var dotEl  = document.createElement('div');
+      dotEl.className  = 'dot';
+      dotEl.style.background = STATUS[n.status].fill;
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'node-name';
+      nameEl.textContent = n.id;
+
+      row.appendChild(dotEl);
+      row.appendChild(nameEl);
+
+      if (n.records > 0) {
+        var recEl = document.createElement('span');
+        recEl.className = 'rec-badge';
+        recEl.textContent = formatRecords(n.records);
+        row.appendChild(recEl);
+      }
+
+      var catEl = document.createElement('span');
+      catEl.className = 'cat-badge';
+      catEl.textContent = n.cat;
+      row.appendChild(catEl);
+
+      row.addEventListener('click', function() { selectNode(n.id); });
+      listEl.appendChild(row);
+    });
+  });
+}
+
+function buildPhaseLegend() {
+  var el = document.getElementById('phase-legend');
+  PHASE_SHORT.forEach(function(name, i) {
+    var row  = document.createElement('div');
+    row.className = 'ph-leg';
+    var dot  = document.createElement('div');
+    dot.className = 'ph-dot'; dot.style.background = PHASE_COLORS[i];
+    var txt  = document.createTextNode(name);
+    row.appendChild(dot); row.appendChild(txt);
+    el.appendChild(row);
+  });
+}
+
+// ─── Progress Bar ────────────────────────────────────────────────────────────
+
+function updateProgressBar() {
+  var counts = { coletado: 0, parcial: 0, pendente: 0, bloqueado: 0 };
+  NODES.forEach(function(n) { counts[n.status]++; });
+  var total = NODES.length;
+
+  var bar = document.getElementById('progress-bar');
+  bar.textContent = '';
+
+  var segments = [
+    { s: 'coletado',  c: '#2ea043' },
+    { s: 'parcial',   c: '#d29922' },
+    { s: 'bloqueado', c: '#f85149' },
+    { s: 'pendente',  c: '#3d444d' },
+  ];
+  segments.forEach(function(item) {
+    if (counts[item.s] > 0) {
+      var seg = document.createElement('div');
+      seg.className = 'progress-seg';
+      seg.style.width = (counts[item.s] / total * 100) + '%';
+      seg.style.background = item.c;
+      bar.appendChild(seg);
+    }
+  });
+
+  var totalRec = NODES.reduce(function(sum, n) { return sum + n.records; }, 0);
+  var pct = Math.round(counts.coletado / total * 100);
+  var label = document.getElementById('progress-label');
+  label.textContent = '';
+  var texts = [
+    counts.coletado + '/' + total + ' coletado (' + pct + '%)',
+    counts.parcial + ' parcial',
+    totalRec.toLocaleString('pt-BR') + ' registros'
+  ];
+  texts.forEach(function(text, i) {
+    var sp = document.createElement('span');
+    sp.textContent = text;
+    label.appendChild(sp);
+  });
+}
+
+// ─── Prompt ───────────────────────────────────────────────────────────────────
+
+function updatePrompt() {
+  var coletado  = NODES.filter(function(n) { return n.status === 'coletado'; });
+  var parcial   = NODES.filter(function(n) { return n.status === 'parcial'; });
+  var pendente  = NODES.filter(function(n) { return n.status === 'pendente'; });
+  var bloqueado = NODES.filter(function(n) { return n.status === 'bloqueado'; });
+
+  var totalRec = NODES.reduce(function(sum, n) { return sum + n.records; }, 0);
+  var pct = Math.round(coletado.length / NODES.length * 100);
+  var parts = [];
+  parts.push('Plano de coleta SOAL V0: ' + coletado.length + '/' + NODES.length + ' entidades coletadas (' + pct + '%). Total: ' + totalRec.toLocaleString('pt-BR') + ' registros.');
+  if (coletado.length) {
+    parts.push('Coletado (' + coletado.length + '): ' + coletado.map(function(n) {
+      return n.id + (n.records ? ' [' + formatRecords(n.records) + ']' : '');
+    }).join(', ') + '.');
+  }
+  if (parcial.length) {
+    parts.push('Parcial (' + parcial.length + '): ' + parcial.map(function(n) {
+      return n.id + (n.records ? ' [' + formatRecords(n.records) + ']' : '');
+    }).join(', ') + '.');
+  }
+  if (bloqueado.length) {
+    parts.push('Bloqueado (' + bloqueado.length + '): ' + bloqueado.map(function(n) { return n.id; }).join(', ') + '.');
+  }
+
+  var coletadoIds = coletado.map(function(n) { return n.id; });
+  var parcialIds  = parcial.map(function(n) { return n.id; });
+  var pendenteIds = pendente.map(function(n) { return n.id; });
+
+  var critEdges = EDGES
+    .filter(function(e) { return (parcialIds.indexOf(e[0]) >= 0 || pendenteIds.indexOf(e[0]) >= 0) && pendenteIds.indexOf(e[1]) >= 0; })
+    .map(function(e) { return e[1] + ' aguarda ' + e[0]; })
+    .slice(0, 5);
+  if (critEdges.length) parts.push('Dependencias criticas: ' + critEdges.join('; ') + '.');
+
+  if (pendente.length > 0) {
+    var nextPhase = Math.min.apply(null, pendente.map(function(n) { return n.phase; }));
+    var nextItems = pendente.filter(function(n) { return n.phase === nextPhase; }).map(function(n) { return n.id; }).join(', ');
+    parts.push('Proxima fase a atacar: Fase ' + nextPhase + ' (' + nextItems + ').');
+  }
+
+  document.getElementById('prompt-text').textContent = parts.join('  ');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+document.getElementById('btn-layout').addEventListener('click', doAutoLayout);
+document.getElementById('btn-all').addEventListener('click', function() { filterStatus(null); });
+document.getElementById('copy-btn').addEventListener('click', function() {
+  var text = document.getElementById('prompt-text').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('copy-btn');
+    var orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 1600);
+  });
+});
+
+buildPhaseLegend();
+updateSidebar();
+updatePrompt();
+updateProgressBar();
+resize();
+</script>
+</body>
+</html>

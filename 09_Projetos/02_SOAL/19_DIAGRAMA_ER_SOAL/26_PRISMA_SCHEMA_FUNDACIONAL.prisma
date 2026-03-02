@@ -1,0 +1,642 @@
+// =============================================================================
+// PRISMA SCHEMA — Camadas Fundacionais: Sistema + Territorial + Operacional
+// Referencia: Doc 26 DDL Fundacional
+// Data: 28/02/2026
+// Banco: PostgreSQL 15+
+// Uso: DPWAI APP (Next.js App Router)
+// =============================================================================
+//
+// INSTRUCOES PARA JOAO:
+// 1. Copiar este arquivo para prisma/schema.prisma no repo DPWAI APP
+// 2. Ajustar DATABASE_URL no .env
+// 3. npx prisma db push (ou prisma migrate dev)
+// 4. npx prisma generate
+//
+// NOTA: Este schema cobre APENAS as camadas fundacionais (Doc 26).
+// Os modulos Insumos (Doc 16) e Operacoes Campo (Doc 25) serao adicionados depois.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum TipoFazenda {
+  propria
+  arrendada
+  parceria
+  comodato
+}
+
+enum TipoSolo {
+  latossolo_vermelho
+  argissolo
+  cambissolo
+  neossolo
+  nitossolo
+  outros
+}
+
+enum TipoSilo {
+  metalico
+  bolsa
+  armazem
+  tulha
+}
+
+enum StatusSafra {
+  planejamento
+  em_andamento
+  encerrada
+}
+
+enum EpocaSafra {
+  safra
+  safrinha
+  terceira_safra
+}
+
+enum GrupoCultura {
+  graos
+  forrageira
+  pastagem
+  oleaginosa
+  outros
+}
+
+enum TipoParceiro {
+  fornecedor
+  cliente
+  arrendador
+  transportador
+  cooperativa
+  orgao_publico
+}
+
+enum CategoriaMaquina {
+  maquina
+  implemento
+}
+
+enum TipoMaquina {
+  trator
+  colheitadeira
+  pulverizador
+  plantadeira
+  caminhao
+  utilitario
+  drone
+  outros
+}
+
+enum StatusMaquina {
+  ativo
+  manutencao
+  vendido
+  sucateado
+}
+
+enum TipoCombustivel {
+  diesel_s10
+  diesel_s500
+  gasolina
+  etanol
+  arla32
+}
+
+enum TipoManutencao {
+  preventiva
+  corretiva
+  preditiva
+}
+
+enum StatusManutencao {
+  aberta
+  em_andamento
+  concluida
+  cancelada
+}
+
+enum TipoCnh {
+  A
+  B
+  C
+  D
+  E
+  AB
+  AC
+  AD
+  AE
+}
+
+enum TipoContratoTrabalho {
+  clt
+  diarista
+  safrista
+  terceirizado
+}
+
+// =============================================================================
+// CAMADA SISTEMA
+// =============================================================================
+
+/// Super-admin cross-org (DeepWork AI Flows). Unica tabela SEM organization_id.
+model Admin {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome         String   @db.VarChar(200)
+  email        String   @unique @db.VarChar(254)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  status       String   @default("active") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  owners Owner[]
+
+  @@map("admins")
+}
+
+/// Proprietario da organizacao (ex: Claudio Kugler)
+model Owner {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  adminId      String?  @map("admin_id") @db.Uuid
+  nome         String   @db.VarChar(200)
+  email        String   @unique @db.VarChar(254)
+  cpf          String?  @unique @db.VarChar(14)
+  telefone     String?  @db.VarChar(20)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  status       String   @default("active") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  admin         Admin?         @relation(fields: [adminId], references: [id])
+  organizations Organization[]
+
+  @@index([adminId])
+  @@map("owners")
+}
+
+/// Entidade raiz multi-tenant. SOAL = 1 org.
+model Organization {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ownerId            String   @map("owner_id") @db.Uuid
+  nome               String   @db.VarChar(200)
+  nomeFantasia       String?  @map("nome_fantasia") @db.VarChar(200)
+  cnpj               String?  @unique @db.VarChar(18)
+  inscricaoEstadual  String?  @map("inscricao_estadual") @db.VarChar(20)
+  endereco           String?
+  municipio          String?  @db.VarChar(100)
+  uf                 String?  @db.Char(2)
+  telefone           String?  @db.VarChar(20)
+  status             String   @default("active") @db.VarChar(20)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  owner    Owner  @relation(fields: [ownerId], references: [id])
+
+  // Relacoes filhas
+  settings             OrganizationSetting[]
+  users                User[]
+  roles                Role[]
+  fazendas             Fazenda[]
+  safras               Safra[]
+  talhaoSafras         TalhaoSafra[]
+  silos                Silo[]
+  parceirosComerciais  ParceiroComercial[]
+  maquinas             Maquina[]
+  operadores           Operador[]
+  abastecimentos       Abastecimento[]
+  manutencoes          Manutencao[]
+  trabalhadoresRurais  TrabalhadorRural[]
+
+  @@index([ownerId])
+  @@map("organizations")
+}
+
+/// Configuracoes chave-valor flexiveis por org
+model OrganizationSetting {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  chave          String   @db.VarChar(100)
+  valor          Json     @db.JsonB
+  descricao      String?
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, chave])
+  @@index([organizationId])
+  @@map("organization_settings")
+}
+
+/// Usuarios do sistema (Josmar, Valentina, Tiago, etc.)
+model User {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  nome           String   @db.VarChar(200)
+  email          String   @unique @db.VarChar(254)
+  cpf            String?  @db.VarChar(14)
+  cargo          String?  @db.VarChar(100)
+  telefone       String?  @db.VarChar(20)
+  passwordHash   String   @map("password_hash") @db.VarChar(255)
+  status         String   @default("active") @db.VarChar(20)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  userRoles    UserRole[]
+
+  @@unique([organizationId, cpf])
+  @@index([organizationId])
+  @@map("users")
+}
+
+/// Perfis de acesso (admin, gerente, operador)
+model Role {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  nome           String   @db.VarChar(50)
+  descricao      String?
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@unique([organizationId, nome])
+  @@index([organizationId])
+  @@map("roles")
+}
+
+/// Catalogo de permissoes. Sem org — global.
+model Permission {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recurso   String   @db.VarChar(100)
+  acao      String   @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  rolePermissions RolePermission[]
+
+  @@unique([recurso, acao])
+  @@map("permissions")
+}
+
+/// M:N users <-> roles
+model UserRole {
+  userId    String   @map("user_id") @db.Uuid
+  roleId    String   @map("role_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+/// M:N roles <-> permissions
+model RolePermission {
+  roleId       String   @map("role_id") @db.Uuid
+  permissionId String   @map("permission_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+// =============================================================================
+// CAMADA TERRITORIAL
+// =============================================================================
+
+/// Propriedades rurais da org (~12 fazendas SOAL)
+model Fazenda {
+  id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String       @map("organization_id") @db.Uuid
+  nome              String       @db.VarChar(200)
+  tipo              TipoFazenda  @default(propria)
+  cnpj              String?      @db.VarChar(18)
+  inscricaoEstadual String?      @map("inscricao_estadual") @db.VarChar(20)
+  car               String?      @db.VarChar(50)
+  areaTotalHa       Decimal?     @map("area_total_ha") @db.Decimal(12, 2)
+  geojson           Json?        @db.JsonB
+  endereco          String?
+  municipio         String?      @db.VarChar(100)
+  uf                String?      @db.Char(2)
+  status            String       @default("active") @db.VarChar(20)
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  talhoes      Talhao[]
+  silos        Silo[]
+
+  @@unique([organizationId, nome])
+  @@index([organizationId])
+  @@map("fazendas")
+}
+
+/// Subdivisoes das fazendas (71 talhoes mapeados)
+model Talhao {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String    @map("organization_id") @db.Uuid
+  fazendaId      String    @map("fazenda_id") @db.Uuid
+  codigo         String?   @db.VarChar(20)
+  nome           String    @db.VarChar(200)
+  areaHa         Decimal   @map("area_ha") @db.Decimal(10, 2)
+  tipoSolo       TipoSolo? @map("tipo_solo")
+  geojson        Json?     @db.JsonB
+  altitudeMediaM Decimal?  @map("altitude_media_m") @db.Decimal(8, 2)
+  observacoes    String?
+  status         String    @default("active") @db.VarChar(20)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  fazenda      Fazenda       @relation(fields: [fazendaId], references: [id])
+  talhaoSafras TalhaoSafra[]
+
+  @@unique([organizationId, fazendaId, nome])
+  @@index([organizationId])
+  @@index([fazendaId])
+  @@map("talhoes")
+}
+
+/// Periodos agricolas — ano fiscal jul-jun (Safra 25/26 = Jul/2025 a Jun/2026)
+model Safra {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  anoAgricola    String      @map("ano_agricola") @db.VarChar(9)
+  descricao      String?     @db.VarChar(100)
+  dataInicio     DateTime    @map("data_inicio") @db.Date
+  dataFim        DateTime    @map("data_fim") @db.Date
+  status         StatusSafra @default(planejamento)
+  observacoes    String?
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  talhaoSafras TalhaoSafra[]
+
+  @@unique([organizationId, anoAgricola])
+  @@index([organizationId])
+  @@map("safras")
+}
+
+/// Catalogo de culturas (9 culturas V0). Sem org — universal.
+model Cultura {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome            String       @unique @db.VarChar(100)
+  nomeExibicao    String       @map("nome_exibicao") @db.VarChar(100)
+  grupo           GrupoCultura @default(graos)
+  cicloDias       Int?         @map("ciclo_dias")
+  unidadeColheita String?      @default("sc_60kg") @map("unidade_colheita") @db.VarChar(20)
+  observacoes     String?
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  talhaoSafras TalhaoSafra[]
+
+  @@map("culturas")
+}
+
+/// Entidade CENTRAL — 90% dos relatorios passam por aqui
+model TalhaoSafra {
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String     @map("organization_id") @db.Uuid
+  talhaoId          String     @map("talhao_id") @db.Uuid
+  safraId           String     @map("safra_id") @db.Uuid
+  culturaId         String     @map("cultura_id") @db.Uuid
+  epoca             EpocaSafra @default(safra)
+  areaPlantadaHa    Decimal    @map("area_plantada_ha") @db.Decimal(10, 2)
+  cultivar          String?    @db.VarChar(200)
+  dataPlantio       DateTime?  @map("data_plantio") @db.Date
+  dataColheita      DateTime?  @map("data_colheita") @db.Date
+  produtividadeScHa Decimal?   @map("produtividade_sc_ha") @db.Decimal(10, 2)
+  observacoes       String?
+  status            String     @default("active") @db.VarChar(20)
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  talhao       Talhao       @relation(fields: [talhaoId], references: [id])
+  safra        Safra        @relation(fields: [safraId], references: [id])
+  cultura      Cultura      @relation(fields: [culturaId], references: [id])
+
+  @@unique([talhaoId, safraId, culturaId, epoca])
+  @@index([organizationId])
+  @@index([talhaoId])
+  @@index([safraId])
+  @@index([culturaId])
+  @@map("talhao_safras")
+}
+
+/// Estruturas de armazenamento (dados pendentes Josmar)
+model Silo {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
+  fazendaId      String   @map("fazenda_id") @db.Uuid
+  codigo         String?  @db.VarChar(20)
+  nome           String   @db.VarChar(200)
+  tipo           TipoSilo
+  capacidadeTon  Decimal? @map("capacidade_ton") @db.Decimal(12, 2)
+  localizacao    String?
+  geojson        Json?    @db.JsonB
+  status         String   @default("active") @db.VarChar(20)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  fazenda      Fazenda      @relation(fields: [fazendaId], references: [id])
+
+  @@unique([organizationId, codigo])
+  @@index([organizationId])
+  @@index([fazendaId])
+  @@map("silos")
+}
+
+/// Fornecedores, clientes, cooperativas (2.201 do AgriWin)
+/// NOTA: tipo[] (ARRAY de enum) — Prisma suporta nativamente com PostgreSQL
+model ParceiroComercial {
+  id                 String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId     String         @map("organization_id") @db.Uuid
+  razaoSocial        String         @map("razao_social") @db.VarChar(300)
+  nomeFantasia       String?        @map("nome_fantasia") @db.VarChar(300)
+  cpfCnpj            String?        @map("cpf_cnpj") @db.VarChar(18)
+  tipoDocumento      String?        @map("tipo_documento") @db.VarChar(4)
+  tipo               TipoParceiro[] @default([])
+  telefone           String?        @db.VarChar(20)
+  email              String?        @db.VarChar(254)
+  endereco           String?
+  municipio          String?        @db.VarChar(100)
+  uf                 String?        @db.Char(2)
+  inscricaoEstadual  String?        @map("inscricao_estadual") @db.VarChar(20)
+  observacoes        String?
+  status             String         @default("active") @db.VarChar(20)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, cpfCnpj])
+  @@index([organizationId])
+  @@map("parceiros_comerciais")
+}
+
+// =============================================================================
+// CAMADA OPERACIONAL
+// =============================================================================
+
+/// Maquinas e implementos da org (183 registros, 156 ativos)
+/// Pertencem a ORG, nao a fazenda. Custo alocado via OPERACAO_CAMPO.
+model Maquina {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String          @map("organization_id") @db.Uuid
+  codigoInterno     String          @map("codigo_interno") @db.VarChar(20)
+  nome              String          @db.VarChar(200)
+  categoria         CategoriaMaquina
+  tipo              TipoMaquina?
+  marca             String?         @db.VarChar(100)
+  modelo            String?         @db.VarChar(100)
+  anoFabricacao     Int?            @map("ano_fabricacao")
+  chassi            String?         @db.VarChar(50)
+  numeroSerie       String?         @map("numero_serie") @db.VarChar(50)
+  placa             String?         @db.VarChar(10)
+  horimetroAtual    Decimal?        @default(0) @map("horimetro_atual") @db.Decimal(10, 1)
+  hodometroAtual    Decimal?        @default(0) @map("hodometro_atual") @db.Decimal(12, 1)
+  tratorVinculadoId String?         @map("trator_vinculado_id") @db.Uuid
+  valorCompra       Decimal?        @map("valor_compra") @db.Decimal(14, 2)
+  dataCompra        DateTime?       @map("data_compra") @db.Date
+  valorAtual        Decimal?        @map("valor_atual") @db.Decimal(14, 2)
+  notaFiscalCompra  String?         @map("nota_fiscal_compra") @db.VarChar(50)
+  status            StatusMaquina   @default(ativo)
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization    Organization    @relation(fields: [organizationId], references: [id])
+  tratorVinculado Maquina?        @relation("ImplementoTrator", fields: [tratorVinculadoId], references: [id])
+  implementos     Maquina[]       @relation("ImplementoTrator")
+  abastecimentos  Abastecimento[]
+  manutencoes     Manutencao[]
+
+  @@unique([organizationId, codigoInterno])
+  @@index([organizationId])
+  @@index([tratorVinculadoId])
+  @@map("maquinas")
+}
+
+/// Operadores de maquinas (30 operadores via Vestro)
+model Operador {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String   @map("organization_id") @db.Uuid
+  nome            String   @db.VarChar(200)
+  cpf             String?  @db.VarChar(14)
+  cnhNumero       String?  @map("cnh_numero") @db.VarChar(20)
+  cnhCategoria    TipoCnh? @map("cnh_categoria")
+  cnhValidade     DateTime? @map("cnh_validade") @db.Date
+  telefone        String?  @db.VarChar(20)
+  matriculaVestro String?  @map("matricula_vestro") @db.VarChar(20)
+  status          String   @default("active") @db.VarChar(20)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  abastecimentos Abastecimento[]
+
+  @@unique([organizationId, cpf])
+  @@index([organizationId])
+  @@map("operadores")
+}
+
+/// Abastecimentos de combustivel (Vestro API/crawler)
+model Abastecimento {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId    String         @map("organization_id") @db.Uuid
+  maquinaId         String         @map("maquina_id") @db.Uuid
+  operadorId        String?        @map("operador_id") @db.Uuid
+  dataHora          DateTime       @map("data_hora") @db.Timestamptz
+  tipoCombustivel   TipoCombustivel @map("tipo_combustivel")
+  quantidadeLitros  Decimal        @map("quantidade_litros") @db.Decimal(10, 2)
+  valorTotal        Decimal?       @map("valor_total") @db.Decimal(12, 2)
+  precoUnitario     Decimal?       @map("preco_unitario") @db.Decimal(10, 4)
+  horimetroMomento  Decimal?       @map("horimetro_momento") @db.Decimal(10, 1)
+  odometroMomento   Decimal?       @map("odometro_momento") @db.Decimal(12, 1)
+  tanqueNome        String?        @map("tanque_nome") @db.VarChar(100)
+  observacoes       String?
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  maquina      Maquina      @relation(fields: [maquinaId], references: [id])
+  operador     Operador?    @relation(fields: [operadorId], references: [id])
+
+  @@index([organizationId])
+  @@index([maquinaId])
+  @@index([operadorId])
+  @@index([dataHora])
+  @@map("abastecimentos")
+}
+
+/// Ordens de manutencao de maquinas
+model Manutencao {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId     String           @map("organization_id") @db.Uuid
+  maquinaId          String           @map("maquina_id") @db.Uuid
+  tipo               TipoManutencao
+  descricao          String?
+  dataAbertura       DateTime         @map("data_abertura") @db.Date
+  dataConclusao      DateTime?        @map("data_conclusao") @db.Date
+  horimetroAbertura  Decimal?         @map("horimetro_abertura") @db.Decimal(10, 1)
+  custoPecas         Decimal?         @default(0) @map("custo_pecas") @db.Decimal(12, 2)
+  custoMaoObra       Decimal?         @default(0) @map("custo_mao_obra") @db.Decimal(12, 2)
+  custoTotal         Decimal?         @default(0) @map("custo_total") @db.Decimal(12, 2)
+  prestadorServico   String?          @map("prestador_servico") @db.VarChar(200)
+  status             StatusManutencao @default(aberta)
+  observacoes        String?
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  maquina      Maquina      @relation(fields: [maquinaId], references: [id])
+
+  @@index([organizationId])
+  @@index([maquinaId])
+  @@map("manutencoes")
+}
+
+/// Funcionarios rurais (dados pendentes Valentina)
+model TrabalhadorRural {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId  String               @map("organization_id") @db.Uuid
+  nome            String               @db.VarChar(200)
+  cpf             String?              @db.VarChar(14)
+  cargo           String?              @db.VarChar(100)
+  setor           String?              @db.VarChar(100)
+  tipoContrato    TipoContratoTrabalho @default(clt) @map("tipo_contrato")
+  salarioBase     Decimal?             @map("salario_base") @db.Decimal(10, 2)
+  dataAdmissao    DateTime?            @map("data_admissao") @db.Date
+  dataDemissao    DateTime?            @map("data_demissao") @db.Date
+  telefone        String?              @db.VarChar(20)
+  observacoes     String?
+  status          String               @default("active") @db.VarChar(20)
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, cpf])
+  @@index([organizationId])
+  @@map("trabalhadores_rurais")
+}

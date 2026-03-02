@@ -1,0 +1,11 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# DATA/.gitignore — Protege TODOS os dados sensíveis do cliente SOAL
+# ══════════════════════════════════════════════════════════════════════════════
+# Esta pasta contém dados reais de produção agrícola, financeiros e pessoais.
+# NADA aqui deve subir para o repositório Git.
+
+# Ignorar TUDO nesta pasta e subpastas
+*
+
+# Manter apenas este .gitignore (para que a regra se propague)
+!.gitignore

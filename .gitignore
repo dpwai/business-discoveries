@@ -1,0 +1,47 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# .gitignore — DeepWork AI Flows / business-discoveries
+# ══════════════════════════════════════════════════════════════════════════════
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Environment / secrets
+.env
+*.env
+credentials*.json
+
+# Claude Code local state
+.claude/
+
+# Playwright MCP local state
+.playwright-mcp/
+
+# Archive (old structure, not needed in repo)
+_archive/
+
+# Sensitive binary files (juridico has .docx, .pdf, .rtf, .png)
+11_Juridico/*.docx
+11_Juridico/*.pdf
+11_Juridico/*.rtf
+11_Juridico/*.png
+11_Juridico/*.html
+
+# Data folder protection is handled by 09_Projetos/02_SOAL/DATA/.gitignore
+# but double-protect here too
+09_Projetos/02_SOAL/DATA/**/*.csv
+09_Projetos/02_SOAL/DATA/**/*.xlsx
+09_Projetos/02_SOAL/DATA/**/*.xls
+09_Projetos/02_SOAL/DATA/**/*.pdf
+
+# Large binary assets (site-assets images already committed, keep tracked)
+# No new binary patterns needed
+
+# Logs
+*.log
