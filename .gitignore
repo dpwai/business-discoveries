@@ -17,8 +17,8 @@ venv/
 *.env
 credentials*.json
 
-# Claude Code local state
-.claude/
+# Claude Code local state (kept in repo for project memory)
+# .claude/
 
 # Playwright MCP local state
 .playwright-mcp/

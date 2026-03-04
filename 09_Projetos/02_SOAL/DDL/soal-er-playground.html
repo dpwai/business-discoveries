@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL ER Playground</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --fg:#e6edf3;--fg2:#8b949e;--fg3:#484f58;
+  --accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;
+  --radius:8px;--shadow:0 2px 8px rgba(0,0,0,.4);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.4;display:flex;flex-direction:column}
+
+.header{background:var(--bg2);border-bottom:1px solid var(--bg4);padding:.75rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-shrink:0;z-index:100}
+.header h1{font-size:1.15rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.header h1 span{color:var(--accent)}
+.header-stats{display:flex;gap:.75rem;margin-left:auto;flex-wrap:wrap}
+.stat{background:var(--bg3);font-size:.72rem;padding:.2rem .6rem;border-radius:12px;font-family:var(--mono);color:var(--fg2);white-space:nowrap}
+.stat b{color:var(--fg);font-weight:600}
+
+.main{display:flex;flex:1;overflow:hidden}
+
+.left-panel{width:220px;background:var(--bg2);border-right:1px solid var(--bg4);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.left-panel h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg3);padding:.75rem .75rem .35rem;font-weight:600}
+.search-box{margin:.25rem .5rem .5rem;background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.82rem;padding:.45rem .6rem;outline:none;font-family:var(--font);width:calc(100% - 1rem)}
+.search-box:focus{border-color:var(--accent)}
+.search-box::placeholder{color:var(--fg3)}
+
+.layer-list{list-style:none;padding:0 .5rem}
+.layer-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .25rem;cursor:pointer;border-radius:4px;font-size:.82rem;transition:background .15s}
+.layer-item:hover{background:var(--bg3)}
+.layer-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.layer-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.layer-count{font-family:var(--mono);font-size:.7rem;color:var(--fg3)}
+.layer-item.off{opacity:.35}
+.layer-item.off .layer-dot{background:var(--fg3)!important}
+
+.left-section{padding:.5rem .75rem;border-top:1px solid var(--bg4);font-size:.78rem;color:var(--fg2)}
+.left-section kbd{background:var(--bg3);border:1px solid var(--bg4);border-radius:3px;padding:0 .3rem;font-size:.7rem;font-family:var(--mono)}
+
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg)}
+canvas{display:block;width:100%;height:100%}
+.canvas-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(22,27,34,.85);color:var(--fg3);font-size:.72rem;padding:.3rem .8rem;border-radius:12px;pointer-events:none;transition:opacity .5s}
+
+.right-panel{width:0;background:var(--bg2);border-left:1px solid var(--bg4);overflow-y:auto;overflow-x:hidden;transition:width .25s ease;flex-shrink:0}
+.right-panel.open{width:360px}
+.rp-header{display:flex;align-items:center;gap:.5rem;padding:.75rem;border-bottom:1px solid var(--bg4);position:sticky;top:0;background:var(--bg2);z-index:10}
+.rp-title{font-weight:700;font-size:.95rem;flex:1;font-family:var(--mono)}
+.rp-badge{font-size:.65rem;padding:.15rem .5rem;border-radius:10px;font-weight:600;text-transform:uppercase}
+.rp-close{background:none;border:none;color:var(--fg2);cursor:pointer;font-size:1.1rem;padding:.2rem .4rem;border-radius:4px;line-height:1}
+.rp-close:hover{background:var(--bg3);color:var(--fg)}
+
+.rp-section{padding:.6rem .75rem;border-bottom:1px solid var(--bg3)}
+.rp-section h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--fg3);margin-bottom:.4rem;font-weight:600}
+.rp-meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem}
+.pill{display:inline-block;font-size:.68rem;font-weight:600;padding:.15rem .55rem;border-radius:12px;white-space:nowrap}
+.pill-completo{background:rgba(63,185,80,.15);color:var(--green)}
+.pill-parcial{background:rgba(210,153,34,.15);color:var(--yellow)}
+.pill-sem_dados{background:rgba(139,148,158,.12);color:var(--fg3)}
+
+.rp-col-table{width:100%;font-size:.78rem;border-collapse:collapse}
+.rp-col-table th{text-align:left;color:var(--fg3);font-weight:600;font-size:.68rem;text-transform:uppercase;padding:.3rem .25rem;border-bottom:1px solid var(--bg4)}
+.rp-col-table td{padding:.25rem .25rem;border-bottom:1px solid rgba(48,54,61,.5);font-family:var(--mono);font-size:.75rem}
+.rp-col-table tr.org-row{opacity:.35}
+.flag{font-size:.65rem;padding:.1rem .3rem;border-radius:3px;margin-left:.2rem;display:inline-block}
+.flag-pk{background:rgba(88,166,255,.2);color:var(--accent)}
+.flag-fk{background:rgba(219,109,40,.2);color:var(--orange)}
+.flag-enum{background:rgba(210,153,34,.15);color:var(--yellow)}
+
+.rp-enum{margin-bottom:.4rem}
+.rp-enum-name{font-family:var(--mono);font-size:.78rem;color:var(--yellow);font-weight:600}
+.rp-enum-vals{font-size:.72rem;color:var(--fg2);margin-top:.15rem;line-height:1.5}
+
+.rp-rel{display:flex;align-items:center;gap:.4rem;padding:.3rem .25rem;cursor:pointer;border-radius:4px;font-size:.78rem;transition:background .12s}
+.rp-rel:hover{background:var(--bg3)}
+.rp-rel-arrow{color:var(--fg3);font-size:.7rem;flex-shrink:0}
+.rp-rel-name{font-family:var(--mono);color:var(--accent);font-weight:500}
+.rp-rel-col{color:var(--fg3);font-size:.7rem}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SOAL <span>ER Playground</span></h1>
+  <div class="header-stats" id="headerStats"></div>
+</div>
+
+<div class="main">
+  <div class="left-panel">
+    <h3>Buscar</h3>
+    <input class="search-box" id="searchBox" placeholder="Filtrar entidades..." autocomplete="off">
+    <h3>Camadas</h3>
+    <ul class="layer-list" id="layerList"></ul>
+    <div class="left-section">
+      <h3 style="padding:0 0 .35rem">Atalhos</h3>
+      <div><kbd>1</kbd>-<kbd>9</kbd> Toggle camada</div>
+      <div><kbd>F</kbd> Fit all</div>
+      <div><kbd>Esc</kbd> Fechar painel</div>
+      <div><kbd>Space</kbd> Reset zoom</div>
+      <div style="margin-top:.5rem;color:var(--fg3);font-size:.72rem">Scroll = zoom | Drag = pan/move</div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="canvas"></canvas>
+    <div class="canvas-hint" id="canvasHint">Scroll para zoom | Drag para mover | Click para detalhes</div>
+  </div>
+
+  <div class="right-panel" id="rightPanel">
+    <div id="rpContent"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ═══════════════════════════════════════════════════
+// DATA: ENUMs (40)
+// ═══════════════════════════════════════════════════
+var ENUMS = {
+  tipo_fazenda:["propria","arrendada","parceria","comodato"],
+  tipo_solo:["latossolo_vermelho","argissolo","cambissolo","neossolo","nitossolo","outros"],
+  tipo_silo:["metalico","bolsa","armazem","tulha"],
+  status_safra:["planejamento","em_andamento","encerrada"],
+  epoca_safra:["safra","safrinha","terceira_safra"],
+  grupo_cultura:["graos","forrageira","pastagem","oleaginosa","outros"],
+  tipo_parceiro:["fornecedor","cliente","arrendador","transportador","cooperativa","orgao_publico"],
+  categoria_maquina:["maquina","implemento"],
+  tipo_maquina:["trator","colheitadeira","pulverizador","plantadeira","caminhao","utilitario","drone","outros"],
+  status_maquina:["ativo","manutencao","vendido","sucateado"],
+  tipo_combustivel:["diesel_s10","diesel_s500","gasolina","etanol","arla32"],
+  tipo_manutencao:["preventiva","corretiva","preditiva"],
+  status_manutencao:["aberta","em_andamento","concluida","cancelada"],
+  tipo_cnh:["A","B","C","D","E","AB","AC","AD","AE"],
+  tipo_contrato_trabalho:["clt","informal","temporario","safrista"],
+  setor_trabalho:["agricola","pecuaria","ubg","administrativo","experiencia"],
+  tipo_folha_pagamento:["regular","13_1a_parcela","13_2a_parcela","14_salario","bonus","gratificacao"],
+  tipo_operacao_campo:["aracao","gradagem_pesada","gradagem_niveladora","subsolagem","escarificacao","terraceamento","dessecacao_pre_plantio","calagem","gessagem","plantio","replantio","pulverizacao_herbicida","pulverizacao_inseticida","pulverizacao_fungicida","pulverizacao_foliar","aplicacao_drone","adubacao_cobertura","irrigacao","colheita","dessecacao_pre_colheita","monitoramento","transporte_interno"],
+  status_operacao_campo:["planejada","em_andamento","concluida","cancelada"],
+  tipo_transporte:["proprio","terceiro"],
+  tipo_insumo:["semente","fertilizante","herbicida","inseticida","fungicida","adjuvante","corretivo","inoculante","tratamento_semente","adubo_foliar","medicamento_vet","suplemento_mineral","racao","combustivel","lubrificante","peca_reposicao","material_manutencao","lenha","embalagem","epi","outros"],
+  grupo_insumo:["agricola","pecuario","geral"],
+  classe_toxicologica:["I","II","III","IV","nao_classificado"],
+  classe_ambiental:["I","II","III","IV"],
+  fonte_compra:["castrolanda","revenda","direto_fabrica","barter","producao_propria","outros"],
+  status_compra:["pendente","aprovada","recebida","cancelada"],
+  status_estoque:["disponivel","reservado","vencido","consumido"],
+  tipo_movimentacao_insumo:["entrada_compra","saida_aplicacao","saida_uso_geral","transferencia","ajuste_inventario","perda","devolucao"],
+  metodo_aplicacao:["pulverizacao_terrestre","pulverizacao_aerea","aplicacao_drone","sulco_plantio","lanco","fertirrigacao","tratamento_semente","manual","outros"],
+  contexto_aplicacao:["agricola","pecuario","manutencao","ubg","outros"],
+  tipo_ticket_balanca:["entrada_lavoura","entrada_terceiro","pesagem_avulsa"],
+  status_ticket:["aberto","pesado","analisado","finalizado"],
+  tipo_saida_grao:["venda_cooperativa","venda_direta","transferencia","consumo_interno","semente"],
+  status_estoque_silo:["disponivel","reservado","em_secagem","expedido"],
+  tipo_transacao_extrato:["credito_venda","debito_compra","debito_servico","juros","taxa","desconto","adiantamento","devolucao","outro"],
+  tipo_transacao_cc:["saldo_anterior","credito_venda","debito_compra","debito_servico","juros","taxa","desconto","adiantamento","devolucao","outro"],
+  tipo_transacao_capital:["retencao","capitalizacao","devolucao","juros","outro"],
+  tipo_financiamento_coop:["custeio","investimento","comercializacao","capital_giro","outro"],
+  modalidade_carga:["moagem","semente","consumo","outro"],
+  tipo_registro_maquinario:["abastecimento","manutencao","operacao_campo"]
+};
+
+// ═══════════════════════════════════════════════════
+// DATA: LAYERS (9)
+// ═══════════════════════════════════════════════════
+var LAYERS = [
+  {key:"sistema",     label:"Sistema",      color:"#4a90d9", y:100},
+  {key:"territorial", label:"Territorial",   color:"#7bc67e", y:300},
+  {key:"operacional", label:"Operacional",   color:"#5cc8db", y:520},
+  {key:"insumos",     label:"Insumos",       color:"#e8d44d", y:740},
+  {key:"op_campo",    label:"Op. Campo",     color:"#c9b43d", y:740},
+  {key:"ubg",         label:"UBG",           color:"#e8c94d", y:960},
+  {key:"financeiro",  label:"Financeiro",    color:"#e8a84d", y:1180},
+  {key:"frete_vendas",label:"Frete/Vendas",  color:"#d4904d", y:1180},
+  {key:"auxiliar",    label:"Auxiliar",       color:"#b8b8b8", y:1400}
+];
+var layerMap = {};
+LAYERS.forEach(function(l){ layerMap[l.key] = l; });
+
+// ═══════════════════════════════════════════════════
+// DATA: ENTITIES (57)
+// ═══════════════════════════════════════════════════
+var ENTITIES = [
+  // SISTEMA (9)
+  {id:"admins",name:"ADMINS",layer:"sistema",pk:"admin_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"admin_id",type:"UUID",pk:1},{col:"email",type:"VARCHAR"},{col:"name",type:"VARCHAR"},{col:"password_hash",type:"VARCHAR"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"owners",name:"OWNERS",layer:"sistema",pk:"owner_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:1,cols:[{col:"owner_id",type:"UUID",pk:1},{col:"admin_id",type:"UUID",fk:"admins"},{col:"name",type:"VARCHAR"},{col:"email",type:"VARCHAR"},{col:"cpf_cnpj",type:"VARCHAR"},{col:"phone",type:"VARCHAR"},{col:"address",type:"TEXT"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"organizations",name:"ORGANIZATIONS",layer:"sistema",pk:"organization_id",ddlDoc:"Doc 26",status:"completo",csvRecords:1,csvFile:"fase_1_sistema/01_organizations.csv",cols:[{col:"organization_id",type:"UUID",pk:1},{col:"owner_id",type:"UUID",fk:"owners"},{col:"name",type:"VARCHAR"},{col:"cnpj",type:"VARCHAR"},{col:"inscricao_estadual",type:"VARCHAR"},{col:"email",type:"VARCHAR"},{col:"phone",type:"VARCHAR"},{col:"address",type:"TEXT"},{col:"city",type:"VARCHAR"},{col:"state",type:"CHAR(2)"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"organization_settings",name:"ORG_SETTINGS",layer:"sistema",pk:"setting_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"setting_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"key",type:"VARCHAR"},{col:"value",type:"JSONB"},{col:"description",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"users",name:"USERS",layer:"sistema",pk:"user_id",ddlDoc:"Doc 26",status:"completo",csvRecords:8,csvFile:"fase_1_sistema/02_users.csv",cols:[{col:"user_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"name",type:"VARCHAR"},{col:"email",type:"VARCHAR"},{col:"password_hash",type:"VARCHAR"},{col:"cpf",type:"VARCHAR"},{col:"phone",type:"VARCHAR"},{col:"is_active",type:"BOOLEAN"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"roles",name:"ROLES",layer:"sistema",pk:"role_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"role_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"name",type:"VARCHAR"},{col:"description",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"permissions",name:"PERMISSIONS",layer:"sistema",pk:"permission_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"permission_id",type:"UUID",pk:1},{col:"resource",type:"VARCHAR"},{col:"action",type:"VARCHAR"},{col:"description",type:"TEXT"}]},
+  {id:"user_roles",name:"USER_ROLES",layer:"sistema",pk:"",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"user_id",type:"UUID",fk:"users"},{col:"role_id",type:"UUID",fk:"roles"},{col:"assigned_at",type:"TIMESTAMPTZ"}]},
+  {id:"role_permissions",name:"ROLE_PERMISSIONS",layer:"sistema",pk:"",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,cols:[{col:"role_id",type:"UUID",fk:"roles"},{col:"permission_id",type:"UUID",fk:"permissions"},{col:"granted_at",type:"TIMESTAMPTZ"}]},
+
+  // TERRITORIAL (10)
+  {id:"fazendas",name:"FAZENDAS",layer:"territorial",pk:"fazenda_id",ddlDoc:"Doc 26",status:"completo",csvRecords:8,csvFile:"fase_2/02_fazendas.csv",enums:["tipo_fazenda","tipo_solo"],cols:[{col:"fazenda_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"nome",type:"VARCHAR"},{col:"tipo",type:"tipo_fazenda",en:1},{col:"area_total_ha",type:"DECIMAL"},{col:"area_agricola_ha",type:"DECIMAL"},{col:"tipo_solo",type:"tipo_solo",en:1},{col:"latitude",type:"DECIMAL"},{col:"longitude",type:"DECIMAL"},{col:"municipio",type:"VARCHAR"},{col:"uf",type:"CHAR(2)"},{col:"inscricao_car",type:"VARCHAR"},{col:"geojson",type:"JSONB"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"talhoes",name:"TALHOES",layer:"territorial",pk:"talhao_id",ddlDoc:"Doc 26",status:"completo",csvRecords:71,csvFile:"fase_2/03_talhoes.csv",cols:[{col:"talhao_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"nome",type:"VARCHAR"},{col:"area_ha",type:"DECIMAL"},{col:"latitude",type:"DECIMAL"},{col:"longitude",type:"DECIMAL"},{col:"geojson",type:"JSONB"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"safras",name:"SAFRAS",layer:"territorial",pk:"safra_id",ddlDoc:"Doc 26",status:"completo",csvRecords:9,csvFile:"fase_2/01_safras.csv",enums:["status_safra"],cols:[{col:"safra_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"ano_agricola",type:"VARCHAR"},{col:"data_inicio",type:"DATE"},{col:"data_fim",type:"DATE"},{col:"status",type:"status_safra",en:1},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"culturas",name:"CULTURAS",layer:"territorial",pk:"cultura_id",ddlDoc:"Doc 26",status:"completo",csvRecords:9,csvFile:"fase_0/01_culturas.csv",enums:["grupo_cultura"],cols:[{col:"cultura_id",type:"UUID",pk:1},{col:"nome",type:"VARCHAR"},{col:"nome_cientifico",type:"VARCHAR"},{col:"grupo",type:"grupo_cultura",en:1},{col:"ciclo_medio_dias",type:"INTEGER"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"talhao_safras",name:"TALHAO_SAFRA",layer:"territorial",pk:"talhao_safra_id",ddlDoc:"Doc 26",status:"completo",csvRecords:883,csvFile:"fase_6/09_producao_ubg.csv",enums:["epoca_safra"],cols:[{col:"talhao_safra_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"talhao_id",type:"UUID",fk:"talhoes"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"epoca",type:"epoca_safra",en:1},{col:"area_plantada_ha",type:"DECIMAL"},{col:"data_plantio",type:"DATE"},{col:"data_colheita",type:"DATE"},{col:"produtividade_sc_ha",type:"DECIMAL"},{col:"producao_total_kg",type:"DECIMAL"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"silos",name:"SILOS",layer:"territorial",pk:"silo_id",ddlDoc:"Doc 26",status:"parcial",csvRecords:8,csvFile:"fase_2_territorial/02_silos_ubg.csv",enums:["tipo_silo"],cols:[{col:"silo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"nome",type:"VARCHAR"},{col:"tipo",type:"tipo_silo",en:1},{col:"capacidade_ton",type:"DECIMAL"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"parceiros_comerciais",name:"PARCEIRO_COMERCIAL",layer:"territorial",pk:"parceiro_comercial_id",ddlDoc:"Doc 26",status:"completo",csvRecords:2201,csvFile:"fase_2/06_parceiros_agriwin.csv",enums:["tipo_parceiro"],cols:[{col:"parceiro_comercial_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"nome",type:"VARCHAR"},{col:"cpf_cnpj",type:"VARCHAR"},{col:"tipo",type:"tipo_parceiro",en:1},{col:"email",type:"VARCHAR"},{col:"telefone",type:"VARCHAR"},{col:"municipio",type:"VARCHAR"},{col:"uf",type:"CHAR(2)"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"matriculas",name:"MATRICULAS",layer:"territorial",pk:"matricula_id",ddlDoc:"Doc 25b",status:"completo",csvRecords:88,csvFile:"fase_2/04_matriculas.csv",cols:[{col:"matricula_id",type:"UUID",pk:1},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"numero_matricula",type:"VARCHAR"},{col:"cartorio",type:"VARCHAR"},{col:"area_ha",type:"DECIMAL"},{col:"proprietario",type:"VARCHAR"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"ubgs",name:"UBG",layer:"territorial",pk:"ubg_id",ddlDoc:"orfa",status:"parcial",csvRecords:1,csvFile:"fase_2_territorial/01_ubg.csv",cols:[{col:"ubg_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"fazenda_sede_id",type:"UUID",fk:"fazendas"},{col:"nome",type:"VARCHAR"},{col:"capacidade_recepcao_ton_dia",type:"DECIMAL"},{col:"capacidade_armazenagem_ton",type:"DECIMAL"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"tanques_combustivel",name:"TANQUE_COMBUSTIVEL",layer:"territorial",pk:"tanque_combustivel_id",ddlDoc:"orfa",status:"completo",csvRecords:5,csvFile:"fase_3/06_fuel_tanks.csv",enums:["tipo_combustivel"],cols:[{col:"tanque_combustivel_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"nome",type:"VARCHAR"},{col:"tipo_combustivel",type:"tipo_combustivel",en:1},{col:"capacidade_litros",type:"DECIMAL"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // OPERACIONAL (8)
+  {id:"maquinas",name:"MAQUINAS",layer:"operacional",pk:"maquina_id",ddlDoc:"Doc 26",status:"parcial",csvRecords:183,csvFile:"fase_3/04_maquinas.csv",enums:["categoria_maquina","tipo_maquina","status_maquina"],cols:[{col:"maquina_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"codigo",type:"VARCHAR"},{col:"nome",type:"VARCHAR"},{col:"categoria",type:"categoria_maquina",en:1},{col:"tipo",type:"tipo_maquina",en:1},{col:"marca",type:"VARCHAR"},{col:"modelo",type:"VARCHAR"},{col:"ano_fabricacao",type:"INTEGER"},{col:"chassi",type:"VARCHAR"},{col:"potencia_cv",type:"DECIMAL"},{col:"horimetro_atual",type:"DECIMAL"},{col:"trator_vinculado_id",type:"UUID",fk:"maquinas"},{col:"valor_compra",type:"DECIMAL"},{col:"data_compra",type:"DATE"},{col:"status",type:"status_maquina",en:1},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"operadores",name:"OPERADORES",layer:"operacional",pk:"operador_id",ddlDoc:"Doc 26",status:"completo",csvRecords:15,csvFile:"fase_3/05_operadores.csv",enums:["tipo_cnh"],cols:[{col:"operador_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"nome",type:"VARCHAR"},{col:"cpf",type:"VARCHAR"},{col:"cnh_categoria",type:"tipo_cnh",en:1},{col:"cnh_validade",type:"DATE"},{col:"is_active",type:"BOOLEAN"},{col:"colaborador_id",type:"UUID",fk:"colaboradores"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"abastecimentos",name:"ABASTECIMENTOS",layer:"operacional",pk:"abastecimento_id",ddlDoc:"Doc 26",status:"completo",csvRecords:1200,csvFile:"fase_6/10_abastecimentos_vestro.csv",enums:["tipo_combustivel"],cols:[{col:"abastecimento_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"maquina_id",type:"UUID",fk:"maquinas"},{col:"operador_id",type:"UUID",fk:"operadores"},{col:"data_hora",type:"TIMESTAMPTZ"},{col:"tipo_combustivel",type:"tipo_combustivel",en:1},{col:"quantidade_litros",type:"DECIMAL"},{col:"horimetro",type:"DECIMAL"},{col:"tag_rfid",type:"VARCHAR"},{col:"source_vestro_id",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"manutencoes",name:"MANUTENCOES",layer:"operacional",pk:"manutencao_id",ddlDoc:"Doc 26",status:"sem_dados",csvRecords:0,enums:["tipo_manutencao","status_manutencao"],cols:[{col:"manutencao_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"maquina_id",type:"UUID",fk:"maquinas"},{col:"tipo",type:"tipo_manutencao",en:1},{col:"status",type:"status_manutencao",en:1},{col:"descricao",type:"TEXT"},{col:"data_abertura",type:"DATE"},{col:"data_conclusao",type:"DATE"},{col:"custo_pecas",type:"DECIMAL"},{col:"custo_mao_obra",type:"DECIMAL"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"colaboradores",name:"COLABORADORES",layer:"operacional",pk:"colaborador_id",ddlDoc:"Doc 27",status:"completo",csvRecords:88,csvFile:"fase_3/07_colaboradores.csv",enums:["setor_trabalho","tipo_contrato_trabalho"],cols:[{col:"colaborador_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"nome",type:"VARCHAR"},{col:"cpf",type:"VARCHAR"},{col:"data_nascimento",type:"DATE"},{col:"setor",type:"setor_trabalho",en:1},{col:"funcao",type:"VARCHAR"},{col:"tipo_contrato",type:"tipo_contrato_trabalho",en:1},{col:"data_admissao",type:"DATE"},{col:"data_demissao",type:"DATE"},{col:"salario_base",type:"DECIMAL"},{col:"is_active",type:"BOOLEAN"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"folha_pagamento",name:"FOLHA_PAGAMENTO",layer:"operacional",pk:"folha_pagamento_id",ddlDoc:"Doc 27",status:"completo",csvRecords:3122,csvFile:"fase_3/08_folha_pagamento.csv",enums:["tipo_folha_pagamento"],cols:[{col:"folha_pagamento_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"colaborador_id",type:"UUID",fk:"colaboradores"},{col:"tipo",type:"tipo_folha_pagamento",en:1},{col:"competencia",type:"DATE"},{col:"salario_bruto",type:"DECIMAL"},{col:"descontos",type:"DECIMAL"},{col:"salario_liquido",type:"DECIMAL"},{col:"horas_normais",type:"DECIMAL"},{col:"horas_extras",type:"DECIMAL"},{col:"faltas_dias",type:"INTEGER"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"tags_vestro",name:"TAGS_VESTRO",layer:"operacional",pk:"tag_vestro_id",ddlDoc:"orfa",status:"completo",csvRecords:47,csvFile:"fase_3/05_tags_maquinas_vestro.csv",cols:[{col:"tag_vestro_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"codigo",type:"VARCHAR"},{col:"tipo",type:"VARCHAR"},{col:"maquina_id",type:"UUID",fk:"maquinas"},{col:"descricao",type:"VARCHAR"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // INSUMOS (6)
+  {id:"produto_insumo",name:"PRODUTO_INSUMO",layer:"insumos",pk:"produto_insumo_id",ddlDoc:"Doc 16",status:"completo",csvRecords:18499,csvFile:"fase_0/03_produto_insumo_agriwin.csv",enums:["tipo_insumo","grupo_insumo","classe_toxicologica","classe_ambiental"],cols:[{col:"produto_insumo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"nome",type:"VARCHAR"},{col:"tipo",type:"tipo_insumo",en:1},{col:"grupo",type:"grupo_insumo",en:1},{col:"unidade_medida",type:"VARCHAR"},{col:"principio_ativo",type:"VARCHAR"},{col:"fabricante",type:"VARCHAR"},{col:"classe_toxicologica",type:"classe_toxicologica",en:1},{col:"classe_ambiental",type:"classe_ambiental",en:1},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"receituario_agronomico",name:"RECEITUARIO_AGRONOMICO",layer:"insumos",pk:"receituario_agronomico_id",ddlDoc:"Doc 16",status:"sem_dados",csvRecords:0,cols:[{col:"receituario_agronomico_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"produto_insumo_id",type:"UUID",fk:"produto_insumo"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"agronomo_nome",type:"VARCHAR"},{col:"agronomo_crea",type:"VARCHAR"},{col:"data_receita",type:"DATE"},{col:"dose_recomendada_ha",type:"DECIMAL"},{col:"area_aplicacao_ha",type:"DECIMAL"},{col:"praga_alvo",type:"VARCHAR"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"compra_insumo",name:"COMPRA_INSUMO",layer:"insumos",pk:"compra_insumo_id",ddlDoc:"Doc 16",status:"sem_dados",csvRecords:0,enums:["fonte_compra","status_compra"],cols:[{col:"compra_insumo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"produto_insumo_id",type:"UUID",fk:"produto_insumo"},{col:"parceiro_id",type:"UUID",fk:"parceiros_comerciais"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"fonte",type:"fonte_compra",en:1},{col:"data_compra",type:"DATE"},{col:"quantidade",type:"DECIMAL"},{col:"valor_total",type:"DECIMAL"},{col:"cultura_destino_id",type:"UUID",fk:"culturas"},{col:"status",type:"status_compra",en:1},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"estoque_insumo",name:"ESTOQUE_INSUMO",layer:"insumos",pk:"estoque_insumo_id",ddlDoc:"Doc 16",status:"sem_dados",csvRecords:0,enums:["status_estoque"],cols:[{col:"estoque_insumo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"produto_insumo_id",type:"UUID",fk:"produto_insumo"},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"lote",type:"VARCHAR"},{col:"quantidade_atual",type:"DECIMAL"},{col:"custo_medio_unitario",type:"DECIMAL"},{col:"status",type:"status_estoque",en:1},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"aplicacao_insumo",name:"APLICACAO_INSUMO",layer:"insumos",pk:"aplicacao_insumo_id",ddlDoc:"Doc 16",status:"sem_dados",csvRecords:0,enums:["metodo_aplicacao","contexto_aplicacao"],cols:[{col:"aplicacao_insumo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"produto_insumo_id",type:"UUID",fk:"produto_insumo"},{col:"estoque_insumo_id",type:"UUID",fk:"estoque_insumo"},{col:"talhao_safra_id",type:"UUID",fk:"talhao_safras"},{col:"manutencao_id",type:"UUID",fk:"manutencoes"},{col:"receituario_id",type:"UUID",fk:"receituario_agronomico"},{col:"data_aplicacao",type:"DATE"},{col:"quantidade_total",type:"DECIMAL"},{col:"dose_por_ha",type:"DECIMAL"},{col:"metodo",type:"metodo_aplicacao",en:1},{col:"contexto",type:"contexto_aplicacao",en:1},{col:"custo_total",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"movimentacao_insumo",name:"MOVIMENTACAO_INSUMO",layer:"insumos",pk:"movimentacao_insumo_id",ddlDoc:"Doc 16",status:"sem_dados",csvRecords:0,enums:["tipo_movimentacao_insumo"],cols:[{col:"movimentacao_insumo_id",type:"UUID",pk:1},{col:"estoque_insumo_id",type:"UUID",fk:"estoque_insumo"},{col:"compra_insumo_id",type:"UUID",fk:"compra_insumo"},{col:"aplicacao_insumo_id",type:"UUID",fk:"aplicacao_insumo"},{col:"transferencia_destino_id",type:"UUID",fk:"estoque_insumo"},{col:"responsavel_id",type:"UUID",fk:"users"},{col:"tipo",type:"tipo_movimentacao_insumo",en:1},{col:"data_movimentacao",type:"DATE"},{col:"quantidade",type:"DECIMAL"},{col:"custo_total",type:"DECIMAL"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // OP. CAMPO (6)
+  {id:"operacoes_campo",name:"OPERACAO_CAMPO",layer:"op_campo",pk:"operacao_campo_id",ddlDoc:"Doc 25a",status:"parcial",csvRecords:10,csvFile:"fase_6_operacoes/01_operacoes_campo_colheita.csv",enums:["tipo_operacao_campo","status_operacao_campo"],cols:[{col:"operacao_campo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"talhao_safra_id",type:"UUID",fk:"talhao_safras"},{col:"maquina_id",type:"UUID",fk:"maquinas"},{col:"operador_id",type:"UUID",fk:"operadores"},{col:"fazenda_id",type:"UUID",fk:"fazendas"},{col:"tipo",type:"tipo_operacao_campo",en:1},{col:"status",type:"status_operacao_campo",en:1},{col:"data_inicio",type:"TIMESTAMPTZ"},{col:"data_fim",type:"TIMESTAMPTZ"},{col:"area_trabalhada_ha",type:"DECIMAL"},{col:"horimetro_inicial",type:"DECIMAL"},{col:"horimetro_final",type:"DECIMAL"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"plantio_detalhes",name:"PLANTIO_DETALHE",layer:"op_campo",pk:"plantio_detalhe_id",ddlDoc:"Doc 25a",status:"sem_dados",csvRecords:0,cols:[{col:"plantio_detalhe_id",type:"UUID",pk:1},{col:"operacao_campo_id",type:"UUID",fk:"operacoes_campo"},{col:"semente_cultivar",type:"VARCHAR"},{col:"populacao_sementes_ha",type:"DECIMAL"},{col:"espacamento_cm",type:"DECIMAL"},{col:"profundidade_plantio_cm",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"colheita_detalhes",name:"COLHEITA_DETALHE",layer:"op_campo",pk:"colheita_detalhe_id",ddlDoc:"Doc 25a",status:"sem_dados",csvRecords:0,cols:[{col:"colheita_detalhe_id",type:"UUID",pk:1},{col:"operacao_campo_id",type:"UUID",fk:"operacoes_campo"},{col:"producao_total_kg",type:"DECIMAL"},{col:"umidade_media_pct",type:"DECIMAL"},{col:"impureza_media_pct",type:"DECIMAL"},{col:"produtividade_sc_ha",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"pulverizacao_detalhes",name:"PULVERIZACAO_DETALHE",layer:"op_campo",pk:"pulverizacao_detalhe_id",ddlDoc:"Doc 25a",status:"sem_dados",csvRecords:0,cols:[{col:"pulverizacao_detalhe_id",type:"UUID",pk:1},{col:"operacao_campo_id",type:"UUID",fk:"operacoes_campo"},{col:"volume_calda_lha",type:"DECIMAL"},{col:"pressao_bar",type:"DECIMAL"},{col:"tipo_bico",type:"VARCHAR"},{col:"velocidade_vento_kmh",type:"DECIMAL"},{col:"temperatura_c",type:"DECIMAL"},{col:"umidade_relativa_pct",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"drone_detalhes",name:"DRONE_DETALHE",layer:"op_campo",pk:"drone_detalhe_id",ddlDoc:"Doc 25a",status:"sem_dados",csvRecords:0,cols:[{col:"drone_detalhe_id",type:"UUID",pk:1},{col:"operacao_campo_id",type:"UUID",fk:"operacoes_campo"},{col:"modelo_drone",type:"VARCHAR"},{col:"altura_voo_m",type:"DECIMAL"},{col:"volume_calda_lha",type:"DECIMAL"},{col:"baterias_utilizadas",type:"INTEGER"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"transporte_colheita_detalhes",name:"TRANSPORTE_COLHEITA",layer:"op_campo",pk:"transporte_colheita_detalhe_id",ddlDoc:"Doc 25a",status:"sem_dados",csvRecords:0,enums:["tipo_transporte"],cols:[{col:"transporte_colheita_detalhe_id",type:"UUID",pk:1},{col:"operacao_campo_id",type:"UUID",fk:"operacoes_campo"},{col:"colheita_origem_id",type:"UUID",fk:"operacoes_campo"},{col:"tipo",type:"tipo_transporte",en:1},{col:"placa_veiculo",type:"VARCHAR"},{col:"motorista",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_tara_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"custo_frete",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // UBG (7)
+  {id:"ticket_balancas",name:"TICKET_BALANCA",layer:"ubg",pk:"ticket_balanca_id",ddlDoc:"Doc 28",status:"completo",csvRecords:883,csvFile:"fase_6/09_producao_ubg.csv",enums:["tipo_ticket_balanca","status_ticket"],cols:[{col:"ticket_balanca_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"talhao_safra_id",type:"UUID",fk:"talhao_safras"},{col:"silo_destino_id",type:"UUID",fk:"silos"},{col:"numero_ticket",type:"INTEGER"},{col:"tipo",type:"tipo_ticket_balanca",en:1},{col:"status",type:"status_ticket",en:1},{col:"data_pesagem",type:"TIMESTAMPTZ"},{col:"placa_veiculo",type:"VARCHAR"},{col:"motorista",type:"VARCHAR"},{col:"gleba",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_tara_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"umidade_pct",type:"DECIMAL"},{col:"impureza_pct",type:"DECIMAL"},{col:"peso_limpo_seco_kg",type:"DECIMAL"},{col:"observacoes",type:"TEXT"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"producao_ubg",name:"PRODUCAO_UBG",layer:"ubg",pk:"producao_ubg_id",ddlDoc:"Doc 28",status:"completo",csvRecords:883,csvFile:"fase_6/09_producao_ubg.csv",cols:[{col:"producao_ubg_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"data_recebimento",type:"DATE"},{col:"talhao_nome",type:"VARCHAR"},{col:"gleba",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"umidade_pct",type:"DECIMAL"},{col:"impureza_pct",type:"DECIMAL"},{col:"peso_limpo_seco_kg",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"pesagens_agricola",name:"PESAGEM_AGRICOLA",layer:"ubg",pk:"pesagem_agricola_id",ddlDoc:"Doc 28",status:"completo",csvRecords:806,csvFile:"fase_6_operacoes/04_pesagens_agricola.csv",cols:[{col:"pesagem_agricola_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"data_pesagem",type:"DATE"},{col:"talhao_nome",type:"VARCHAR"},{col:"fazenda_nome",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"umidade_pct",type:"DECIMAL"},{col:"impureza_pct",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"saidas_grao",name:"SAIDA_GRAO",layer:"ubg",pk:"saida_grao_id",ddlDoc:"Doc 28",status:"completo",csvRecords:542,csvFile:"fase_6_operacoes/08_saidas_producao.csv",enums:["tipo_saida_grao"],cols:[{col:"saida_grao_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"data_saida",type:"DATE"},{col:"destino",type:"VARCHAR"},{col:"contrato",type:"VARCHAR"},{col:"placa_veiculo",type:"VARCHAR"},{col:"motorista",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"umidade_pct",type:"DECIMAL"},{col:"nota_fiscal",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"recebimentos_grao",name:"RECEBIMENTO_GRAO",layer:"ubg",pk:"recebimento_grao_id",ddlDoc:"Doc 28",status:"sem_dados",csvRecords:0,cols:[{col:"recebimento_grao_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"ticket_balanca_id",type:"UUID",fk:"ticket_balancas"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"silo_destino_id",type:"UUID",fk:"silos"},{col:"data_recebimento",type:"TIMESTAMPTZ"},{col:"peso_recebido_kg",type:"DECIMAL"},{col:"umidade_recebida_pct",type:"DECIMAL"},{col:"classificacao",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"controles_secagem",name:"CONTROLE_SECAGEM",layer:"ubg",pk:"controle_secagem_id",ddlDoc:"Doc 28",status:"sem_dados",csvRecords:0,cols:[{col:"controle_secagem_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"silo_id",type:"UUID",fk:"silos"},{col:"data_inicio",type:"TIMESTAMPTZ"},{col:"data_fim",type:"TIMESTAMPTZ"},{col:"umidade_entrada_pct",type:"DECIMAL"},{col:"umidade_saida_pct",type:"DECIMAL"},{col:"consumo_lenha_m3",type:"DECIMAL"},{col:"peso_entrada_kg",type:"DECIMAL"},{col:"peso_saida_kg",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"estoques_silo",name:"ESTOQUE_SILO",layer:"ubg",pk:"estoque_silo_id",ddlDoc:"Doc 28",status:"sem_dados",csvRecords:0,enums:["status_estoque_silo"],cols:[{col:"estoque_silo_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"silo_id",type:"UUID",fk:"silos"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"quantidade_atual_kg",type:"DECIMAL"},{col:"umidade_atual_pct",type:"DECIMAL"},{col:"status",type:"status_estoque_silo",en:1},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // FINANCEIRO (7)
+  {id:"extratos_cooperativa",name:"EXTRATO_COOPERATIVA",layer:"financeiro",pk:"extrato_cooperativa_id",ddlDoc:"Doc 29",status:"completo",csvRecords:8211,csvFile:"fase_4/07_castrolanda_extrato.csv",enums:["tipo_transacao_extrato"],cols:[{col:"extrato_cooperativa_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"conta_numero",type:"VARCHAR"},{col:"data_transacao",type:"DATE"},{col:"tipo",type:"tipo_transacao_extrato",en:1},{col:"descricao",type:"TEXT"},{col:"valor",type:"DECIMAL"},{col:"saldo",type:"DECIMAL"},{col:"documento_ref",type:"VARCHAR"},{col:"source_file",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"cc_cooperativa",name:"CC_COOPERATIVA",layer:"financeiro",pk:"cc_cooperativa_id",ddlDoc:"Doc 29",status:"completo",csvRecords:2891,csvFile:"fase_4/09_castrolanda_cc_completo.csv",enums:["tipo_transacao_cc"],cols:[{col:"cc_cooperativa_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"conta_numero",type:"VARCHAR"},{col:"data_transacao",type:"DATE"},{col:"tipo",type:"tipo_transacao_cc",en:1},{col:"descricao",type:"TEXT"},{col:"valor_debito",type:"DECIMAL"},{col:"valor_credito",type:"DECIMAL"},{col:"saldo",type:"DECIMAL"},{col:"documento_ref",type:"VARCHAR"},{col:"source_file",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"contas_capital",name:"CONTA_CAPITAL",layer:"financeiro",pk:"conta_capital_id",ddlDoc:"Doc 29",status:"completo",csvRecords:95,csvFile:"fase_4/12_castrolanda_capital_html.csv",enums:["tipo_transacao_capital"],cols:[{col:"conta_capital_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"conta_numero",type:"VARCHAR"},{col:"tipo_conta",type:"VARCHAR"},{col:"data_transacao",type:"DATE"},{col:"tipo",type:"tipo_transacao_capital",en:1},{col:"descricao",type:"TEXT"},{col:"valor",type:"DECIMAL"},{col:"saldo",type:"DECIMAL"},{col:"source_file",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"financiamentos_coop",name:"FINANCIAMENTO_COOP",layer:"financeiro",pk:"financiamento_coop_id",ddlDoc:"Doc 29",status:"completo",csvRecords:220,csvFile:"fase_4/11_castrolanda_financiamentos.csv",enums:["tipo_financiamento_coop"],cols:[{col:"financiamento_coop_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"numero_contrato",type:"VARCHAR"},{col:"tipo",type:"tipo_financiamento_coop",en:1},{col:"data_contrato",type:"DATE"},{col:"data_vencimento",type:"DATE"},{col:"valor_original",type:"DECIMAL"},{col:"taxa_juros_aa",type:"DECIMAL"},{col:"saldo_devedor",type:"DECIMAL"},{col:"status",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"vendas_grao",name:"VENDA_GRAO",layer:"financeiro",pk:"venda_grao_id",ddlDoc:"Doc 29",status:"completo",csvRecords:170,csvFile:"fase_4/13_castrolanda_vendas.csv",cols:[{col:"venda_grao_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"contrato",type:"VARCHAR"},{col:"data_venda",type:"DATE"},{col:"quantidade_kg",type:"DECIMAL"},{col:"valor_bruto",type:"DECIMAL"},{col:"descontos",type:"DECIMAL"},{col:"valor_liquido",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"cargas_a_carga",name:"CARGA_A_CARGA",layer:"financeiro",pk:"carga_a_carga_id",ddlDoc:"Doc 29",status:"completo",csvRecords:1309,csvFile:"fase_4/14_castrolanda_carga_a_carga.csv",enums:["modalidade_carga"],cols:[{col:"carga_a_carga_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"numero_carga",type:"INTEGER"},{col:"data_carga",type:"DATE"},{col:"modalidade",type:"modalidade_carga",en:1},{col:"placa",type:"VARCHAR"},{col:"motorista",type:"VARCHAR"},{col:"peso_bruto_kg",type:"DECIMAL"},{col:"peso_liquido_kg",type:"DECIMAL"},{col:"umidade_pct",type:"DECIMAL"},{col:"impureza_pct",type:"DECIMAL"},{col:"peso_final_kg",type:"DECIMAL"},{col:"classificacao",type:"VARCHAR"},{col:"contrato",type:"VARCHAR"},{col:"destino",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"custos_insumo_coop",name:"CUSTO_INSUMO_COOP",layer:"financeiro",pk:"custo_insumo_coop_id",ddlDoc:"Doc 29",status:"completo",csvRecords:553,csvFile:"fase_6_operacoes/06_custo_insumos_castrolanda.csv",cols:[{col:"custo_insumo_coop_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"produto",type:"VARCHAR"},{col:"categoria",type:"VARCHAR"},{col:"quantidade",type:"DECIMAL"},{col:"valor_total",type:"DECIMAL"},{col:"data_compra",type:"DATE"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // FRETE/VENDAS (2)
+  {id:"freteiros",name:"FRETEIRO",layer:"frete_vendas",pk:"freteiro_id",ddlDoc:"Doc 30",status:"completo",csvRecords:116,csvFile:"fase_6_operacoes/07_freteiros.csv",cols:[{col:"freteiro_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"motorista",type:"VARCHAR"},{col:"placa",type:"VARCHAR"},{col:"data_viagem",type:"DATE"},{col:"origem",type:"VARCHAR"},{col:"destino",type:"VARCHAR"},{col:"cultura",type:"VARCHAR"},{col:"peso_kg",type:"DECIMAL"},{col:"valor_frete",type:"DECIMAL"},{col:"valor_total",type:"DECIMAL"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"vendas_diretas",name:"VENDA_DIRETA",layer:"frete_vendas",pk:"venda_direta_id",ddlDoc:"Doc 30",status:"completo",csvRecords:73,csvFile:"fase_6_operacoes/05b_vendas_diretas.csv",cols:[{col:"venda_direta_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"safra_id",type:"UUID",fk:"safras"},{col:"cultura_id",type:"UUID",fk:"culturas"},{col:"comprador",type:"VARCHAR"},{col:"data_venda",type:"DATE"},{col:"quantidade_kg",type:"DECIMAL"},{col:"valor_bruto",type:"DECIMAL"},{col:"valor_liquido",type:"DECIMAL"},{col:"nota_fiscal",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+
+  // AUXILIAR (3)
+  {id:"historico_maquinas",name:"HISTORICO_MAQUINAS",layer:"auxiliar",pk:"historico_maquina_id",ddlDoc:"Doc 31",status:"completo",csvRecords:32516,enums:["tipo_registro_maquinario"],cols:[{col:"historico_maquina_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"maquina_id",type:"UUID",fk:"maquinas"},{col:"tipo_registro",type:"tipo_registro_maquinario",en:1},{col:"data_registro",type:"DATE"},{col:"horimetro",type:"DECIMAL"},{col:"descricao",type:"TEXT"},{col:"valor",type:"DECIMAL"},{col:"quantidade",type:"DECIMAL"},{col:"source_file",type:"VARCHAR"},{col:"source_aba",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]},
+  {id:"talhao_mapping",name:"TALHAO_MAPPING",layer:"auxiliar",pk:"talhao_mapping_id",ddlDoc:"orfa",status:"completo",csvRecords:169,csvFile:"fase_2/03b_talhao_nome_mapping.csv",cols:[{col:"talhao_mapping_id",type:"UUID",pk:1},{col:"nome_original",type:"VARCHAR"},{col:"nome_canonico",type:"VARCHAR"},{col:"modulo_origem",type:"VARCHAR"},{col:"fazenda_nome",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"}]},
+  {id:"ubg_caixa",name:"UBG_CAIXA",layer:"auxiliar",pk:"ubg_caixa_id",ddlDoc:"orfa",status:"completo",csvRecords:19177,csvFile:"fase_6/14_ubg_caixa.csv",cols:[{col:"ubg_caixa_id",type:"UUID",pk:1},{col:"organization_id",type:"UUID",fk:"organizations"},{col:"data",type:"DATE"},{col:"tipo",type:"VARCHAR"},{col:"descricao",type:"TEXT"},{col:"valor",type:"DECIMAL"},{col:"saldo",type:"DECIMAL"},{col:"categoria",type:"VARCHAR"},{col:"subcategoria",type:"VARCHAR"},{col:"centro_custo",type:"VARCHAR"},{col:"source_file",type:"VARCHAR"},{col:"created_at",type:"TIMESTAMPTZ"},{col:"updated_at",type:"TIMESTAMPTZ"}]}
+];
+
+// ═══════════════════════════════════════════════════
+// DATA: EDGES (~85 excl org_id)
+// ═══════════════════════════════════════════════════
+var EDGES = [
+  {from:"owners",to:"admins",col:"admin_id"},
+  {from:"organizations",to:"owners",col:"owner_id"},
+  {from:"organization_settings",to:"organizations",col:"organization_id"},
+  {from:"users",to:"organizations",col:"organization_id"},
+  {from:"roles",to:"organizations",col:"organization_id"},
+  {from:"user_roles",to:"users",col:"user_id"},
+  {from:"user_roles",to:"roles",col:"role_id"},
+  {from:"role_permissions",to:"roles",col:"role_id"},
+  {from:"role_permissions",to:"permissions",col:"permission_id"},
+  {from:"talhoes",to:"fazendas",col:"fazenda_id"},
+  {from:"talhao_safras",to:"talhoes",col:"talhao_id"},
+  {from:"talhao_safras",to:"safras",col:"safra_id"},
+  {from:"talhao_safras",to:"culturas",col:"cultura_id"},
+  {from:"silos",to:"fazendas",col:"fazenda_id"},
+  {from:"matriculas",to:"fazendas",col:"fazenda_id"},
+  {from:"ubgs",to:"fazendas",col:"fazenda_sede_id"},
+  {from:"tanques_combustivel",to:"fazendas",col:"fazenda_id"},
+  {from:"maquinas",to:"maquinas",col:"trator_vinculado_id"},
+  {from:"abastecimentos",to:"maquinas",col:"maquina_id"},
+  {from:"abastecimentos",to:"operadores",col:"operador_id"},
+  {from:"manutencoes",to:"maquinas",col:"maquina_id"},
+  {from:"folha_pagamento",to:"colaboradores",col:"colaborador_id"},
+  {from:"tags_vestro",to:"maquinas",col:"maquina_id"},
+  {from:"operadores",to:"colaboradores",col:"colaborador_id"},
+  {from:"receituario_agronomico",to:"produto_insumo",col:"produto_insumo_id"},
+  {from:"receituario_agronomico",to:"culturas",col:"cultura_id"},
+  {from:"compra_insumo",to:"produto_insumo",col:"produto_insumo_id"},
+  {from:"compra_insumo",to:"parceiros_comerciais",col:"parceiro_id"},
+  {from:"compra_insumo",to:"safras",col:"safra_id"},
+  {from:"compra_insumo",to:"culturas",col:"cultura_destino_id"},
+  {from:"estoque_insumo",to:"produto_insumo",col:"produto_insumo_id"},
+  {from:"estoque_insumo",to:"fazendas",col:"fazenda_id"},
+  {from:"aplicacao_insumo",to:"produto_insumo",col:"produto_insumo_id"},
+  {from:"aplicacao_insumo",to:"estoque_insumo",col:"estoque_insumo_id"},
+  {from:"aplicacao_insumo",to:"talhao_safras",col:"talhao_safra_id"},
+  {from:"aplicacao_insumo",to:"manutencoes",col:"manutencao_id"},
+  {from:"aplicacao_insumo",to:"receituario_agronomico",col:"receituario_id"},
+  {from:"movimentacao_insumo",to:"estoque_insumo",col:"estoque_insumo_id"},
+  {from:"movimentacao_insumo",to:"compra_insumo",col:"compra_insumo_id"},
+  {from:"movimentacao_insumo",to:"aplicacao_insumo",col:"aplicacao_insumo_id"},
+  {from:"movimentacao_insumo",to:"estoque_insumo",col:"transferencia_destino_id"},
+  {from:"movimentacao_insumo",to:"users",col:"responsavel_id"},
+  {from:"operacoes_campo",to:"talhao_safras",col:"talhao_safra_id"},
+  {from:"operacoes_campo",to:"maquinas",col:"maquina_id"},
+  {from:"operacoes_campo",to:"operadores",col:"operador_id"},
+  {from:"operacoes_campo",to:"fazendas",col:"fazenda_id"},
+  {from:"plantio_detalhes",to:"operacoes_campo",col:"operacao_campo_id"},
+  {from:"colheita_detalhes",to:"operacoes_campo",col:"operacao_campo_id"},
+  {from:"pulverizacao_detalhes",to:"operacoes_campo",col:"operacao_campo_id"},
+  {from:"drone_detalhes",to:"operacoes_campo",col:"operacao_campo_id"},
+  {from:"transporte_colheita_detalhes",to:"operacoes_campo",col:"operacao_campo_id"},
+  {from:"transporte_colheita_detalhes",to:"operacoes_campo",col:"colheita_origem_id"},
+  {from:"ticket_balancas",to:"safras",col:"safra_id"},
+  {from:"ticket_balancas",to:"culturas",col:"cultura_id"},
+  {from:"ticket_balancas",to:"talhao_safras",col:"talhao_safra_id"},
+  {from:"ticket_balancas",to:"silos",col:"silo_destino_id"},
+  {from:"producao_ubg",to:"safras",col:"safra_id"},
+  {from:"producao_ubg",to:"culturas",col:"cultura_id"},
+  {from:"pesagens_agricola",to:"safras",col:"safra_id"},
+  {from:"pesagens_agricola",to:"culturas",col:"cultura_id"},
+  {from:"saidas_grao",to:"safras",col:"safra_id"},
+  {from:"saidas_grao",to:"culturas",col:"cultura_id"},
+  {from:"recebimentos_grao",to:"ticket_balancas",col:"ticket_balanca_id"},
+  {from:"recebimentos_grao",to:"safras",col:"safra_id"},
+  {from:"recebimentos_grao",to:"culturas",col:"cultura_id"},
+  {from:"recebimentos_grao",to:"silos",col:"silo_destino_id"},
+  {from:"controles_secagem",to:"safras",col:"safra_id"},
+  {from:"controles_secagem",to:"culturas",col:"cultura_id"},
+  {from:"controles_secagem",to:"silos",col:"silo_id"},
+  {from:"estoques_silo",to:"silos",col:"silo_id"},
+  {from:"estoques_silo",to:"safras",col:"safra_id"},
+  {from:"estoques_silo",to:"culturas",col:"cultura_id"},
+  {from:"vendas_grao",to:"safras",col:"safra_id"},
+  {from:"vendas_grao",to:"culturas",col:"cultura_id"},
+  {from:"cargas_a_carga",to:"safras",col:"safra_id"},
+  {from:"cargas_a_carga",to:"culturas",col:"cultura_id"},
+  {from:"custos_insumo_coop",to:"safras",col:"safra_id"},
+  {from:"custos_insumo_coop",to:"culturas",col:"cultura_id"},
+  {from:"freteiros",to:"safras",col:"safra_id"},
+  {from:"vendas_diretas",to:"safras",col:"safra_id"},
+  {from:"vendas_diretas",to:"culturas",col:"cultura_id"},
+  {from:"historico_maquinas",to:"maquinas",col:"maquina_id"}
+];
+
+// ═══════════════════════════════════════════════════
+// ENGINE
+// ═══════════════════════════════════════════════════
+var entMap = {};
+ENTITIES.forEach(function(e){ e.enums = e.enums || []; e.inEdges = []; e.outEdges = []; entMap[e.id] = e; });
+EDGES.forEach(function(ed){ var f=entMap[ed.from], t=entMap[ed.to]; if(f) f.outEdges.push(ed); if(t) t.inEdges.push(ed); });
+
+var layerVisible = {};
+LAYERS.forEach(function(l){ layerVisible[l.key] = true; });
+
+var NODE_W=160, HEADER_H=24, ROW_H=16, PAD=6, MAX_ROWS=6;
+function getNodeH(e){ var fks=e.cols.filter(function(c){return c.fk&&c.col!=="organization_id";}); return HEADER_H + Math.min(1+fks.length, MAX_ROWS)*ROW_H + PAD; }
+
+// Initial positions
+(function(){
+  var byLayer = {};
+  LAYERS.forEach(function(l){byLayer[l.key]=[];});
+  ENTITIES.forEach(function(e){byLayer[e.layer].push(e);});
+  var cw = 1600;
+  LAYERS.forEach(function(l){
+    var ents = byLayer[l.key];
+    var isLeft = l.key==="insumos"||l.key==="financeiro";
+    var isRight = l.key==="op_campo"||l.key==="frete_vendas";
+    var startX = isLeft ? 80 : (isRight ? cw/2+80 : (cw - ents.length*200)/2);
+    ents.forEach(function(e,i){
+      e.x = startX + i*200; e.y = l.y + (Math.random()-.5)*40;
+      e.vx=0; e.vy=0; e.w=NODE_W; e.h=getNodeH(e);
+    });
+  });
+})();
+
+// Force sim
+var alpha=1.0, ALPHA_DECAY=0.98, ALPHA_MIN=0.005, DAMPING=0.7;
+var dragNode=null;
+
+function simulate(){
+  if(alpha<ALPHA_MIN) return;
+  var vis=ENTITIES.filter(function(e){return layerVisible[e.layer];}), n=vis.length;
+  for(var i=0;i<n;i++) for(var j=i+1;j<n;j++){
+    var a=vis[i],b=vis[j], dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
+    var force=8000/(dist*dist), fx=(dx/dist)*force*alpha, fy=(dy/dist)*force*alpha;
+    a.vx-=fx; a.vy-=fy; b.vx+=fx; b.vy+=fy;
+  }
+  EDGES.forEach(function(ed){
+    var a=entMap[ed.from], b=entMap[ed.to];
+    if(!a||!b||!layerVisible[a.layer]||!layerVisible[b.layer]) return;
+    var dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
+    var force=0.03*(dist-220)*alpha, fx=(dx/dist)*force, fy=(dy/dist)*force;
+    a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
+  });
+  vis.forEach(function(e){ e.vy += 0.02*(layerMap[e.layer].y - e.y)*alpha; });
+  vis.forEach(function(e){
+    if(e===dragNode) return;
+    e.vx*=DAMPING; e.vy*=DAMPING; e.x+=e.vx; e.y+=e.vy;
+  });
+  alpha*=ALPHA_DECAY;
+}
+for(var i=0;i<200;i++) simulate();
+alpha=ALPHA_MIN;
+
+// ═══════════════════════════════════════════════════
+// CANVAS
+// ═══════════════════════════════════════════════════
+var canvas=document.getElementById("canvas"), ctx=canvas.getContext("2d");
+var W,H,dpr, panX=0, panY=0, zoom=1;
+var selectedNode=null, hoverNode=null, searchQuery="";
+var monoFont="'SF Mono','Fira Code','Cascadia Code',monospace";
+
+function resize(){
+  dpr=window.devicePixelRatio||1;
+  var wrap=canvas.parentElement;
+  W=wrap.clientWidth; H=wrap.clientHeight;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+"px"; canvas.style.height=H+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",function(){resize();draw();});
+resize();
+
+function screenToWorld(sx,sy){return[(sx-W/2)/zoom-panX,(sy-H/2)/zoom-panY];}
+
+function draw(){
+  ctx.save(); ctx.clearRect(0,0,W,H);
+  ctx.translate(W/2,H/2); ctx.scale(zoom,zoom); ctx.translate(panX,panY);
+
+  var active=selectedNode||hoverNode, searching=searchQuery.length>0;
+
+  // Edges
+  EDGES.forEach(function(ed){
+    var a=entMap[ed.from], b=entMap[ed.to];
+    if(!a||!b||!layerVisible[a.layer]||!layerVisible[b.layer]) return;
+    var hl=active&&(a===active||b===active);
+    ctx.beginPath();
+    ctx.strokeStyle=hl?"rgba(88,166,255,0.7)":(active?"rgba(139,148,158,0.08)":"rgba(139,148,158,0.25)");
+    ctx.lineWidth=hl?1.8:0.8;
+    if(a===b){
+      ctx.ellipse(a.x+a.w/2,a.y-20,25,18,0,0,Math.PI*2);
+    } else {
+      var ax=a.x+a.w/2,ay=a.y+a.h/2,bx=b.x+b.w/2,by=b.y+b.h/2;
+      var mx=(ax+bx)/2,my=(ay+by)/2,ddx=bx-ax,ddy=by-ay;
+      var cpx=mx+ddy*0.1, cpy=my-ddx*0.1;
+      ctx.moveTo(ax,ay); ctx.quadraticCurveTo(cpx,cpy,bx,by);
+      var t=0.92, px=(1-t)*(1-t)*ax+2*(1-t)*t*cpx+t*t*bx, py=(1-t)*(1-t)*ay+2*(1-t)*t*cpy+t*t*by;
+      var ang=Math.atan2(by-py,bx-px);
+      ctx.moveTo(bx,by); ctx.lineTo(bx-8*Math.cos(ang-.3),by-8*Math.sin(ang-.3));
+      ctx.moveTo(bx,by); ctx.lineTo(bx-8*Math.cos(ang+.3),by-8*Math.sin(ang+.3));
+    }
+    ctx.stroke();
+    if(zoom>1.5&&hl&&a!==b){
+      ctx.font="9px "+monoFont; ctx.fillStyle="rgba(139,148,158,0.6)"; ctx.textAlign="center";
+      ctx.fillText(ed.col,(a.x+a.w/2+b.x+b.w/2)/2,(a.y+a.h/2+b.y+b.h/2)/2-6);
+    }
+  });
+
+  // Nodes
+  ENTITIES.forEach(function(e){
+    if(!layerVisible[e.layer]) return;
+    var layer=layerMap[e.layer], isSel=e===selectedNode, isHov=e===hoverNode;
+    var conn=active&&isConnected(e);
+    var matchS=searching&&e.name.toLowerCase().indexOf(searchQuery)>=0;
+    ctx.globalAlpha=(searching&&!matchS)?0.15:((active&&!conn&&!isSel)?0.2:1);
+
+    if(isSel||isHov){
+      ctx.strokeStyle=isSel?"#58a6ff":"rgba(88,166,255,0.5)";
+      ctx.lineWidth=isSel?2.5:1.5;
+      ctx.strokeRect(e.x-3,e.y-3,e.w+6,e.h+6);
+    }
+
+    // Body
+    ctx.fillStyle="#161b22"; ctx.beginPath(); rr(ctx,e.x,e.y,e.w,e.h,6); ctx.fill();
+    ctx.strokeStyle=(conn||isSel)?"rgba(88,166,255,0.5)":"rgba(48,54,61,0.8)"; ctx.lineWidth=1; ctx.stroke();
+
+    // Header
+    ctx.fillStyle=layer.color; ctx.beginPath(); rrTop(ctx,e.x,e.y,e.w,HEADER_H,6); ctx.fill();
+    ctx.fillStyle="#0d1117"; ctx.font="bold 10px "+monoFont; ctx.textAlign="left"; ctx.textBaseline="middle";
+    ctx.fillText(e.name,e.x+6,e.y+HEADER_H/2,e.w-12);
+
+    // PK + FK
+    ctx.font="9px "+monoFont;
+    var row=0, pkC=e.cols.find(function(c){return c.pk;});
+    if(pkC){ ctx.fillStyle="#58a6ff"; ctx.fillText("\u{1F511} "+pkC.col,e.x+6,e.y+HEADER_H+8+row*ROW_H,e.w-12); row++; }
+    var fks=e.cols.filter(function(c){return c.fk&&c.col!=="organization_id";});
+    fks.slice(0,MAX_ROWS-1).forEach(function(c){
+      ctx.fillStyle="#db6d28"; ctx.fillText("\u2192 "+c.fk,e.x+6,e.y+HEADER_H+8+row*ROW_H,e.w-12); row++;
+    });
+    if(fks.length>MAX_ROWS-1){ ctx.fillStyle="#8b949e"; ctx.fillText("... +"+(fks.length-MAX_ROWS+1)+" FKs",e.x+6,e.y+HEADER_H+8+row*ROW_H,e.w-12); }
+    ctx.globalAlpha=1;
+  });
+  ctx.restore();
+}
+
+function isConnected(ent){
+  var ref=selectedNode||hoverNode; if(!ref) return false; if(ent===ref) return true;
+  return EDGES.some(function(e){return(e.from===ref.id&&e.to===ent.id)||(e.to===ref.id&&e.from===ent.id);});
+}
+function rr(c,x,y,w,h,r){c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function rrTop(c,x,y,w,h,r){c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.lineTo(x+w,y+h);c.lineTo(x,y+h);c.arcTo(x,y,x+w,y,r);c.closePath();}
+
+// ═══════════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════════
+var isDragging=false, isPanning=false, dragStartX=0, dragStartY=0, lastMX=0, lastMY=0, didMove=false;
+
+function hitTest(sx,sy){
+  var w=screenToWorld(sx,sy), wx=w[0], wy=w[1];
+  for(var i=ENTITIES.length-1;i>=0;i--){
+    var e=ENTITIES[i]; if(!layerVisible[e.layer]) continue;
+    if(wx>=e.x&&wx<=e.x+e.w&&wy>=e.y&&wy<=e.y+e.h) return e;
+  }
+  return null;
+}
+
+canvas.addEventListener("mousedown",function(ev){
+  lastMX=ev.clientX; lastMY=ev.clientY; dragStartX=ev.clientX; dragStartY=ev.clientY; didMove=false;
+  var hit=hitTest(ev.offsetX,ev.offsetY);
+  if(hit){ dragNode=hit; isDragging=true; } else { isPanning=true; }
+  alpha=Math.max(alpha,0.1); startSim();
+  document.getElementById("canvasHint").style.opacity="0";
+});
+
+canvas.addEventListener("mousemove",function(ev){
+  var dx=ev.clientX-lastMX, dy=ev.clientY-lastMY;
+  lastMX=ev.clientX; lastMY=ev.clientY;
+  if(Math.abs(ev.clientX-dragStartX)+Math.abs(ev.clientY-dragStartY)>4) didMove=true;
+  if(isDragging&&dragNode){ dragNode.x+=dx/zoom; dragNode.y+=dy/zoom; alpha=Math.max(alpha,0.05); reqDraw(); return; }
+  if(isPanning){ panX+=dx/zoom; panY+=dy/zoom; reqDraw(); return; }
+  var hit=hitTest(ev.offsetX,ev.offsetY);
+  if(hit!==hoverNode){ hoverNode=hit; canvas.style.cursor=hit?"pointer":"default"; reqDraw(); }
+});
+
+canvas.addEventListener("mouseup",function(ev){
+  if(isDragging&&dragNode&&!didMove) selectNode(dragNode);
+  isDragging=false; isPanning=false; dragNode=null;
+});
+
+canvas.addEventListener("dblclick",function(ev){ if(!hitTest(ev.offsetX,ev.offsetY)) fitAll(); });
+
+canvas.addEventListener("wheel",function(ev){
+  ev.preventDefault();
+  var factor=ev.deltaY>0?0.92:1.08, nz=Math.max(0.2,Math.min(4,zoom*factor));
+  var w=screenToWorld(ev.offsetX,ev.offsetY);
+  zoom=nz; panX=(ev.offsetX-W/2)/zoom-w[0]; panY=(ev.offsetY-H/2)/zoom-w[1];
+  reqDraw();
+},{passive:false});
+
+var drawReq=false;
+function reqDraw(){if(!drawReq){drawReq=true;requestAnimationFrame(function(){drawReq=false;simulate();draw();});}}
+var simInt=null;
+function startSim(){if(simInt)return;simInt=setInterval(function(){if(alpha>=ALPHA_MIN){simulate();draw();}else{clearInterval(simInt);simInt=null;}},16);}
+
+document.addEventListener("keydown",function(ev){
+  if(ev.target.tagName==="INPUT") return;
+  if(ev.key==="Escape"){closePanel();selectedNode=null;draw();}
+  if(ev.key==="f"||ev.key==="F") fitAll();
+  if(ev.key===" "){ev.preventDefault();panX=0;panY=0;zoom=1;draw();}
+  if(ev.key>="1"&&ev.key<="9"){var idx=parseInt(ev.key)-1;if(idx<LAYERS.length)doToggleLayer(LAYERS[idx].key);}
+});
+
+function fitAll(){
+  var vis=ENTITIES.filter(function(e){return layerVisible[e.layer];});
+  if(!vis.length)return;
+  var minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
+  vis.forEach(function(e){minX=Math.min(minX,e.x);minY=Math.min(minY,e.y);maxX=Math.max(maxX,e.x+e.w);maxY=Math.max(maxY,e.y+e.h);});
+  var pw=maxX-minX+100,ph=maxY-minY+100;
+  zoom=Math.min(W/pw,H/ph,2)*0.9; panX=-(minX+maxX)/2; panY=-(minY+maxY)/2; draw();
+}
+
+// ═══════════════════════════════════════════════════
+// LEFT PANEL
+// ═══════════════════════════════════════════════════
+(function buildLeft(){
+  var list=document.getElementById("layerList");
+  LAYERS.forEach(function(l){
+    var count=ENTITIES.filter(function(e){return e.layer===l.key;}).length;
+    var li=document.createElement("li");
+    li.className="layer-item"; li.dataset.layer=l.key;
+    var dot=document.createElement("span"); dot.className="layer-dot"; dot.style.background=l.color;
+    var name=document.createElement("span"); name.className="layer-name"; name.textContent=l.label;
+    var cnt=document.createElement("span"); cnt.className="layer-count"; cnt.textContent=count;
+    li.appendChild(dot); li.appendChild(name); li.appendChild(cnt);
+    li.onclick=function(){doToggleLayer(l.key);};
+    list.appendChild(li);
+  });
+})();
+
+function doToggleLayer(key){
+  layerVisible[key]=!layerVisible[key];
+  document.querySelectorAll(".layer-item").forEach(function(li){
+    if(li.dataset.layer===key) li.classList.toggle("off",!layerVisible[key]);
+  });
+  updateStats(); draw();
+}
+
+function updateStats(){
+  var vis=ENTITIES.filter(function(e){return layerVisible[e.layer];}).length;
+  var ec=EDGES.filter(function(ed){var a=entMap[ed.from],b=entMap[ed.to];return a&&b&&layerVisible[a.layer]&&layerVisible[b.layer];}).length;
+  var tr=0; ENTITIES.forEach(function(e){tr+=e.csvRecords||0;});
+  var h=document.getElementById("headerStats");
+  h.textContent="";
+  [[vis+"/"+ENTITIES.length+" entidades"],[ec+" edges"],[Object.keys(ENUMS).length+" enums"],[tr.toLocaleString("pt-BR")+" records"]].forEach(function(s){
+    var sp=document.createElement("span"); sp.className="stat";
+    var b=document.createElement("b"); b.textContent=s[0].split(" ")[0];
+    sp.appendChild(b); sp.appendChild(document.createTextNode(" "+s[0].split(" ").slice(1).join(" ")));
+    h.appendChild(sp);
+  });
+}
+
+document.getElementById("searchBox").addEventListener("input",function(ev){
+  searchQuery=ev.target.value.toLowerCase().trim(); draw();
+});
+
+// ═══════════════════════════════════════════════════
+// RIGHT PANEL
+// ═══════════════════════════════════════════════════
+function selectNode(ent){ selectedNode=ent; openPanel(ent); draw(); }
+
+function openPanel(ent){
+  var panel=document.getElementById("rightPanel"), content=document.getElementById("rpContent");
+  var layer=layerMap[ent.layer];
+  var statusClass="pill-"+(ent.status||"sem_dados");
+
+  // Build DOM safely
+  content.textContent="";
+
+  // Header
+  var hd=document.createElement("div"); hd.className="rp-header";
+  var title=document.createElement("span"); title.className="rp-title"; title.textContent=ent.name;
+  var badge=document.createElement("span"); badge.className="rp-badge";
+  badge.style.cssText="background:"+layer.color+"22;color:"+layer.color+";border:1px solid "+layer.color+"44";
+  badge.textContent=layer.label;
+  var closeBtn=document.createElement("button"); closeBtn.className="rp-close"; closeBtn.textContent="\u00d7";
+  closeBtn.onclick=closePanel;
+  hd.appendChild(title); hd.appendChild(badge); hd.appendChild(closeBtn);
+  content.appendChild(hd);
+
+  // Meta section
+  var metaSec=document.createElement("div"); metaSec.className="rp-section";
+  var metaDiv=document.createElement("div"); metaDiv.className="rp-meta";
+  var statusPill=document.createElement("span"); statusPill.className="pill "+statusClass;
+  statusPill.textContent=(ent.status||"sem_dados").replace(/_/g," ");
+  metaDiv.appendChild(statusPill);
+  var docPill=document.createElement("span"); docPill.className="pill";
+  docPill.style.cssText="background:rgba(139,148,158,.1);color:var(--fg2)"; docPill.textContent=ent.ddlDoc;
+  metaDiv.appendChild(docPill);
+  if(ent.csvRecords){
+    var recPill=document.createElement("span"); recPill.className="pill";
+    recPill.style.cssText="background:rgba(63,185,80,.1);color:var(--green)";
+    recPill.textContent=ent.csvRecords.toLocaleString("pt-BR")+" records";
+    metaDiv.appendChild(recPill);
+  }
+  metaSec.appendChild(metaDiv);
+  if(ent.csvFile){
+    var csvDiv=document.createElement("div");
+    csvDiv.style.cssText="font-size:.72rem;color:var(--fg3);font-family:var(--mono);margin-top:.3rem";
+    csvDiv.textContent="CSV: "+ent.csvFile;
+    metaSec.appendChild(csvDiv);
+  }
+  content.appendChild(metaSec);
+
+  // Columns table
+  var colSec=document.createElement("div"); colSec.className="rp-section";
+  var colH=document.createElement("h4"); colH.textContent="Colunas ("+ent.cols.length+")"; colSec.appendChild(colH);
+  var tbl=document.createElement("table"); tbl.className="rp-col-table";
+  var thead=document.createElement("thead"); var thr=document.createElement("tr");
+  ["Campo","Tipo","Flags"].forEach(function(t){ var th=document.createElement("th"); th.textContent=t; thr.appendChild(th); });
+  thead.appendChild(thr); tbl.appendChild(thead);
+  var tbody=document.createElement("tbody");
+  ent.cols.forEach(function(c){
+    var tr=document.createElement("tr");
+    if(c.col==="organization_id") tr.className="org-row";
+    var td1=document.createElement("td"); td1.textContent=c.col;
+    if(c.col==="organization_id"){ var sp=document.createElement("span"); sp.style.cssText="font-size:.65rem;color:var(--fg3)"; sp.textContent=" (oculto)"; td1.appendChild(sp); }
+    var td2=document.createElement("td"); td2.textContent=c.type;
+    var td3=document.createElement("td");
+    if(c.pk){ var f=document.createElement("span"); f.className="flag flag-pk"; f.textContent="PK"; td3.appendChild(f); }
+    if(c.fk){ var f2=document.createElement("span"); f2.className="flag flag-fk"; f2.textContent="FK"; td3.appendChild(f2); }
+    if(c.en){ var f3=document.createElement("span"); f3.className="flag flag-enum"; f3.textContent="ENUM"; td3.appendChild(f3); }
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody); colSec.appendChild(tbl); content.appendChild(colSec);
+
+  // ENUMs
+  if(ent.enums.length){
+    var enSec=document.createElement("div"); enSec.className="rp-section";
+    var enH=document.createElement("h4"); enH.textContent="ENUMs"; enSec.appendChild(enH);
+    ent.enums.forEach(function(en){
+      var vals=ENUMS[en]||[];
+      var d=document.createElement("div"); d.className="rp-enum";
+      var nm=document.createElement("div"); nm.className="rp-enum-name"; nm.textContent=en;
+      var vl=document.createElement("div"); vl.className="rp-enum-vals"; vl.textContent=vals.join(" \u00b7 ");
+      d.appendChild(nm); d.appendChild(vl); enSec.appendChild(d);
+    });
+    content.appendChild(enSec);
+  }
+
+  // Outgoing FKs
+  if(ent.outEdges.length){
+    var outSec=document.createElement("div"); outSec.className="rp-section";
+    var outH=document.createElement("h4"); outH.textContent="Referencia (FKs saindo) \u2192"; outSec.appendChild(outH);
+    ent.outEdges.forEach(function(ed){
+      var target=entMap[ed.to];
+      var rel=document.createElement("div"); rel.className="rp-rel";
+      rel.onclick=function(){navigateTo(ed.to);};
+      var arr=document.createElement("span"); arr.className="rp-rel-arrow"; arr.textContent="\u2192";
+      var nm=document.createElement("span"); nm.className="rp-rel-name"; nm.textContent=target?target.name:ed.to;
+      var col=document.createElement("span"); col.className="rp-rel-col"; col.textContent="("+ed.col+")";
+      rel.appendChild(arr); rel.appendChild(nm); rel.appendChild(col); outSec.appendChild(rel);
+    });
+    content.appendChild(outSec);
+  }
+
+  // Incoming FKs
+  if(ent.inEdges.length){
+    var inSec=document.createElement("div"); inSec.className="rp-section";
+    var inH=document.createElement("h4"); inH.textContent="Referenciado por (FKs entrando) \u2190"; inSec.appendChild(inH);
+    ent.inEdges.forEach(function(ed){
+      var source=entMap[ed.from];
+      var rel=document.createElement("div"); rel.className="rp-rel";
+      rel.onclick=function(){navigateTo(ed.from);};
+      var arr=document.createElement("span"); arr.className="rp-rel-arrow"; arr.textContent="\u2190";
+      var nm=document.createElement("span"); nm.className="rp-rel-name"; nm.textContent=source?source.name:ed.from;
+      var col=document.createElement("span"); col.className="rp-rel-col"; col.textContent="("+ed.col+")";
+      rel.appendChild(arr); rel.appendChild(nm); rel.appendChild(col); inSec.appendChild(rel);
+    });
+    content.appendChild(inSec);
+  }
+
+  panel.classList.add("open");
+}
+
+function closePanel(){ document.getElementById("rightPanel").classList.remove("open"); selectedNode=null; draw(); }
+
+function navigateTo(id){
+  var ent=entMap[id]; if(!ent) return;
+  if(!layerVisible[ent.layer]){ layerVisible[ent.layer]=true;
+    document.querySelectorAll(".layer-item").forEach(function(li){if(li.dataset.layer===ent.layer) li.classList.remove("off");}); }
+  selectedNode=ent;
+  var tpx=-ent.x-ent.w/2, tpy=-ent.y-ent.h/2, spx=panX, spy=panY, sz=zoom, tz=Math.max(zoom,1.2);
+  var st=performance.now(), dur=400;
+  function anim(now){
+    var t=Math.min((now-st)/dur,1), ease=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    panX=spx+(tpx-spx)*ease; panY=spy+(tpy-spy)*ease; zoom=sz+(tz-sz)*ease; draw();
+    if(t<1) requestAnimationFrame(anim); else openPanel(ent);
+  }
+  requestAnimationFrame(anim);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+updateStats();
+fitAll();
+</script>
+</body>
+</html>
