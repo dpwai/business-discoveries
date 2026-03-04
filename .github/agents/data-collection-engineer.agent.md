@@ -351,19 +351,53 @@ These unresolved questions block specific entities. When the question is resolve
 
 ---
 
+## FONTE CANÔNICA UNIFICADA: Pasta Agrícola
+
+> **REGRA CRÍTICA:** A pasta Agrícola é UMA ÚNICA FONTE que alimenta 5 entidades diferentes.
+> NUNCA tratar TICKET_BALANCA, PRODUCAO_UBG, PESAGEM_AGRICOLA, TALHAO_SAFRA histórico e SAIDA_GRAO como fontes separadas.
+
+**Pasta canônica:** `DATA/AGRICULTURA/colheita/Agricola/Agricola/` — organizada por safra (01→30).
+**Documento fonte:** "Planilha Controle de Produção" — 1 planilha por cultura por safra.
+**41 planilhas disponíveis** desde safra 20/21 (6 safras). Histórico vai até 96/97 (30 safras).
+
+### O que essa ÚNICA fonte alimenta:
+
+| Entidade destino | Perspectiva | CSV em IMPORTS |
+|-----------------|-------------|----------------|
+| **TICKET_BALANCA** | Pesagem individual (placa, motorista, bruto/tara/líquido, umidade, impureza) | `fase_6/09_producao_ubg.csv` |
+| **PRODUCAO_UBG** | Mesmos dados, perspectiva UBG (recepção, secagem, armazenamento) | `fase_6/09_producao_ubg.csv` |
+| **PESAGEM_AGRICOLA** | Mesmos dados, perspectiva agrícola (consolidado por talhão) | `fase_6_operacoes/04_pesagens_agricola.csv` |
+| **TALHAO_SAFRA (histórico)** | Cada planilha de colheita = evidência de qual talhão plantou qual cultura em qual safra | Derivado → enriquece `fase_5/07_talhao_safra_*.csv` |
+| **SAIDA_GRAO** | Abas "Saída" = embarques de grão saindo da UBG | `fase_6_operacoes/08_saidas_producao.csv` |
+
+### CSV unificado principal: `IMPORTS/fase_6/09_producao_ubg.csv`
+- **883 registros** coletados de **3 safras iniciais** (22/23 → 25/26)
+- 7 culturas: soja, milho, feijão, trigo, aveia, cevada, milheto
+- Expansível para safras 20/21+ (dados disponíveis, só rodar ETL)
+
+### ETLs ativos (modulares — substituíram monolitos obsoletos):
+- `DATA/AGRICULTURA/etl_pesagens.py` — processa tickets/pesagens
+- `DATA/AGRICULTURA/etl_saidas.py` — processa saídas de grão
+- `DATA/AGRICULTURA/etl_agricola_utils.py` — funções compartilhadas
+
+### ETLs REMOVIDOS (NÃO USAR):
+- ~~`etl_producao_ubg.py`~~ | ~~`etl_ticket_balanca.py`~~ | ~~`etl_agricola.py`~~ — todos substituídos pelos modulares acima
+
+---
+
 ## Historical Data Available (Bronze Layer Seeds)
 
 | Arquivo | Entidade | Registros | Período | ETL Script |
 |---------|----------|-----------|---------|------------|
-| `UBG_Caixa_Historico_Clean.csv` | CAIXA_UBG (futuro) | 19.177 | 2011–2026 | `etl_ubg_caixa.py` |
-| `TICKET_BALANCA_historico.csv` | TICKET_BALANCA | 548 | 23/24 | `etl_ticket_balanca.py` |
+| `UBG_Caixa_Historico_Clean.csv` | CAIXA_UBG | 19.325 | 2011–2026 | `etl_ubg_caixa.py` |
+| Pasta Agrícola (unificada) | TICKET_BALANCA + PRODUCAO_UBG + PESAGEM + TALHAO_SAFRA hist + SAIDA | 883 tickets + 806 pesagens + 542 saídas | 22/23→25/26 (3 safras) | `etl_pesagens.py` + `etl_saidas.py` |
 
-**Ticket Balança — dados disponíveis por safra:**
-- 23/24: soja ✅ (332 reg), milho ✅ (164 reg), feijão ✅ (52 reg, cobre 22/23 + 23/24)
-- 24/25: **FALTANDO** — arquivo milho entregue era duplicate do 23/24
-- 25/26: ainda em andamento (safra atual)
+**Dados faltantes na fonte Agrícola:**
+- Soja 25/26: arquivo no zip é cópia do 24-25. Precisa arquivo real.
+- Milho 25/26: parcial — apenas SANTA RITA + SANTO ANDRE (35 tickets). Demais = cópia do 23/24.
+- PH (peso hectolítrico): 100% vazio em todas as planilhas — nunca preenchido.
 
-**TICKET_BALANCA — estrutura real dos dados (descoberta do ETL):**
+**Estrutura real dos dados (descoberta do ETL):**
 - Gleba ≠ Talhão: campo `gleba` registra sub-área dentro do talhão
 - Placa/Motorista: ordem invertida em ~50% das abas — detectar pelo header, não posição fixa
 - Observações após coluna "Final": indicam sementes (`flag_semente = True` se "SEMENTE" presente)

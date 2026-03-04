@@ -184,8 +184,21 @@ Todos em: `09_Projetos/02_SOAL/DATA/`
 | `Listagem_Plantio_24_25.csv` | TALHAO_SAFRA | 63 / 2.464 ha | Inclui FEIJÃO e MILHETO |
 | `Listagem_Plantio_25_26.csv` | TALHAO_SAFRA | 54 / 1.996 ha | Safra inverno: TRIGO, AZEVEM, AVEIA |
 | `Lista_Maquinas_Consolidado.csv` | MAQUINAS | 183 (156 ativo) | Unificação de 3 planilhas brutas |
-| `UBG_Caixa_Historico_Clean.csv` | CAIXA_UBG (futuro) | 19.177 registros | ETL: `DATA/UBG/etl_ubg_caixa.py` — 2011–2026 |
-| `TICKET_BALANCA_historico.csv` | TICKET_BALANCA | 548 registros | ETL: `DATA/UBG/producao/etl_ticket_balanca.py` — 23/24 |
+| `UBG_Caixa_Historico_Clean.csv` | CAIXA_UBG (futuro) | 19.325 registros | ETL: `DATA/UBG/etl_ubg_caixa.py` — 2011–2026 |
+
+**FONTE UNIFICADA — Pasta Agrícola:** `DATA/AGRICULTURA/colheita/Agricola/Agricola/`
+A "Planilha Controle de Produção" (1 por cultura por safra) é **UMA ÚNICA FONTE** que alimenta 5 entidades:
+
+| Entidade destino | CSV em IMPORTS | Registros |
+|-----------------|----------------|-----------|
+| TICKET_BALANCA | `fase_6/09_producao_ubg.csv` | 883 tickets (3 safras: 22/23→25/26) |
+| PRODUCAO_UBG | `fase_6/09_producao_ubg.csv` | (mesmo CSV, perspectiva UBG) |
+| PESAGEM_AGRICOLA | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 pesagens |
+| TALHAO_SAFRA (hist) | Derivado → enriquece `fase_5/07_talhao_safra_*.csv` | Evidência de cultivo por talhão |
+| SAIDA_GRAO | `fase_6_operacoes/08_saidas_producao.csv` | 542 embarques |
+
+ETLs ativos: `etl_pesagens.py`, `etl_saidas.py`, `etl_agricola_utils.py` (em `DATA/AGRICULTURA/`)
+ETLs REMOVIDOS: ~~`etl_producao_ubg.py`~~, ~~`etl_ticket_balanca.py`~~, ~~`etl_agricola.py`~~ (monolitos obsoletos)
 
 **Schema CSV de Máquinas:** `codigo, nome, categoria, subtipo, ano, chassi, num_serie_renavam, num_motor, responsavel, trator_vinculado, valor_compra, data_compra, valor_atual, nota_fiscal, status`
 - `categoria`: MAQUINA | IMPLEMENTO

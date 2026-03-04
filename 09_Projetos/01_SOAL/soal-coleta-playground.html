@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOAL — Plano de Coleta V0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-0: #0d1117;
+      --bg-1: #161b22;
+      --bg-2: #21262d;
+      --bg-3: #30363d;
+      --fg-0: #f0f6fc;
+      --fg-1: #c9d1d9;
+      --fg-2: #8b949e;
+      --fg-3: #6e7681;
+      --green: #2ea043;
+      --green-dim: rgba(46,160,67,.15);
+      --yellow: #d29922;
+      --yellow-dim: rgba(210,153,34,.15);
+      --gray: #484f58;
+      --gray-dim: rgba(72,79,88,.15);
+      --red: #f85149;
+      --red-dim: rgba(248,81,73,.15);
+      --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+      --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --radius: 8px;
+      --radius-sm: 5px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg-0);
+      color: var(--fg-1);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────────────────── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--bg-2);
+      padding: 12px 24px;
+      display: flex; align-items: center; gap: 20px;
+      backdrop-filter: blur(12px);
+    }
+    .header-brand {
+      display: flex; flex-direction: column; gap: 1px; flex-shrink: 0;
+    }
+    .header-brand h1 {
+      font-family: var(--mono); font-size: 15px; font-weight: 700;
+      color: var(--fg-0); letter-spacing: -0.02em;
+    }
+    .header-brand span {
+      font-size: 11px; color: var(--fg-3);
+    }
+    .header-progress {
+      flex: 1; max-width: 420px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .progress-bar {
+      height: 6px; background: var(--bg-2); border-radius: 3px;
+      overflow: hidden; display: flex;
+    }
+    .progress-seg { height: 100%; transition: width .4s ease; }
+    .progress-label {
+      font-size: 10px; color: var(--fg-3); display: flex; gap: 14px;
+      font-family: var(--mono);
+    }
+    .header-stats {
+      display: flex; gap: 6px; margin-left: auto;
+    }
+    .h-stat {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid transparent; transition: all .15s;
+      font-family: var(--mono); user-select: none;
+    }
+    .h-stat:hover { background: var(--bg-2); }
+    .h-stat.active { border-color: currentColor; background: rgba(255,255,255,.04); }
+    .h-stat-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .header-actions {
+      display: flex; gap: 8px; flex-shrink: 0;
+    }
+    .btn {
+      padding: 6px 14px; border-radius: var(--radius-sm);
+      border: 1px solid var(--bg-3); background: var(--bg-2);
+      color: var(--fg-1); font-size: 12px; font-family: var(--sans);
+      font-weight: 500; cursor: pointer; transition: all .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--bg-3); }
+    .btn-accent {
+      background: rgba(46,160,67,.12); border-color: rgba(46,160,67,.3);
+      color: var(--green);
+    }
+    .btn-accent:hover { background: rgba(46,160,67,.22); }
+
+    /* ── TOOLBAR ────────────────────────────────────────────────────────── */
+    .toolbar {
+      padding: 10px 24px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid rgba(33,38,45,.6);
+    }
+    .search-wrap {
+      position: relative; flex: 1; max-width: 320px;
+    }
+    .search-wrap input {
+      width: 100%; padding: 7px 12px 7px 32px;
+      border-radius: var(--radius-sm); border: 1px solid var(--bg-3);
+      background: var(--bg-0); color: var(--fg-1);
+      font-size: 13px; font-family: var(--sans); outline: none;
+      transition: border-color .15s;
+    }
+    .search-wrap input:focus { border-color: var(--fg-3); }
+    .search-wrap input::placeholder { color: var(--fg-3); }
+    .search-icon {
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      color: var(--fg-3); font-size: 13px; pointer-events: none;
+    }
+    .cat-legend {
+      display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap;
+    }
+    .cat-chip {
+      font-size: 10px; font-family: var(--mono); font-weight: 600;
+      padding: 3px 8px; border-radius: 3px;
+      background: var(--bg-2); color: var(--fg-2);
+    }
+
+    /* ── MAIN CONTENT ──────────────────────────────────────────────────── */
+    .main {
+      padding: 16px 24px 80px;
+      max-width: 1400px; margin: 0 auto;
+    }
+
+    /* ── PHASE SECTION ─────────────────────────────────────────────────── */
+    .phase-section {
+      margin-bottom: 20px;
+      border: 1px solid var(--bg-2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-1);
+    }
+    .phase-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px; cursor: pointer; user-select: none;
+      transition: background .15s;
+    }
+    .phase-header:hover { background: rgba(255,255,255,.02); }
+    .phase-accent {
+      width: 4px; height: 28px; border-radius: 2px; flex-shrink: 0;
+    }
+    .phase-title {
+      font-size: 13px; font-weight: 700; color: var(--fg-0);
+      flex: 1;
+    }
+    .phase-count {
+      font-size: 11px; font-family: var(--mono); color: var(--fg-3);
+    }
+    .phase-mini-progress {
+      width: 60px; height: 4px; background: var(--bg-2);
+      border-radius: 2px; overflow: hidden; display: flex;
+    }
+    .phase-mini-seg { height: 100%; }
+    .phase-chevron {
+      font-size: 14px; color: var(--fg-3); transition: transform .2s;
+      flex-shrink: 0;
+    }
+    .phase-section.collapsed .phase-chevron { transform: rotate(-90deg); }
+    .phase-body {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 8px;
+      padding: 8px 12px 12px;
+      border-top: 1px solid var(--bg-2);
+    }
+    .phase-section.collapsed .phase-body { display: none; }
+
+    /* ── ENTITY CARD ───────────────────────────────────────────────────── */
+    .entity-card {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--bg-2);
+      background: var(--bg-0);
+      cursor: pointer; transition: all .15s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .entity-card:hover {
+      border-color: var(--bg-3);
+      background: rgba(255,255,255,.02);
+    }
+    .entity-card.hidden { display: none; }
+    .card-top {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .card-name {
+      font-family: var(--mono); font-size: 12px; font-weight: 600;
+      color: var(--fg-0); flex: 1;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .card-cat {
+      font-size: 9px; font-family: var(--mono); font-weight: 700;
+      padding: 1px 5px; border-radius: 3px;
+      background: var(--bg-2); color: var(--fg-3); flex-shrink: 0;
+    }
+    .card-bottom {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-records {
+      font-size: 10px; font-family: var(--mono); font-weight: 600;
+      color: var(--green); padding: 1px 6px; border-radius: 3px;
+      background: var(--green-dim);
+    }
+    .card-status-tag {
+      font-size: 10px; font-weight: 600;
+      padding: 1px 6px; border-radius: 3px;
+    }
+    .card-desc {
+      font-size: 10px; color: var(--fg-3); line-height: 1.4;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* ── DRAWER ─────────────────────────────────────────────────────────── */
+    .drawer-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.5);
+    }
+    .drawer-overlay.open { display: block; }
+    .drawer {
+      position: fixed; top: 0; right: -460px; width: 440px; height: 100vh;
+      z-index: 201; background: var(--bg-1); border-left: 1px solid var(--bg-2);
+      display: flex; flex-direction: column;
+      transition: right .25s ease;
+      overflow: hidden;
+    }
+    .drawer.open { right: 0; }
+    .drawer-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--bg-2);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .drawer-title {
+      font-family: var(--mono); font-size: 16px; font-weight: 700;
+      color: var(--fg-0); flex: 1;
+    }
+    .drawer-close {
+      width: 28px; height: 28px; border-radius: var(--radius-sm);
+      border: 1px solid var(--bg-3); background: var(--bg-2);
+      color: var(--fg-2); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .drawer-close:hover { background: var(--bg-3); color: var(--fg-0); }
+    .drawer-meta {
+      padding: 16px 20px; border-bottom: 1px solid var(--bg-2);
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .drawer-tag {
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: var(--radius-sm);
+    }
+    .drawer-status-actions {
+      padding: 12px 20px; border-bottom: 1px solid var(--bg-2);
+      display: flex; gap: 6px;
+    }
+    .status-btn {
+      flex: 1; padding: 6px 8px; border-radius: var(--radius-sm);
+      border: 1.5px solid transparent; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all .15s; text-align: center;
+      font-family: var(--sans);
+    }
+    .status-btn:hover { opacity: 0.9; }
+    .status-btn.current { border-color: currentColor; }
+    .drawer-body {
+      flex: 1; overflow-y: auto; padding: 16px 20px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .drawer-section-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--fg-3); margin-bottom: 4px;
+    }
+    .drawer-desc {
+      font-size: 13px; color: var(--fg-2); line-height: 1.6;
+    }
+    .drawer-records {
+      font-size: 14px; font-weight: 700; color: var(--green);
+      font-family: var(--mono);
+    }
+    .dep-list {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .dep-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 8px; border-radius: var(--radius-sm);
+      background: var(--bg-0); cursor: pointer; transition: background .15s;
+      font-family: var(--mono); font-size: 12px; color: var(--fg-1);
+    }
+    .dep-item:hover { background: var(--bg-2); }
+    .dep-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .dep-arrow {
+      font-size: 10px; color: var(--fg-3); flex-shrink: 0;
+    }
+
+    /* ── MODAL ──────────────────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.6);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-1); border: 1px solid var(--bg-2);
+      border-radius: var(--radius); width: 90%; max-width: 640px;
+      max-height: 80vh; display: flex; flex-direction: column;
+      box-shadow: 0 16px 64px rgba(0,0,0,.5);
+    }
+    .modal-header {
+      padding: 14px 20px; border-bottom: 1px solid var(--bg-2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-title {
+      font-size: 14px; font-weight: 700; color: var(--fg-0);
+    }
+    .modal-body {
+      padding: 16px 20px; flex: 1; overflow-y: auto;
+    }
+    .prompt-output {
+      font-size: 13px; line-height: 1.7; color: var(--fg-2);
+      font-family: var(--sans); white-space: pre-wrap;
+    }
+    .modal-footer {
+      padding: 12px 20px; border-top: 1px solid var(--bg-2);
+      display: flex; justify-content: flex-end; gap: 8px;
+    }
+
+    /* ── PHASE EMPTY ───────────────────────────────────────────────────── */
+    .phase-empty {
+      grid-column: 1 / -1; padding: 12px 16px;
+      text-align: center; font-size: 12px; color: var(--fg-3);
+    }
+
+    /* ── Responsive ────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header { flex-wrap: wrap; padding: 10px 16px; gap: 10px; }
+      .header-progress { max-width: 100%; order: 10; }
+      .main { padding: 12px 12px 80px; }
+      .toolbar { padding: 8px 12px; flex-wrap: wrap; }
+      .search-wrap { max-width: 100%; }
+      .cat-legend { display: none; }
+      .phase-body { grid-template-columns: 1fr; }
+      .drawer { width: 100%; right: -100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <h1>SOAL — Plano de Coleta V0</h1>
+    <span>Serra da Onca Agropecuaria</span>
+  </div>
+  <div class="header-progress">
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="progress-label" id="progress-label"></div>
+  </div>
+  <div class="header-stats" id="header-stats"></div>
+  <div class="header-actions">
+    <button class="btn btn-accent" id="btn-prompt">Gerar Prompt</button>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">/</span>
+    <input type="text" id="search-input" placeholder="Buscar entidade...">
+  </div>
+  <div class="cat-legend" id="cat-legend"></div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<!-- Drawer -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span class="drawer-title" id="drawer-title"></span>
+    <button class="drawer-close" id="drawer-close" title="Fechar (Esc)">x</button>
+  </div>
+  <div class="drawer-meta" id="drawer-meta"></div>
+  <div class="drawer-status-actions" id="drawer-status-actions"></div>
+  <div class="drawer-body" id="drawer-body"></div>
+</div>
+
+<!-- Prompt Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Prompt de Contexto</span>
+      <button class="drawer-close" id="modal-close">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="prompt-output" id="prompt-output"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="btn-copy-prompt">Copiar</button>
+      <button class="btn" id="btn-close-modal">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+var STATUS_CYCLE = ['pendente', 'parcial', 'coletado', 'bloqueado'];
+var STATUS = {
+  coletado:  { fill: '#238636', ring: '#2ea043', label: 'Coletado',  dim: 'rgba(46,160,67,.15)' },
+  parcial:   { fill: '#9e6a03', ring: '#d29922', label: 'Parcial',   dim: 'rgba(210,153,34,.15)' },
+  pendente:  { fill: '#3d444d', ring: '#484f58', label: 'Pendente',  dim: 'rgba(72,79,88,.15)' },
+  bloqueado: { fill: '#b91c1c', ring: '#f85149', label: 'Bloqueado', dim: 'rgba(248,81,73,.15)' },
+};
+
+var PHASE_COLORS = ['#3b82f6','#8b5cf6','#22c55e','#06b6d4','#f97316','#eab308','#ec4899','#94a3b8'];
+var PHASE_SHORT  = ['F0 Seed','F1 Sistema','F2 Territorio','F3 Operacional','F4 Financeiro','F5 Safra','F6 Continuo','F7 Auto'];
+var PHASE_LONG   = [
+  'Fase 0 — Seed (raizes)', 'Fase 1 — Sistema / Plataforma', 'Fase 2 — Territorio',
+  'Fase 3 — Cadastros Operacionais', 'Fase 4 — Financeiro Base',
+  'Fase 5 — Planejamento Safra', 'Fase 6 — Operacoes Continuas', 'Fase 7 — Auto-calculado',
+];
+var CAT_LABEL = { A:'Seed', B:'CSV', C:'Form', D:'API', E:'Auto' };
+
+var NODES = [
+  // ── Fase 0: Seeds ──
+  { id:'CULTURAS',          phase:0, cat:'A', status:'coletado',  records: 9,
+    desc:'Seed completo (01_culturas.csv). 9 culturas: soja, milho, trigo, feijao, aveia_branca, aveia_preta, azevem, milheto, soja_semente. Schema: name, display_name, group, harvest_unit.' },
+  { id:'PRODUTO_INSUMO',    phase:0, cat:'B', status:'coletado',  records: 18499,
+    desc:'38 seed (combustiveis, lubrificantes) + 18.499 AgriWin (200 xlsx). 99.8% classificado. 162 variantes unidade → 55 canonicas. Schema: 12 campos incluindo tipo, grupo, ncm, custo_medio.' },
+  { id:'ROLES',             phase:0, cat:'A', status:'pendente',  records: 0,
+    desc:'Papeis do sistema: admin, manager, operator, viewer. Joao faz o seed SQL.' },
+
+  // ── Fase 1: Sistema ──
+  { id:'OWNERS',            phase:1, cat:'A', status:'coletado',  records: 1,
+    desc:'Claudio Kugler. Owner da SOAL. Email: claudiohkugler@gmail.com. Tel: (42)999724018. Prisma: User.isSuperProprietario.' },
+  { id:'ORGANIZATIONS',     phase:1, cat:'A', status:'coletado',  records: 1,
+    desc:'Serra da Onca Agropecuaria. CNPJ: 31.561.869/0001-39. Enriquecer via ReceitaWS (razao social, endereco, CNAE, porte). Prisma: Tenant.' },
+  { id:'USERS',             phase:1, cat:'A', status:'coletado',  records: 8,
+    desc:'8 usuarios completos. Claudio(OWNER), Tiago/Rodrigo/Joao(ADMIN), Valentina/Alessandro/Josmar/Vanessa(MEMBER). Emails e telefones coletados: Tiago(tiago.eng.mat00@gmail.com), Valentina(escritorio@serradaonca.com), Alessandro(alessandro@serradaonca.com), Josmar((42)999735344), Vanessa(fazenda@serradaonca.com).' },
+
+  // ── Fase 2: Territorio ──
+  { id:'FAZENDAS',          phase:2, cat:'A', status:'coletado',  records: 8,
+    desc:'8 fazendas (02_fazendas.csv): S. Francisco, Santo Andre, Santa Rita, Santana do Iapo, Lajeado, Capinzal + duplicatas MANUAL. Fazendinha englobada por Capinzal. UBG/Floresta/Pecuaria nao sao fazendas. Enriquecer: CNPJ, municipio, area_total_ha. DDL Doc 25.' },
+  { id:'MATRICULAS',        phase:2, cat:'B', status:'coletado',  records: 88,
+    desc:'88 matriculas (matriculas_soal_clean.csv): 59 SOAL + 29 CK. 4.127 ha brutos, 7 fazendas. Titular SOAL ou CK (Claudio pessoal, em transferencia). DDL Doc 25. Validacao cruzada: 55% nao-agricola (reserva legal, APP), 162 ha arrendadas Lajeado. 11 sem numero formal, 2 transcricoes, 2 posses.' },
+  { id:'SAFRAS',            phase:2, cat:'A', status:'coletado',  records: 11,
+    desc:'11 safras (01_safras.csv): 2020/21 a 2030/31. Ano fiscal Jul-Jun. Schema: season_code, fiscal_year_start/end, status.' },
+  { id:'TALHOES',           phase:2, cat:'B', status:'coletado',  records: 71,
+    desc:'71 talhoes (03_talhoes.csv) + 169 mapeamentos de nome (03b_mapping.csv). 7 fazendas. Inclui 162 ha AREAS ARRENDADAS no Lajeado. Falta KML/CAR para geodata. Schema: 7 campos.' },
+  { id:'TALHAO_MAPPING',    phase:2, cat:'B', status:'coletado',  records: 169,
+    desc:'169 mapeamentos de-para de nomes (03b_talhao_nome_mapping.csv). Reconcilia naming AgriWin, Plantio e canonico. Essencial para importacao cruzada.' },
+  { id:'UBG',               phase:2, cat:'A', status:'parcial',   records: 1,
+    desc:'01_ubg.csv: 1 registro. fazenda_sede=SANTANA DO IAPO preenchido. balanca/tombador/secador OK. PENDENTE Josmar: capacidade recepcao/secagem t_dia, responsavel tecnico + CREA, GPS. Historico caixa 19.177 reg separado (14_ubg_caixa.csv).' },
+  { id:'SILOS',             phase:2, cat:'A', status:'parcial',  records: 8,
+    desc:'02_silos_ubg.csv: 8 registros (7 convencionais metalicos + 1 pulmao madeira sementes). Tipo/material/aeracao/termometria preenchidos. PENDENTE Josmar: capacidade_toneladas e capacidade_m3 para cada silo.' },
+  { id:'PARCEIRO_COMERCIAL',phase:2, cat:'B', status:'coletado',  records: 2201,
+    desc:'2.201 AgriWin (23 xlsx re-processados). 830 CNPJ + 206 CPF + 1.165 sem doc. 1.912 sem tipo (Valentina classificar). Schema: 14 campos incl. doc_type, cpf_cnpj_valid.' },
+
+  // ── Fase 3: Operacional ──
+  { id:'MAQUINAS',          phase:3, cat:'B', status:'parcial',   records: 183,
+    desc:'183 maquinas (04_maquinas.csv): 156 ativo, 27 vendido. 36/47 tags Vestro matched. Tiago validou 9 questoes — reenviar para detalhamento (subtipos, implementos orfaos, maquinas vendidas sem data). Schema: 15 campos.' },
+  { id:'OPERADORES',        phase:3, cat:'B', status:'coletado',  records: 15,
+    desc:'15 operadores curados (05_operadores.csv): 11 agricola + 4 UBG. Fonte: colaboradores ativos (agricola+ubg) x matricula Vestro. Alessandro EXCLUIDO (coordenador, nao operador). Schema: nome, cpf, setor, cargo, tipo_contrato, matricula_vestro.' },
+  { id:'TAGS_VESTRO',       phase:3, cat:'B', status:'coletado',  records: 47,
+    desc:'47 tags RFID Vestro (05_tags_maquinas_vestro.csv): 27 horimetro, 20 hodometro. 36/47 resolvidos (23 direto + 13 placa/manual), 6 terceiros, 5 infra. ETL: etl_vestro_portal.py.' },
+  { id:'TANQUES_COMBUSTIVEL',phase:3, cat:'B', status:'coletado', records: 5,
+    desc:'5 tanques (06_fuel_tanks.csv): name, fazenda, fuel_type, capacity_liters. Coletado no discovery com Tiago.' },
+  { id:'CENTRO_CUSTO',      phase:3, cat:'A', status:'coletado',  records: 387,
+    desc:'387 registros (07_centro_custo.csv). 6 niveis hierarquicos: Org > Fazenda > Safra > Cultura > Talhao > Tipo. Schema: 10 campos.' },
+  { id:'COLABORADORES',     phase:3, cat:'B', status:'coletado',  records: 88,
+    desc:'88 colaboradores (07_colaboradores.csv): 32 ativos, 56 desligados. CLT + informais. Setores: agricola, UBG, administrativo, experiencia, pecuaria. ETL: etl_folha_pagamento.py (54/54 PASS). DDL Doc 27. Substitui TRABALHADOR_RURAL.' },
+  { id:'FOLHA_PAGAMENTO',   phase:3, cat:'B', status:'coletado',  records: 3122,
+    desc:'3.122 registros mensais (08_folha_pagamento.csv). Jul/2017 a Fev/2026 (104 meses). 88 colaboradores. Tipos: regular, 13o 1a/2a parcela, bonus, gratificacao. ETL: etl_folha_pagamento.py (21/21 PASS). DDL Doc 27.' },
+
+  // ── Fase 4: Financeiro / Castrolanda ──
+  { id:'EXTRATO_COOPERATIVA',phase:4, cat:'B', status:'coletado', records: 8211,
+    desc:'8.211 transacoes por cultura (07_castrolanda_extrato.csv). 9 contas: SOJA, MILHO, TRIGO, FEIJAO, CEVADA, etc. fev/2020→fev/2026. ETL validado 24/24. DDL Doc 29.' },
+  { id:'CC_COOPERATIVA',    phase:4, cat:'B', status:'coletado',  records: 2891,
+    desc:'2.891 transacoes C/C geral (09_castrolanda_cc_completo.csv). 6 anos fev/2020→jan/2026. PDF 214 pags. ~33 tipos. Cross-validated 12/14 meses PERFEITO. DDL Doc 29.' },
+  { id:'CONTA_CAPITAL',     phase:4, cat:'B', status:'coletado',  records: 95,
+    desc:'95 registros (12_castrolanda_capital_html.csv). 2 contas: Mat.Prima (R$560) + UBC (R$435k). 90 retencoes + 5 capitalizacoes. Periodo 2020→2026. DDL Doc 29.' },
+  { id:'FINANCIAMENTO_COOP',phase:4, cat:'B', status:'coletado',  records: 220,
+    desc:'220 movimentacoes, 22 contratos (11_castrolanda_financiamentos.csv). 9 ativos, 13 quitados. Capital de Giro, Nota Promissoria, Calcario, Custeio. DDL Doc 29.' },
+  { id:'VENDA_GRAO',        phase:4, cat:'B', status:'coletado',  records: 170,
+    desc:'170 vendas Castrolanda (13_castrolanda_vendas.csv). 6 culturas, 13 safras (18/19→25/25). R$99.3M bruto. Schema: 24 campos incl. frete, desconto, data_credito. DDL Doc 29.' },
+  { id:'VENDA_DIRETA',      phase:4, cat:'B', status:'coletado',  records: 73,
+    desc:'73 vendas diretas (nao Castrolanda): feijao + inverno, safras 22/23→25/26. Complementa VENDA_GRAO com vendas fora da cooperativa. DDL Doc 30.' },
+  { id:'CUSTO_INSUMO_COOP', phase:4, cat:'B', status:'coletado',  records: 553,
+    desc:'553 registros custo insumos Castrolanda: soja 24/25 + feijao 25/26. Alimenta COMPRA_INSUMO com historico de precos da cooperativa. DDL Doc 29.' },
+  { id:'CARGA_A_CARGA',     phase:4, cat:'B', status:'coletado',  records: 1309,
+    desc:'1.309 cargas (14_castrolanda_carga_a_carga.csv). 7 culturas, 6 safras (20/21→25/26), 41.6k ton bruto. 26/29 validados. 1 arq com ERROR_500 (soja intacta 22/23). Perspectiva Castrolanda — reconcilia com SAIDA_GRAO. Schema: 20 campos, qualidade em JSON. DDL Doc 29.' },
+  { id:'NOTA_FISCAL',       phase:4, cat:'D', status:'pendente',  records: 0,
+    desc:'Via SEFAZ API (XML DFe). Joao criar crawler. Historico AgriWin nao exportado.' },
+  { id:'CONTA_PAGAR',       phase:4, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina. Depende de PARCEIRO_COMERCIAL + NOTA_FISCAL.' },
+  { id:'CONTA_RECEBER',     phase:4, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina. Depende de PARCEIRO_COMERCIAL.' },
+
+  // ── Fase 5: Planejamento Safra ──
+  { id:'TALHAO_SAFRA',      phase:5, cat:'B', status:'coletado',  records: 883,
+    desc:'COLETADO via fonte Agricola (883 tickets, 3 safras 22/23→25/26). CSVs Listagem_Plantio REMOVIDOS (07/08_talhao_safra). TALHAO_SAFRA historico agora derivado exclusivamente de producao_ubg.csv. ETL dedicado planejamento futuro (Rodrigo).' },
+  { id:'ANALISE_SOLO',      phase:5, cat:'B', status:'pendente',  records: 0,
+    desc:'Laudos com Alessandro. CSV nao coletado. Depende de TALHAO_SAFRA.' },
+  { id:'RECEITUARIO',       phase:5, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Alessandro. Bloqueador: Alessandro prescreve TODAS as aplicacoes?' },
+
+  // ── Fase 6: Operacoes Continuas ──
+  { id:'OPERACAO_CAMPO',    phase:6, cat:'C', status:'parcial',   records: 31,
+    desc:'31 reg historicos (out/2024) + CSVs templates criados: 01_colheita (~150 derivar de 548 tickets), 02_plantio (117 das listagens). HUB CENTRAL (8+ conexoes). Reuniao Tiago: vincular maquina+operador a cada operacao. DDL Doc 25a.' },
+  { id:'TICKET_BALANCA',    phase:6, cat:'C', status:'coletado',   records: 883,
+    desc:'883 tickets pesagem UBG (Producao_UBG_Historico_Clean.csv). 7 culturas, 6 safras disponiveis (20/21→25/26), 41 planilhas. Fonte canonica: DATA/AGRICULTURA/colheita/Agricola/ (pasta por safra desde 96/97). ETL processou 22/23→25/26, expansivel para 20/21+. Schema: 22 campos incl. gleba, is_seed, qualidade. DDL Doc 28.' },
+  { id:'PRODUCAO_UBG',      phase:6, cat:'B', status:'coletado',  records: 883,
+    desc:'MESMA FONTE que TICKET_BALANCA — sao as "Planilha Controle de Producao" em colheita/Agricola/. 883 tickets, 7 culturas, 4 safras processadas (22/23→25/26), 20.669 ton. Expansivel para 20/21+ (41 planilhas disponiveis). DDL Doc 28.' },
+  { id:'PESAGEM_AGRICOLA',  phase:6, cat:'B', status:'coletado',  records: 806,
+    desc:'806 pesagens perspectiva agricola. MESMA FONTE que TICKET_BALANCA/PRODUCAO_UBG (colheita/Agricola/). 7 culturas, 3 safras (22/23→25/26). Visao consolidada por talhao. DDL Doc 28.' },
+  { id:'SAIDA_GRAO',        phase:6, cat:'B', status:'coletado',  records: 542,
+    desc:'542 embarques saida producao UBG. 4 culturas, 4 safras, 13 contratos. 10/10 QC PASS. Perspectiva SOAL — reconcilia com CARGA_A_CARGA (perspectiva Castrolanda). DDL Doc 28.' },
+  { id:'RECEBIMENTO_GRAO',  phase:6, cat:'C', status:'pendente',  records: 0,
+    desc:'Derivado de TICKET_BALANCA apos classificacao (Josmar). Dados pendentes coleta. DDL Doc 28.' },
+  { id:'CONTROLE_SECAGEM',  phase:6, cat:'C', status:'pendente',  records: 0,
+    desc:'Ciclos de secagem na UBG. Lenha + energia = custos proprios UBG. Dados pendentes (Josmar). DDL Doc 28.' },
+  { id:'FRETEIRO',           phase:6, cat:'B', status:'coletado',  records: 116,
+    desc:'116 viagens freteiros. 2 motoristas, 2 safras. Transporte de graos fazenda→UBG ou UBG→destino. DDL Doc 30.' },
+  { id:'ABASTECIMENTOS',    phase:6, cat:'B', status:'coletado',  records: 23817,
+    desc:'1.200 recentes Vestro (10_abastecimentos_vestro.csv, Jan/2024→Mar/2026, 185k litros Diesel S10) + 22.617 historicos (12_abastecimentos_historico.csv, 2009→2026, 11 xlsx). Match maquinas 62% (24 codigos sem match — placas e veiculos genericos). PPU nao configurado. DDL Doc 26.' },
+  { id:'MANUTENCOES',       phase:6, cat:'B', status:'coletado',  records: 9871,
+    desc:'9.871 registros historicos (11_manutencoes_historico.csv, 1997→2026, 11 xlsx, 101 abas). 8 layouts detectados dinamicamente. Schema: 18 campos. DDL Doc 26.' },
+  { id:'HISTORICO_MAQUINAS', phase:6, cat:'B', status:'coletado',  records: 32516,
+    desc:'32.516 registros (1997-2026, 11 xlsx, 101 abas). Consolida horimetro, hodometro, diesel, operacoes. Inclui abastecimentos + manutencoes + operacoes. ETL: etl_maquinario.py. DDL Doc 31.' },
+  { id:'COMPRA_INSUMO',     phase:6, cat:'C', status:'pendente',  records: 0,
+    desc:'Form para Valentina + historico AgriWin. Depende de PRODUTO_INSUMO + PARCEIRO_COMERCIAL.' },
+
+  // ── Fase 7: Auto-calculado ──
+  { id:'ESTOQUE_INSUMO',    phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via triggers. Custo medio ponderado. Depende de COMPRA_INSUMO + APLICACAO_INSUMO.' },
+  { id:'CUSTO_OPERACAO',    phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via stored procedure apos OPERACAO_CAMPO. Alimenta CENTRO_CUSTO nivel 6.' },
+  { id:'ESTOQUE_SILO',      phase:7, cat:'E', status:'pendente',  records: 0,
+    desc:'Auto via triggers apos TICKET_BALANCA + SAIDA_GRAO. Depende de SILOS. DDL Doc 28.' },
+];
+
+var EDGES = [
+  // Sistema
+  ['OWNERS','ORGANIZATIONS'], ['ORGANIZATIONS','FAZENDAS'],
+  ['ORGANIZATIONS','SAFRAS'], ['ORGANIZATIONS','USERS'],
+  ['ORGANIZATIONS','MAQUINAS'], ['ORGANIZATIONS','CENTRO_CUSTO'],
+  // Territorial
+  ['FAZENDAS','TALHOES'], ['FAZENDAS','UBG'], ['FAZENDAS','PARCEIRO_COMERCIAL'],
+  ['FAZENDAS','MATRICULAS'],
+  ['TALHOES','TALHAO_MAPPING'],
+  ['UBG','SILOS'],
+  // Planejamento
+  ['CULTURAS','TALHAO_SAFRA'], ['TALHOES','TALHAO_SAFRA'], ['SAFRAS','TALHAO_SAFRA'],
+  ['TALHAO_SAFRA','ANALISE_SOLO'],
+  // Operacional
+  ['MAQUINAS','TAGS_VESTRO'], ['MAQUINAS','OPERACAO_CAMPO'],
+  ['MAQUINAS','ABASTECIMENTOS'], ['MAQUINAS','MANUTENCOES'], ['MAQUINAS','HISTORICO_MAQUINAS'],
+  ['TANQUES_COMBUSTIVEL','ABASTECIMENTOS'],
+  ['OPERADORES','OPERACAO_CAMPO'], ['OPERADORES','COLABORADORES'],
+  ['COLABORADORES','FOLHA_PAGAMENTO'],
+  ['TALHAO_SAFRA','OPERACAO_CAMPO'],
+  // Financeiro / Castrolanda (Doc 29)
+  ['PARCEIRO_COMERCIAL','EXTRATO_COOPERATIVA'], ['PARCEIRO_COMERCIAL','CC_COOPERATIVA'],
+  ['PARCEIRO_COMERCIAL','CONTA_CAPITAL'], ['PARCEIRO_COMERCIAL','FINANCIAMENTO_COOP'],
+  ['PARCEIRO_COMERCIAL','NOTA_FISCAL'], ['PARCEIRO_COMERCIAL','VENDA_GRAO'],
+  ['PARCEIRO_COMERCIAL','VENDA_DIRETA'],
+  ['SAFRAS','EXTRATO_COOPERATIVA'], ['SAFRAS','VENDA_GRAO'],
+  ['SAFRAS','CARGA_A_CARGA'], ['SAFRAS','CUSTO_INSUMO_COOP'],
+  ['CULTURAS','VENDA_GRAO'], ['CULTURAS','CARGA_A_CARGA'], ['CULTURAS','CUSTO_INSUMO_COOP'],
+  ['PRODUTO_INSUMO','CUSTO_INSUMO_COOP'],
+  ['NOTA_FISCAL','CONTA_PAGAR'],
+  ['PRODUTO_INSUMO','COMPRA_INSUMO'],
+  ['COMPRA_INSUMO','ESTOQUE_INSUMO'],
+  // Fluxo UBG (Doc 28)
+  ['UBG','TICKET_BALANCA'],
+  ['UBG','PRODUCAO_UBG'],
+  ['SAFRAS','TICKET_BALANCA'], ['CULTURAS','TICKET_BALANCA'],
+  ['TALHAO_SAFRA','TICKET_BALANCA'],
+  ['SILOS','TICKET_BALANCA'], ['SILOS','ESTOQUE_SILO'],
+  ['SAFRAS','PRODUCAO_UBG'], ['CULTURAS','PRODUCAO_UBG'],
+  ['TALHAO_SAFRA','PESAGEM_AGRICOLA'],
+  ['SAFRAS','PESAGEM_AGRICOLA'], ['CULTURAS','PESAGEM_AGRICOLA'],
+  ['TICKET_BALANCA','RECEBIMENTO_GRAO'],
+  ['TICKET_BALANCA','SAIDA_GRAO'],
+  ['SAFRAS','SAIDA_GRAO'], ['CULTURAS','SAIDA_GRAO'],
+  ['SAIDA_GRAO','CARGA_A_CARGA'],
+  ['SAIDA_GRAO','FRETEIRO'],
+  ['SAFRAS','FRETEIRO'],
+  ['SAFRAS','CONTROLE_SECAGEM'], ['CULTURAS','CONTROLE_SECAGEM'],
+  ['SILOS','CONTROLE_SECAGEM'],
+  ['TICKET_BALANCA','ESTOQUE_SILO'],
+  ['SAFRAS','ESTOQUE_SILO'], ['CULTURAS','ESTOQUE_SILO'],
+  ['TALHAO_SAFRA','CARGA_A_CARGA'],
+  ['VENDA_GRAO','CARGA_A_CARGA'],
+  // Auto
+  ['OPERACAO_CAMPO','CUSTO_OPERACAO'],
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+
+var nodeMap = {};
+NODES.forEach(function(n) { nodeMap[n.id] = n; });
+
+var filterStat = null;
+var searchQuery = '';
+var selectedId = null;
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatRecords(n) {
+  if (n === 0) return '';
+  if (n >= 10000) return (n / 1000).toFixed(1).replace('.0','') + 'k';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function getParents(id) {
+  var parents = [];
+  EDGES.forEach(function(e) { if (e[1] === id) parents.push(e[0]); });
+  return parents;
+}
+
+function getChildren(id) {
+  var children = [];
+  EDGES.forEach(function(e) { if (e[0] === id) children.push(e[1]); });
+  return children;
+}
+
+function isNodeVisible(n) {
+  if (filterStat && n.status !== filterStat) return false;
+  if (searchQuery && n.id.toLowerCase().indexOf(searchQuery) === -1) return false;
+  return true;
+}
+
+function clearChildren(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function el(tag, className, textContent) {
+  var e = document.createElement(tag);
+  if (className) e.className = className;
+  if (textContent !== undefined) e.textContent = textContent;
+  return e;
+}
+
+// ─── Render: Progress Bar ────────────────────────────────────────────────────
+
+function updateProgressBar() {
+  var counts = { coletado: 0, parcial: 0, pendente: 0, bloqueado: 0 };
+  NODES.forEach(function(n) { counts[n.status]++; });
+  var total = NODES.length;
+
+  var bar = document.getElementById('progress-bar');
+  clearChildren(bar);
+
+  var segments = [
+    { s: 'coletado',  c: '#2ea043' },
+    { s: 'parcial',   c: '#d29922' },
+    { s: 'bloqueado', c: '#f85149' },
+    { s: 'pendente',  c: '#3d444d' },
+  ];
+  segments.forEach(function(item) {
+    if (counts[item.s] > 0) {
+      var seg = el('div', 'progress-seg');
+      seg.style.width = (counts[item.s] / total * 100) + '%';
+      seg.style.background = item.c;
+      bar.appendChild(seg);
+    }
+  });
+
+  var totalRec = NODES.reduce(function(sum, n) { return sum + n.records; }, 0);
+  var pct = Math.round(counts.coletado / total * 100);
+  var label = document.getElementById('progress-label');
+  clearChildren(label);
+
+  var texts = [
+    counts.coletado + '/' + total + ' coletado (' + pct + '%)',
+    counts.parcial + ' parcial',
+    totalRec.toLocaleString('pt-BR') + ' registros'
+  ];
+  texts.forEach(function(text) {
+    label.appendChild(el('span', null, text));
+  });
+}
+
+// ─── Render: Header Stats ────────────────────────────────────────────────────
+
+function updateHeaderStats() {
+  var counts = { coletado: 0, parcial: 0, pendente: 0, bloqueado: 0 };
+  NODES.forEach(function(n) { counts[n.status]++; });
+
+  var statsEl = document.getElementById('header-stats');
+  clearChildren(statsEl);
+
+  var items = [
+    { s: 'coletado',  c: '#2ea043' },
+    { s: 'parcial',   c: '#d29922' },
+    { s: 'pendente',  c: '#484f58' },
+    { s: 'bloqueado', c: '#f85149' },
+  ];
+
+  items.forEach(function(item) {
+    var btn = el('div', 'h-stat' + (filterStat === item.s ? ' active' : ''));
+    btn.style.color = item.c;
+    btn.dataset.stat = item.s;
+
+    var dot = el('div', 'h-stat-dot');
+    dot.style.background = item.c;
+    btn.appendChild(dot);
+    btn.appendChild(document.createTextNode(counts[item.s] + ' ' + STATUS[item.s].label));
+
+    btn.addEventListener('click', function() {
+      filterStat = (filterStat === item.s) ? null : item.s;
+      updateHeaderStats();
+      renderPhases();
+    });
+
+    statsEl.appendChild(btn);
+  });
+}
+
+// ─── Render: Category Legend ─────────────────────────────────────────────────
+
+function renderCatLegend() {
+  var container = document.getElementById('cat-legend');
+  clearChildren(container);
+  Object.keys(CAT_LABEL).forEach(function(key) {
+    container.appendChild(el('span', 'cat-chip', key + ' = ' + CAT_LABEL[key]));
+  });
+}
+
+// ─── Render: Phases ──────────────────────────────────────────────────────────
+
+function renderPhases() {
+  var main = document.getElementById('main-content');
+  clearChildren(main);
+
+  var byPhase = {};
+  NODES.forEach(function(n) {
+    if (!byPhase[n.phase]) byPhase[n.phase] = [];
+    byPhase[n.phase].push(n);
+  });
+
+  var phases = Object.keys(byPhase).map(Number).sort(function(a, b) { return a - b; });
+
+  phases.forEach(function(phase) {
+    var nodes = byPhase[phase];
+    var visibleNodes = nodes.filter(isNodeVisible);
+
+    // Phase section
+    var section = el('div', 'phase-section');
+    section.dataset.phase = phase;
+
+    // Phase header
+    var header = el('div', 'phase-header');
+
+    var accent = el('div', 'phase-accent');
+    accent.style.background = PHASE_COLORS[phase];
+    header.appendChild(accent);
+
+    header.appendChild(el('span', 'phase-title', PHASE_LONG[phase]));
+    header.appendChild(el('span', 'phase-count', visibleNodes.length + '/' + nodes.length + ' entidades'));
+
+    // Mini progress
+    var miniProg = el('div', 'phase-mini-progress');
+    var phaseCounts = { coletado: 0, parcial: 0, pendente: 0, bloqueado: 0 };
+    nodes.forEach(function(n) { phaseCounts[n.status]++; });
+    var phaseTotal = nodes.length;
+    [
+      { s: 'coletado', c: '#2ea043' },
+      { s: 'parcial',  c: '#d29922' },
+      { s: 'bloqueado',c: '#f85149' },
+      { s: 'pendente', c: '#3d444d' },
+    ].forEach(function(item) {
+      if (phaseCounts[item.s] > 0) {
+        var seg = el('div', 'phase-mini-seg');
+        seg.style.width = (phaseCounts[item.s] / phaseTotal * 100) + '%';
+        seg.style.background = item.c;
+        miniProg.appendChild(seg);
+      }
+    });
+    header.appendChild(miniProg);
+
+    var chevron = el('span', 'phase-chevron', '\u25BC');
+    header.appendChild(chevron);
+
+    header.addEventListener('click', function() {
+      section.classList.toggle('collapsed');
+    });
+
+    section.appendChild(header);
+
+    // Phase body (cards)
+    var body = el('div', 'phase-body');
+
+    if (visibleNodes.length === 0) {
+      body.appendChild(el('div', 'phase-empty', 'Nenhuma entidade visivel nesta fase'));
+    } else {
+      visibleNodes.forEach(function(n) {
+        var card = el('div', 'entity-card');
+        card.dataset.id = n.id;
+
+        // Top row: dot + name + cat
+        var top = el('div', 'card-top');
+
+        var dot = el('div', 'card-status-dot');
+        dot.style.background = STATUS[n.status].ring;
+        top.appendChild(dot);
+
+        top.appendChild(el('span', 'card-name', n.id));
+        top.appendChild(el('span', 'card-cat', n.cat));
+
+        card.appendChild(top);
+
+        // Bottom row: records + status tag
+        var bottom = el('div', 'card-bottom');
+
+        if (n.records > 0) {
+          bottom.appendChild(el('span', 'card-records', formatRecords(n.records) + ' reg'));
+        }
+
+        var statusTag = el('span', 'card-status-tag', STATUS[n.status].label);
+        statusTag.style.color = STATUS[n.status].ring;
+        statusTag.style.background = STATUS[n.status].dim;
+        bottom.appendChild(statusTag);
+
+        card.appendChild(bottom);
+
+        // Desc (truncated)
+        card.appendChild(el('div', 'card-desc', n.desc));
+
+        card.addEventListener('click', function() { openDrawer(n.id); });
+
+        body.appendChild(card);
+      });
+    }
+
+    section.appendChild(body);
+    main.appendChild(section);
+  });
+}
+
+// ─── Drawer ──────────────────────────────────────────────────────────────────
+
+function openDrawer(id) {
+  selectedId = id;
+  var n = nodeMap[id];
+  if (!n) return;
+
+  document.getElementById('drawer-title').textContent = n.id;
+
+  // Meta tags
+  var metaEl = document.getElementById('drawer-meta');
+  clearChildren(metaEl);
+
+  var phaseTag = el('span', 'drawer-tag', PHASE_SHORT[n.phase]);
+  phaseTag.style.color = PHASE_COLORS[n.phase];
+  phaseTag.style.background = PHASE_COLORS[n.phase] + '22';
+  metaEl.appendChild(phaseTag);
+
+  var catTag = el('span', 'drawer-tag', 'Cat ' + n.cat + ' \u2014 ' + CAT_LABEL[n.cat]);
+  catTag.style.color = '#8b949e';
+  catTag.style.background = '#21262d';
+  metaEl.appendChild(catTag);
+
+  if (n.records > 0) {
+    var recTag = el('span', 'drawer-tag', n.records.toLocaleString('pt-BR') + ' registros');
+    recTag.style.color = '#2ea043';
+    recTag.style.background = 'rgba(46,160,67,.15)';
+    metaEl.appendChild(recTag);
+  }
+
+  // Status action buttons
+  var actionsEl = document.getElementById('drawer-status-actions');
+  clearChildren(actionsEl);
+  STATUS_CYCLE.forEach(function(s) {
+    var btn = el('button', 'status-btn' + (n.status === s ? ' current' : ''), STATUS[s].label);
+    btn.style.color = STATUS[s].ring;
+    btn.style.background = STATUS[s].dim;
+    btn.addEventListener('click', function() {
+      n.status = s;
+      openDrawer(id); // refresh drawer
+      renderPhases();
+      updateProgressBar();
+      updateHeaderStats();
+    });
+    actionsEl.appendChild(btn);
+  });
+
+  // Body
+  var body = document.getElementById('drawer-body');
+  clearChildren(body);
+
+  // Description section
+  var descSection = el('div');
+  descSection.appendChild(el('div', 'drawer-section-label', 'Descricao'));
+  descSection.appendChild(el('div', 'drawer-desc', n.desc));
+  body.appendChild(descSection);
+
+  // Parents
+  var parents = getParents(id);
+  if (parents.length > 0) {
+    var parSection = el('div');
+    parSection.appendChild(el('div', 'drawer-section-label', 'Depende de (' + parents.length + ')'));
+    var parList = el('div', 'dep-list');
+    parents.forEach(function(pid) {
+      var pn = nodeMap[pid];
+      if (!pn) return;
+      var item = el('div', 'dep-item');
+      var d = el('div', 'dep-dot');
+      d.style.background = STATUS[pn.status].ring;
+      item.appendChild(d);
+      item.appendChild(el('span', 'dep-arrow', '\u2190'));
+      item.appendChild(document.createTextNode(pid));
+      if (pn.records > 0) {
+        var rc = el('span', 'card-records', formatRecords(pn.records));
+        rc.style.marginLeft = 'auto';
+        item.appendChild(rc);
+      }
+      item.addEventListener('click', function() { openDrawer(pid); });
+      parList.appendChild(item);
+    });
+    parSection.appendChild(parList);
+    body.appendChild(parSection);
+  }
+
+  // Children
+  var children = getChildren(id);
+  if (children.length > 0) {
+    var childSection = el('div');
+    childSection.appendChild(el('div', 'drawer-section-label', 'Alimenta (' + children.length + ')'));
+    var childList = el('div', 'dep-list');
+    children.forEach(function(cid) {
+      var cn = nodeMap[cid];
+      if (!cn) return;
+      var item = el('div', 'dep-item');
+      var d = el('div', 'dep-dot');
+      d.style.background = STATUS[cn.status].ring;
+      item.appendChild(d);
+      item.appendChild(el('span', 'dep-arrow', '\u2192'));
+      item.appendChild(document.createTextNode(cid));
+      if (cn.records > 0) {
+        var rc = el('span', 'card-records', formatRecords(cn.records));
+        rc.style.marginLeft = 'auto';
+        item.appendChild(rc);
+      }
+      item.addEventListener('click', function() { openDrawer(cid); });
+      childList.appendChild(item);
+    });
+    childSection.appendChild(childList);
+    body.appendChild(childSection);
+  }
+
+  // Show drawer
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+}
+
+function closeDrawer() {
+  selectedId = null;
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+}
+
+// ─── Prompt Modal ────────────────────────────────────────────────────────────
+
+function generatePrompt() {
+  var coletado  = NODES.filter(function(n) { return n.status === 'coletado'; });
+  var parcial   = NODES.filter(function(n) { return n.status === 'parcial'; });
+  var pendente  = NODES.filter(function(n) { return n.status === 'pendente'; });
+  var bloqueado = NODES.filter(function(n) { return n.status === 'bloqueado'; });
+
+  var totalRec = NODES.reduce(function(sum, n) { return sum + n.records; }, 0);
+  var pct = Math.round(coletado.length / NODES.length * 100);
+  var parts = [];
+
+  parts.push('Plano de coleta SOAL V0: ' + coletado.length + '/' + NODES.length + ' entidades coletadas (' + pct + '%). Total: ' + totalRec.toLocaleString('pt-BR') + ' registros.');
+
+  if (coletado.length) {
+    parts.push('\nColetado (' + coletado.length + '): ' + coletado.map(function(n) {
+      return n.id + (n.records ? ' [' + formatRecords(n.records) + ']' : '');
+    }).join(', ') + '.');
+  }
+  if (parcial.length) {
+    parts.push('\nParcial (' + parcial.length + '): ' + parcial.map(function(n) {
+      return n.id + (n.records ? ' [' + formatRecords(n.records) + ']' : '');
+    }).join(', ') + '.');
+  }
+  if (bloqueado.length) {
+    parts.push('\nBloqueado (' + bloqueado.length + '): ' + bloqueado.map(function(n) { return n.id; }).join(', ') + '.');
+  }
+
+  var coletadoIds = coletado.map(function(n) { return n.id; });
+  var parcialIds  = parcial.map(function(n) { return n.id; });
+  var pendenteIds = pendente.map(function(n) { return n.id; });
+
+  var critEdges = EDGES
+    .filter(function(e) { return (parcialIds.indexOf(e[0]) >= 0 || pendenteIds.indexOf(e[0]) >= 0) && pendenteIds.indexOf(e[1]) >= 0; })
+    .map(function(e) { return e[1] + ' aguarda ' + e[0]; })
+    .slice(0, 5);
+  if (critEdges.length) parts.push('\nDependencias criticas: ' + critEdges.join('; ') + '.');
+
+  if (pendente.length > 0) {
+    var nextPhase = Math.min.apply(null, pendente.map(function(n) { return n.phase; }));
+    var nextItems = pendente.filter(function(n) { return n.phase === nextPhase; }).map(function(n) { return n.id; }).join(', ');
+    parts.push('\nProxima fase a atacar: Fase ' + nextPhase + ' (' + nextItems + ').');
+  }
+
+  return parts.join('');
+}
+
+function openPromptModal() {
+  document.getElementById('prompt-output').textContent = generatePrompt();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closePromptModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ─── Search ──────────────────────────────────────────────────────────────────
+
+var searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', function() {
+  searchQuery = this.value.toLowerCase().trim();
+  renderPhases();
+});
+
+// ─── Event Listeners ─────────────────────────────────────────────────────────
+
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('btn-prompt').addEventListener('click', openPromptModal);
+document.getElementById('modal-close').addEventListener('click', closePromptModal);
+document.getElementById('btn-close-modal').addEventListener('click', closePromptModal);
+
+document.getElementById('btn-copy-prompt').addEventListener('click', function() {
+  var text = document.getElementById('prompt-output').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('btn-copy-prompt');
+    var orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(function() { btn.textContent = orig; }, 1600);
+  });
+});
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closePromptModal();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeDrawer();
+    closePromptModal();
+  }
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+});
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+
+renderCatLegend();
+updateProgressBar();
+updateHeaderStats();
+renderPhases();
+</script>
+</body>
+</html>
