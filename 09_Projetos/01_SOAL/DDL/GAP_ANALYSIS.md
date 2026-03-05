@@ -37,10 +37,10 @@
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| FAZENDAS | 26 | ✅ | tipo_fazenda, tipo_solo | ✅ | `fase_2/02_fazendas.csv` | 8 | ✅ | completo |
+| FAZENDAS | 26 | ✅ | tipo_fazenda, tipo_solo | ✅ | `fase_2/02_fazendas.csv` | 9 | ✅ | completo (9 fazendas, 4.127 ha, CAR+CCIR+ITR) |
 | TALHOES | 26 | ✅ | — | ✅ | `fase_2/03_talhoes.csv` | 71 | ✅ | completo |
 | SAFRAS | 26 | ✅ | status_safra, epoca_safra | ✅ | `fase_2/01_safras.csv` | 9 | ✅ | completo |
-| CULTURAS | 26 | ✅ | grupo_cultura | ✅ | `fase_0/01_culturas.csv` | 9 | ✅ | completo |
+| CULTURAS | 26 | ✅ | grupo_cultura | ✅ | `fase_0/01_culturas.csv` | 126 | ✅ | completo |
 | TALHAO_SAFRA | 26 | ✅ | epoca_safra | ✅ | `fase_6/09_producao_ubg.csv` (derivado) | 883 | ✅ | completo |
 | SILOS | 26 | ✅ | tipo_silo | ✅ | `fase_2_territorial/02_silos_ubg.csv` | 8 | ✅ | parcial |
 | PARCEIRO_COMERCIAL | 26 | ✅ | tipo_parceiro | ✅ | `fase_2/06_parceiros_agriwin.csv` | 2.201 | ✅ | completo |
@@ -51,7 +51,7 @@
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| MAQUINAS | 26 | ✅ | categoria_maquina, tipo_maquina, status_maquina | ✅ | `fase_3/04_maquinas.csv` | 183 | ✅ | parcial |
+| MAQUINAS | 26 | ✅ | categoria_maquina, tipo_maquina, status_maquina | ✅ | `fase_3/04_maquinas.csv` + `fase_3/04_implementos.csv` | 57+126 (com status + marca) | ✅ | completo |
 | OPERADORES | 26 | ✅ | tipo_cnh | ✅ | `fase_3/05_operadores.csv` | 15 | ✅ | completo |
 | ABASTECIMENTOS | 26 | ✅ | tipo_combustivel | ✅ | `fase_6/10_abastecimentos_vestro.csv` | 1.200 | ✅ | completo |
 | MANUTENCOES | 26 | ✅ | tipo_manutencao, status_manutencao | ✅ | — | 0 | ✅ | sem_dados |

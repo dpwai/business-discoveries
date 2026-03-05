@@ -7,11 +7,11 @@
 
 | Arquivo | Caminho | Conteúdo |
 |---------|---------|----------|
-| DDL Completo V0 | `09_Projetos/02_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 2.525 linhas, 57 tabelas, 40 ENUMs, 3 views, 3 funções |
-| Prisma Schema | `09_Projetos/02_SOAL/DDL/prisma/schema.prisma` | 57 modelos + 40 enums |
-| GAP Analysis | `09_Projetos/02_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
-| DDL Playground | `09_Projetos/02_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |
-| ETL Registry | `09_Projetos/02_SOAL/DATA/ETL_REGISTRY.md` | Registro de CSVs e ETLs |
+| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 2.525 linhas, 57 tabelas, 40 ENUMs, 3 views, 3 funções |
+| Prisma Schema | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 57 modelos + 40 enums |
+| GAP Analysis | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
+| DDL Playground | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |
+| ETL Registry | `09_Projetos/01_SOAL/DATA/ETL_REGISTRY.md` | Registro de CSVs e ETLs |
 
 ## 2. Estrutura do Banco — 57 Tabelas em 12 Seções
 

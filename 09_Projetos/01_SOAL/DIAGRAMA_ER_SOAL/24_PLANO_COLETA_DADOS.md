@@ -408,7 +408,7 @@ As seguintes entidades **não** fazem parte do plano atual:
 |-------|--------------------------|
 | nome | Nome como o Tiago chama a máquina |
 | tipo | TRATOR / COLHEITADEIRA / CAMINHAO / PULVERIZADOR / DRONE / IMPLEMENTO / VEICULO |
-| marca / modelo | Nos documentos da máquina |
+| marca / modelo | Marca extraída automaticamente do nome pelo ETL (95% máquinas, 82% implementos). Validar com Tiago os itens sem marca. |
 | placa | Veículos com placa |
 | numero_serie | Número de série (importante para telemetria futura JD) |
 | ano_fabricacao | Documento ou nota fiscal |

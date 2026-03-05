@@ -225,23 +225,25 @@ BEGIN;
 """)
 
     # ─── 7. FAZENDAS ───
-    parts.append(header("7. FAZENDAS", "Fonte: fase_2/02_fazendas.csv"))
+    parts.append(header("7. FAZENDAS", "Fonte: fase_2/02_fazendas.csv (9 fazendas, 4.127,56 ha)"))
     rows = read_csv("fase_2/02_fazendas.csv")
     for r in rows:
         is_active = r.get('is_active', 'True')
         status = 'active' if str(is_active).lower() == 'true' else 'inactive'
         parts.append(f"""INSERT INTO fazendas (
-  organization_id, name, cnpj, municipio, estado, area_total_ha, status
+  organization_id, name, cnpj, municipio, estado, area_total_ha, area_agricola_ha,
+  car, ccir_incra, itr, status
 ) VALUES (
   {org_id()},
   {esc(r['name'])}, {esc(r.get('cnpj'))},
   {esc(r.get('municipality'))}, {esc(r.get('state'))},
-  {esc_num(r.get('total_area_ha'))}, '{status}'
+  {esc_num(r.get('area_total_ha'))}, {esc_num(r.get('area_agricultura_ha'))},
+  {esc(r.get('car'))}, {esc(r.get('ccir_incra'))}, {esc(r.get('itr'))}, '{status}'
 );
 """)
 
     # ─── 8. TALHOES ───
-    parts.append(header("8. TALHOES", "Fonte: fase_2/03_talhoes.csv (72 registros)"))
+    parts.append(header("8. TALHOES", "Fonte: fase_2/03_talhoes.csv (71 registros)"))
     rows = read_csv("fase_2/03_talhoes.csv")
     for r in rows:
         faz = r.get('fazenda_name_lookup', '').strip()
@@ -465,43 +467,71 @@ BEGIN;
 );
 """)
 
-    # ─── 3. MAQUINAS ───
-    parts.append(header("3. MAQUINAS", "Fonte: fase_3/04_maquinas.csv (183 registros)"))
+    # ─── 3. MAQUINAS (57 total: 52 ativo + 5 vendido) + IMPLEMENTOS (126 total: 103 ativo + 23 vendido) ───
+    parts.append(header("3. MAQUINAS", "Fonte: fase_3/04_maquinas.csv (57 maquinas: 52 ativo + 5 vendido)"))
+
+    tipo_map = {
+        "COLHEITADEIRA": "colheitadeira", "TRATOR": "trator",
+        "PULVERIZADOR": "pulverizador", "PLANTADEIRA": "plantadeira",
+        "CAMINHAO": "caminhao", "UTILITARIO": "utilitario",
+        "DRONE": "drone", "IMPLEMENTO": "outros",
+        "VEICULO LEVE": "utilitario", "VEICULO PESADO": "caminhao",
+        "INDUSTRIAL": "outros", "MOTOCICLETA": "utilitario",
+        "MOTOBOMBA": "outros", "MOTOR ELETRICO": "outros",
+        "REBOQUE": "outros", "RODOVIARIO": "outros",
+        "ACESSORIO": "outros", "3 PONTOS": "outros",
+        "PLATAFORMA": "outros", "SEMEADORA": "outros",
+        "FIXOS": "outros", "DIVERSOS": "outros",
+    }
+
+    # 3a. Maquinas
     rows = read_csv("fase_3/04_maquinas.csv")
     for r in rows:
-        cat = r.get('category', 'MAQUINA').strip().lower()
-        cat_sql = 'maquina' if cat == 'maquina' else 'implemento'
         subtype = r.get('subtype', '').strip().upper()
-        tipo_map = {
-            "COLHEITADEIRA": "colheitadeira", "TRATOR": "trator",
-            "PULVERIZADOR": "pulverizador", "PLANTADEIRA": "plantadeira",
-            "CAMINHAO": "caminhao", "UTILITARIO": "utilitario",
-            "DRONE": "drone", "IMPLEMENTO": "outros",
-        }
         tipo_sql = tipo_map.get(subtype, 'outros')
-        status = r.get('status', 'ATIVO').strip().lower()
-        status_map = {"ativo": "ativo", "vendido": "vendido", "manutencao": "manutencao", "sucateado": "sucateado"}
-        status_sql = status_map.get(status, 'ativo')
 
-        linked = r.get('linked_to_machine_code_lookup', '').strip()
+        parts.append(f"""INSERT INTO maquinas (
+  organization_id, codigo, nome, categoria, tipo, marca, ano_fabricacao,
+  chassi, numero_serie, numero_motor,
+  valor_compra, data_compra, valor_atual, nota_fiscal_compra,
+  trator_vinculado_id, status
+) VALUES (
+  {org_id()},
+  {esc(r.get('code'))}, {esc(r.get('name'))}, 'maquina', '{tipo_sql}', {esc(r.get('brand'))},
+  {esc_int(r.get('manufacture_year'))},
+  {esc(r.get('chassis'))}, {esc(r.get('serial_renavam'))}, {esc(r.get('engine_number'))},
+  {esc_num(r.get('purchase_value'))}, {esc_date(r.get('purchase_date'))},
+  {esc_num(r.get('current_value'))}, {esc(r.get('invoice_number'))},
+  NULL, '{r.get('status', 'ativo').strip()}'
+);
+""")
+
+    # 3b. Implementos
+    parts.append(header("3b. IMPLEMENTOS", "Fonte: fase_3/04_implementos.csv (126 implementos: 103 ativo + 23 vendido)"))
+    rows = read_csv("fase_3/04_implementos.csv")
+    for r in rows:
+        subtype = r.get('subtype', '').strip().upper()
+        tipo_sql = tipo_map.get(subtype, 'outros')
+
+        linked = r.get('linked_to_machine_code', '').strip()
         if linked:
             linked_sql = f"(SELECT maquina_id FROM maquinas WHERE codigo = {esc(linked)} LIMIT 1)"
         else:
             linked_sql = "NULL"
 
         parts.append(f"""INSERT INTO maquinas (
-  organization_id, codigo, nome, categoria, tipo, ano_fabricacao,
+  organization_id, codigo, nome, categoria, tipo, marca, ano_fabricacao,
   chassi, numero_serie, numero_motor,
   valor_compra, data_compra, valor_atual, nota_fiscal_compra,
   trator_vinculado_id, status
 ) VALUES (
   {org_id()},
-  {esc(r.get('code'))}, {esc(r.get('name'))}, '{cat_sql}', '{tipo_sql}',
+  {esc(r.get('code'))}, {esc(r.get('name'))}, 'implemento', '{tipo_sql}', {esc(r.get('brand'))},
   {esc_int(r.get('manufacture_year'))},
-  {esc(r.get('chassis'))}, {esc(r.get('serial_renavam'))}, {esc(r.get('engine_number'))},
+  {esc(r.get('chassis'))}, NULL, NULL,
   {esc_num(r.get('purchase_value'))}, {esc_date(r.get('purchase_date'))},
   {esc_num(r.get('current_value'))}, {esc(r.get('invoice_number'))},
-  {linked_sql}, '{status_sql}'
+  {linked_sql}, '{r.get('status', 'ativo').strip()}'
 );
 """)
 

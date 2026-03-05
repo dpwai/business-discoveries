@@ -56,13 +56,13 @@ CREATE TYPE tipo_solo AS ENUM ('latossolo_vermelho', 'argissolo', 'cambissolo', 
 CREATE TYPE tipo_silo AS ENUM ('metalico', 'bolsa', 'armazem', 'tulha');
 CREATE TYPE status_safra AS ENUM ('planejamento', 'em_andamento', 'encerrada');
 CREATE TYPE epoca_safra AS ENUM ('safra', 'safrinha', 'terceira_safra');
-CREATE TYPE grupo_cultura AS ENUM ('graos', 'forrageira', 'pastagem', 'oleaginosa', 'outros');
+CREATE TYPE grupo_cultura AS ENUM ('graos', 'oleaginosa', 'cobertura', 'forrageira', 'pastagem', 'fibra', 'florestal', 'outros');
 CREATE TYPE tipo_parceiro AS ENUM ('fornecedor', 'cliente', 'arrendador', 'transportador', 'cooperativa', 'orgao_publico');
 
 -- ─── Operacional ───────────────────────────────────────────────
 CREATE TYPE categoria_maquina AS ENUM ('maquina', 'implemento');
 CREATE TYPE tipo_maquina AS ENUM ('trator', 'colheitadeira', 'pulverizador', 'plantadeira', 'caminhao', 'utilitario', 'drone', 'outros');
-CREATE TYPE status_maquina AS ENUM ('ativo', 'manutencao', 'vendido', 'sucateado');
+CREATE TYPE status_maquina AS ENUM ('ativo', 'inativo', 'manutencao', 'vendido', 'sucateado');
 CREATE TYPE tipo_combustivel AS ENUM ('diesel_s10', 'diesel_s500', 'gasolina', 'etanol', 'arla32');
 CREATE TYPE tipo_manutencao AS ENUM ('preventiva', 'corretiva', 'preditiva');
 CREATE TYPE status_manutencao AS ENUM ('aberta', 'em_andamento', 'concluida', 'cancelada');
@@ -352,7 +352,7 @@ CREATE TRIGGER trg_fazendas_updated_at
     BEFORE UPDATE ON fazendas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE fazendas IS 'Propriedades rurais. SOAL tem ~12 fazendas. Campos Doc 25b incluidos (area_agricola, ccir, itr, localidade).';
+COMMENT ON TABLE fazendas IS 'Propriedades rurais. SOAL tem 9 fazendas (4.127 ha). Campos Doc 25b incluidos (area_agricola, ccir, itr, localidade).';
 
 
 -- ─── 3.2 TALHOES ─────────────────────────────────────────────
@@ -432,7 +432,7 @@ CREATE TRIGGER trg_culturas_updated_at
     BEFORE UPDATE ON culturas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE culturas IS 'Catalogo de culturas. Sem org_id — culturas sao universais. 9 culturas V0.';
+COMMENT ON TABLE culturas IS 'Catalogo de culturas. Sem org_id — culturas sao universais. 126 culturas V0.';
 
 
 -- ─── 3.5 TALHAO_SAFRAS (Entidade CENTRAL) ────────────────────
@@ -669,7 +669,7 @@ CREATE TRIGGER trg_maquinas_updated_at
     BEFORE UPDATE ON maquinas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE maquinas IS '183 maquinas/implementos. Pertencem a ORG, nao a fazenda. Self-ref para implemento→trator.';
+COMMENT ON TABLE maquinas IS '57 maquinas (52 ativo + 5 vendido) + 126 implementos (103 ativo + 23 vendido). Pertencem a ORG, nao a fazenda. Self-ref para implemento→trator. Fonte: fase_3/04_maquinas.csv + fase_3/04_implementos.csv';
 
 
 -- ─── 4.2 OPERADORES ──────────────────────────────────────────

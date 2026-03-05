@@ -26,13 +26,13 @@ CREATE TYPE tipo_solo AS ENUM ('latossolo_vermelho', 'argissolo', 'cambissolo', 
 CREATE TYPE tipo_silo AS ENUM ('metalico', 'bolsa', 'armazem', 'tulha');
 CREATE TYPE status_safra AS ENUM ('planejamento', 'em_andamento', 'encerrada');
 CREATE TYPE epoca_safra AS ENUM ('safra', 'safrinha', 'terceira_safra');
-CREATE TYPE grupo_cultura AS ENUM ('graos', 'forrageira', 'pastagem', 'oleaginosa', 'outros');
+CREATE TYPE grupo_cultura AS ENUM ('graos', 'oleaginosa', 'cobertura', 'forrageira', 'pastagem', 'fibra', 'florestal', 'outros');
 CREATE TYPE tipo_parceiro AS ENUM ('fornecedor', 'cliente', 'arrendador', 'transportador', 'cooperativa', 'orgao_publico');
 
 -- Operacional
 CREATE TYPE categoria_maquina AS ENUM ('maquina', 'implemento');
 CREATE TYPE tipo_maquina AS ENUM ('trator', 'colheitadeira', 'pulverizador', 'plantadeira', 'caminhao', 'utilitario', 'drone', 'outros');
-CREATE TYPE status_maquina AS ENUM ('ativo', 'manutencao', 'vendido', 'sucateado');
+CREATE TYPE status_maquina AS ENUM ('ativo', 'inativo', 'manutencao', 'vendido', 'sucateado');
 CREATE TYPE tipo_combustivel AS ENUM ('diesel_s10', 'diesel_s500', 'gasolina', 'etanol', 'arla32');
 CREATE TYPE tipo_manutencao AS ENUM ('preventiva', 'corretiva', 'preditiva');
 CREATE TYPE status_manutencao AS ENUM ('aberta', 'em_andamento', 'concluida', 'cancelada');
@@ -310,7 +310,7 @@ CREATE INDEX idx_role_permissions_perm_id ON role_permissions(permission_id);
 ```sql
 -- =============================================
 -- FAZENDAS — Propriedades rurais da org
--- CSV referencia: IMPORTS/fase_2/02_fazendas.csv (12 fazendas)
+-- CSV referencia: IMPORTS/fase_2/02_fazendas.csv (9 fazendas, 4.127 ha)
 -- =============================================
 
 CREATE TABLE fazendas (
@@ -340,7 +340,7 @@ CREATE TRIGGER trg_fazendas_updated_at
     BEFORE UPDATE ON fazendas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE fazendas IS 'Propriedades rurais. SOAL tem ~12 fazendas. GeoJSON via KML/CAR futuro.';
+COMMENT ON TABLE fazendas IS 'Propriedades rurais. SOAL tem 9 fazendas (4.127 ha). CAR preenchido via PDFs oficiais.';
 ```
 
 ### 4.2 TALHOES
@@ -421,7 +421,7 @@ COMMENT ON TABLE safras IS 'Periodos agricolas. Ano fiscal: jul→jun. Safra 25/
 ```sql
 -- =============================================
 -- CULTURAS — Tipos de cultura plantada
--- CSV referencia: IMPORTS/fase_0/01_culturas.csv (9 culturas)
+-- CSV referencia: IMPORTS/fase_0/01_culturas.csv (126 culturas)
 -- Semente ≠ Soja: SOAL produz sementes certificadas Castrolanda
 -- =============================================
 
@@ -444,7 +444,7 @@ CREATE TRIGGER trg_culturas_updated_at
     BEFORE UPDATE ON culturas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE culturas IS 'Catalogo de culturas. Sem org_id — culturas sao universais. 9 culturas V0.';
+COMMENT ON TABLE culturas IS 'Catalogo de culturas. Sem org_id — culturas sao universais. 126 culturas V0.';
 ```
 
 ### 4.5 TALHAO_SAFRAS (Entidade central)
@@ -578,7 +578,7 @@ COMMENT ON TABLE parceiros_comerciais IS '2.201 parceiros do AgriWin. tipo[] = A
 ```sql
 -- =============================================
 -- MAQUINAS — Maquinario e implementos da org
--- CSV referencia: IMPORTS/fase_3/04_maquinas.csv (183 registros, 156 ativos)
+-- CSV referencia: IMPORTS/fase_3/04_maquinas.csv (57 maquinas: 52 ativo + 5 vendido) + fase_3/04_implementos.csv (126 implementos: 103 ativo + 23 vendido)
 -- Regra: maquinas pertencem a ORG, nao a fazenda. Custo alocado via OPERACAO_CAMPO.
 -- =============================================
 
@@ -620,7 +620,7 @@ CREATE TRIGGER trg_maquinas_updated_at
     BEFORE UPDATE ON maquinas
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE maquinas IS '183 maquinas/implementos. Pertencem a ORG, nao a fazenda. Self-ref para implemento→trator.';
+COMMENT ON TABLE maquinas IS '57 maquinas (52 ativo + 5 vendido) + 126 implementos (103 ativo + 23 vendido). Pertencem a ORG, nao a fazenda. Self-ref para implemento→trator.';
 ```
 
 ### 5.2 OPERADORES

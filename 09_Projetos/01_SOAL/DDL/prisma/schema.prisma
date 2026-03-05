@@ -70,9 +70,12 @@ enum EpocaSafra {
 
 enum GrupoCultura {
   graos
+  oleaginosa
+  cobertura
   forrageira
   pastagem
-  oleaginosa
+  fibra
+  florestal
   outros
 }
 
@@ -105,6 +108,7 @@ enum TipoMaquina {
 
 enum StatusMaquina {
   ativo
+  inativo
   manutencao
   vendido
   sucateado
@@ -612,7 +616,7 @@ model RolePermission {
 // CAMADA TERRITORIAL (10 models)
 // =============================================================================
 
-/// Propriedades rurais da org (~12 fazendas SOAL)
+/// Propriedades rurais da org (9 fazendas SOAL, 4.127 ha)
 model Fazenda {
   id                String      @id @default(dbgenerated("gen_random_uuid()")) @map("fazenda_id") @db.Uuid
   organizationId    String      @map("organization_id") @db.Uuid
@@ -710,7 +714,7 @@ model Safra {
   @@map("safras")
 }
 
-/// Catalogo de culturas (9 culturas V0). Sem org — universal.
+/// Catalogo de culturas (126 culturas V0). Sem org — universal.
 model Cultura {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @map("cultura_id") @db.Uuid
   nome            String       @unique @db.VarChar(100)

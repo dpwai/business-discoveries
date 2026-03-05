@@ -145,7 +145,7 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 - **UBG tem dois fluxos de receita:** (1) varejo de subprodutos (feno, quirera, milho, aveia, pré-secado); (2) serviço de pesagem pública (bovinos, suinos, eucalipto, pinus). Custos próprios separados da agricultura.
 - **Fluxo Ticket Balança atual:** Vanessa pesa e digita → Josmar preenche análise de qualidade → Vanessa consolida a cada 15 dias na planilha. Digitalização = eliminar caderno + planilha.
 - **Comissão Josmar:** 0,01% da receita anual + R$2,50/pesagem externa — calculada manualmente no fim do ano. Automatable via trigger.
-- **CULTURAS seed:** 9 culturas no CSV seed: SOJA, MILHO, FEIJÃO, TRIGO, AVEIA, CEVADA, MILHETO, AZEVEM, AVEIA PRETA.
+- **CULTURAS seed:** 126 culturas no CSV seed organizadas por grupo: graos (soja, milho, feijao, trigo, cevada, centeio, triticale, arroz, sorgo + sementes certificadas), oleaginosa (canola, girassol, mamona, crambe...), cobertura (ervilha forrageira, crotalarias, ervilhacas, nabo forrageiro, tremoco, mucuna...), forrageira (sorgo/milho/aveia silagem, capim-sudao...), pastagem (brachiarias, panicum, tifton...), florestal (eucalipto, pinus...), fibra (algodao), outros (cafe, cana, hortalicas, frutas...).
 - **Naming talhões:** 183 variantes → 61 canônicos via `talhao_mapping`. Tabela de mapeamento criada no DDL.
 - **Conectividade campo:** Starlink em 100% pulverizadores, ~50% plantadeiras, carros Alessandro e Tiago. 100% funcionários têm smartphone. 2 funcionários com limitação leitura/escrita → entrada por áudio é obrigatória.
 - **Rotação de cultura:** 25-30% da área total em gramíneas todo ano (milho, trigo, aveia) para quebrar ciclo de doenças.
@@ -205,7 +205,7 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 | `fase_1_sistema/` | Organizations, users | 2 | ✅ |
 | `fase_2/` | Safras, fazendas, talhões, matrículas, parceiros | 6 | ✅ |
 | `fase_2_territorial/` | UBG, silos | 2 | ✅ (parcial — pendente Josmar) |
-| `fase_3/` | Máquinas, operadores, tags Vestro, colaboradores, folha | 7 | ✅ |
+| `fase_3/` | Máquinas (57), implementos (126) — com status ativo/vendido, operadores, tags Vestro, colaboradores, folha | 8 | ✅ |
 | `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga) | 6 | ✅ |
 | `fase_5/` | Planejamento safra | 0 | ⏳ vazio — pendente |
 | `fase_6/` | Produção UBG, abastecimentos Vestro, caixa UBG | 3 | ✅ |
@@ -321,7 +321,7 @@ business-discoveries/
 │   │   ├── IMPORTS/             # CSVs organizados por fase (38 ativos)
 │   │   ├── INSUMOS/             # AgriWin legacy (18.499 registros)
 │   │   ├── MAQUINÁRIO/          # Máquinas + Vestro abastecimentos
-│   │   ├── ORG/                 # Matrículas, fazendas (88 matrículas, 4.127 ha)
+│   │   ├── ORG/                 # 9 fazendas, 88 matrículas, 4.127 ha, 21 CAR PDFs
 │   │   ├── PARCEIROS_PESSOAS/   # AgriWin parceiros (2.201 registros)
 │   │   ├── RH/                  # Folha pagamento FSI (87 colaboradores)
 │   │   ├── UBG/                 # Caixa histórica (19.177 registros)

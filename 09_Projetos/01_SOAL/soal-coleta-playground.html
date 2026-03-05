@@ -440,8 +440,8 @@ var CAT_LABEL = { A:'Seed', B:'CSV', C:'Form', D:'API', E:'Auto' };
 
 var NODES = [
   // ── Fase 0: Seeds ──
-  { id:'CULTURAS',          phase:0, cat:'A', status:'coletado',  records: 9,
-    desc:'Seed completo (01_culturas.csv). 9 culturas: soja, milho, trigo, feijao, aveia_branca, aveia_preta, azevem, milheto, soja_semente. Schema: name, display_name, group, harvest_unit.' },
+  { id:'CULTURAS',          phase:0, cat:'A', status:'coletado',  records: 126,
+    desc:'Seed completo (01_culturas.csv). 126 culturas em 8 grupos: graos, oleaginosa, cobertura, forrageira, pastagem, fibra, florestal, outros. Inclui todas culturas BR. Schema: name, display_name, group, harvest_unit.' },
   { id:'PRODUTO_INSUMO',    phase:0, cat:'B', status:'coletado',  records: 18499,
     desc:'38 seed (combustiveis, lubrificantes) + 18.499 AgriWin (200 xlsx). 99.8% classificado. 162 variantes unidade → 55 canonicas. Schema: 12 campos incluindo tipo, grupo, ncm, custo_medio.' },
   { id:'ROLES',             phase:0, cat:'A', status:'pendente',  records: 0,
@@ -474,8 +474,8 @@ var NODES = [
     desc:'2.201 AgriWin (23 xlsx re-processados). 830 CNPJ + 206 CPF + 1.165 sem doc. 1.912 sem tipo (Valentina classificar). Schema: 14 campos incl. doc_type, cpf_cnpj_valid.' },
 
   // ── Fase 3: Operacional ──
-  { id:'MAQUINAS',          phase:3, cat:'B', status:'parcial',   records: 183,
-    desc:'183 maquinas (04_maquinas.csv): 156 ativo, 27 vendido. 36/47 tags Vestro matched. Tiago validou 9 questoes — reenviar para detalhamento (subtipos, implementos orfaos, maquinas vendidas sem data). Schema: 15 campos.' },
+  { id:'MAQUINAS',          phase:3, cat:'B', status:'coletado',   records: 183,
+    desc:'57 maquinas (04_maquinas.csv: 52 ativo + 5 vendido) + 126 implementos (04_implementos.csv: 103 ativo + 23 vendido). Marca extraida automaticamente (95% maquinas, 82% implementos). 36/47 tags Vestro matched. Schema: status + marca + 15 campos.' },
   { id:'OPERADORES',        phase:3, cat:'B', status:'coletado',  records: 15,
     desc:'15 operadores curados (05_operadores.csv): 11 agricola + 4 UBG. Fonte: colaboradores ativos (agricola+ubg) x matricula Vestro. Alessandro EXCLUIDO (coordenador, nao operador). Schema: nome, cpf, setor, cargo, tipo_contrato, matricula_vestro.' },
   { id:'TAGS_VESTRO',       phase:3, cat:'B', status:'coletado',  records: 47,
