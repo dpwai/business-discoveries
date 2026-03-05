@@ -23,7 +23,7 @@
 **Infra:** Docker + Docker Compose
 **DDL status:** ✅ 57 tabelas, 40 ENUMs, 3 views, 3 funções, ~120 indexes, ~50 triggers — tudo consolidado em SQL único
 **Prisma schema:** ✅ 57 modelos, 40 enums, relações completas
-**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (43k linhas, ~37k registros)
+**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (50k linhas, ~43k registros)
 
 ---
 
@@ -146,7 +146,7 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 - **Fluxo Ticket Balança atual:** Vanessa pesa e digita → Josmar preenche análise de qualidade → Vanessa consolida a cada 15 dias na planilha. Digitalização = eliminar caderno + planilha.
 - **Comissão Josmar:** 0,01% da receita anual + R$2,50/pesagem externa — calculada manualmente no fim do ano. Automatable via trigger.
 - **CULTURAS seed:** 126 culturas no CSV seed organizadas por grupo: graos (soja, milho, feijao, trigo, cevada, centeio, triticale, arroz, sorgo + sementes certificadas), oleaginosa (canola, girassol, mamona, crambe...), cobertura (ervilha forrageira, crotalarias, ervilhacas, nabo forrageiro, tremoco, mucuna...), forrageira (sorgo/milho/aveia silagem, capim-sudao...), pastagem (brachiarias, panicum, tifton...), florestal (eucalipto, pinus...), fibra (algodao), outros (cafe, cana, hortalicas, frutas...).
-- **Naming talhões:** 183 variantes → 61 canônicos via `talhao_mapping`. Tabela de mapeamento criada no DDL.
+- **Naming talhões:** Nomes inconsistentes entre fontes. Tabela `talhao_mapping` existe no DDL mas sem dados — mapping real será gerado quando necessário a partir de todas as fontes.
 - **Conectividade campo:** Starlink em 100% pulverizadores, ~50% plantadeiras, carros Alessandro e Tiago. 100% funcionários têm smartphone. 2 funcionários com limitação leitura/escrita → entrada por áudio é obrigatória.
 - **Rotação de cultura:** 25-30% da área total em gramíneas todo ano (milho, trigo, aveia) para quebrar ciclo de doenças.
 - **Histórico patógenos por talhão:** Esclerotínia (mofo branco) no LAGARTO, não no MASSACRE — decisões de manejo por talhão baseadas em histórico.
@@ -178,8 +178,8 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 | Doc | Caminho | Conteúdo |
 |-----|---------|----------|
 | **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 57 tabelas, 2.525 linhas, pronto para `psql -f` |
-| **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 (23k linhas) |
-| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~37k registros de CSVs (43k linhas) |
+| **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 (23k linhas, inclui 395 insumos Castrolanda) |
+| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~43k registros de CSVs (50k linhas, inclui 6.331 compras insumos) |
 | **Prisma Schema** | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 57 modelos, 2.224 linhas |
 | **GAP Analysis** | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz 57 entidades x DDL x CSV x Prisma |
 | **DDL Playground** | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Dashboard interativo dark theme |
@@ -201,12 +201,12 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 
 | Fase | Conteúdo | CSVs | Status |
 |------|----------|------|--------|
-| `fase_0/` | Seeds (culturas, insumos AgriWin) | 3 | ✅ |
+| `fase_0/` | Seeds (culturas, insumos AgriWin, insumos Castrolanda) | 4 | ✅ |
 | `fase_1_sistema/` | Organizations, users | 2 | ✅ |
 | `fase_2/` | Safras, fazendas, talhões, matrículas, parceiros | 6 | ✅ |
 | `fase_2_territorial/` | UBG, silos | 2 | ✅ (parcial — pendente Josmar) |
 | `fase_3/` | Máquinas (57), implementos (126) — com status ativo/vendido, operadores, tags Vestro, colaboradores, folha | 8 | ✅ |
-| `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga) | 6 | ✅ |
+| `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga, compra insumos) | 7 | ✅ |
 | `fase_5/` | Planejamento safra | 0 | ⏳ vazio — pendente |
 | `fase_6/` | Produção UBG, abastecimentos Vestro, caixa UBG | 3 | ✅ |
 | `fase_6_operacoes/` | Colheita, plantio, pesagens, vendas, custo insumos, freteiros, saídas | 10 | ✅ |
@@ -234,7 +234,7 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 | `ORG/` | etl_fazendas, etl_matriculas, etl_fuel_tanks, etl_talhoes | Estrutura territorial |
 | `RH/` | etl_colaboradores, etl_folha_import, etl_folha_pagamento | Folha pagamento FSI |
 | `PARCEIROS_PESSOAS/` | etl_parceiros | AgriWin parceiros |
-| `INSUMOS/` | etl_insumos | AgriWin insumos |
+| `INSUMOS/` | etl_insumos, etl_insumos_castrolanda | AgriWin insumos + Castrolanda insumos/compras |
 | `UBG/` | etl_ubg_caixa | Caixa histórica UBG |
 
 ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl_agricola.py`
@@ -255,8 +255,8 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 | Arquivo | Métricas |
 |---------|----------|
 | `sql/00_DDL_COMPLETO_V0.sql` | 2.525 linhas, 57 tabelas, 40 ENUMs, 3 views, 3 funções, ~120 indexes, ~50 triggers |
-| `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 |
-| `sql/02_INSERT_DADOS.sql` | 43k linhas — ~37k registros de 35 tabelas |
+| `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 (inclui 395 insumos Castrolanda) |
+| `sql/02_INSERT_DADOS.sql` | 50k linhas — ~43k registros de 36 tabelas (inclui 6.331 compras insumos) |
 | `sql/generate_inserts.py` | Script gerador de INSERTs a partir dos CSVs |
 | `prisma/schema.prisma` | 2.224 linhas, 57 modelos, 40 enums |
 | `GAP_ANALYSIS.md` | Matriz 57 entidades x DDL x CSV x Prisma |

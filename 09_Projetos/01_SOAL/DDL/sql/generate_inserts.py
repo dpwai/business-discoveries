@@ -343,20 +343,15 @@ BEGIN;
     rows = read_csv("fase_2/06_parceiros_agriwin.csv")
     vals = []
     for r in rows:
-        tipo = r.get('tipo', '').strip().lower()
-        if tipo == 'cliente':
-            tipo_arr = "'{cliente}'"
-        elif tipo == 'fornecedor':
-            tipo_arr = "'{fornecedor}'"
-        elif tipo:
-            tipo_arr = f"'{{{tipo}}}'"
-        else:
-            tipo_arr = "'{}'"
+        # tipo already comes as Postgres array literal from ETL: {fornecedor}, {fornecedor,cliente}, {} etc.
+        tipo_raw = r.get('tipo', '').strip()
+        tipo_arr = f"'{tipo_raw}'" if tipo_raw else "'{}'"
+        tipo_doc = r.get('tipo_documento', '').strip()
         is_active = str(r.get('is_active', 'True')).lower() == 'true'
         status = 'active' if is_active else 'inactive'
-        vals.append(f"({org_id()}, {esc(r.get('name'))}, {esc(r.get('razao_social'))}, {esc(r.get('nome_fantasia'))}, {esc(r.get('cpf_cnpj'))}, {tipo_arr}, {esc(r.get('telefone'))}, {esc(r.get('cidade'))}, {esc(r.get('uf'))}, '{status}')")
+        vals.append(f"({org_id()}, {esc(r.get('razao_social'))}, {esc(r.get('nome_fantasia'))}, {esc(r.get('cpf_cnpj'))}, {esc(tipo_doc) if tipo_doc else 'NULL'}, {tipo_arr}, {esc(r.get('telefone'))}, {esc(r.get('municipio'))}, {esc(r.get('uf'))}, '{status}')")
     parts.append(batch_insert("parceiros_comerciais",
-        ["organization_id", "name", "razao_social", "nome_fantasia", "cpf_cnpj", "tipo", "telefone", "cidade", "estado", "status"],
+        ["organization_id", "razao_social", "nome_fantasia", "cpf_cnpj", "tipo_documento", "tipo", "telefone", "municipio", "uf", "status"],
         vals, batch_size=200))
 
     # ─── 14. PRODUTO_INSUMO ───
@@ -396,15 +391,33 @@ BEGIN;
         ["organization_id", "name", "display_name", "tipo", "grupo", "unidade_medida", "custo_medio_unitario", "ativo"],
         vals, batch_size=200))
 
-    # ─── 15. TALHAO_MAPPING ───
-    parts.append(header("15. TALHAO_MAPPING", "Fonte: fase_2/03b_talhao_nome_mapping.csv (170 registros)"))
-    rows = read_csv("fase_2/03b_talhao_nome_mapping.csv")
-    vals = []
-    for r in rows:
-        vals.append(f"({esc(r.get('talhoes_csv_name'))}, {esc(r.get('plantio_2425_name'))}, {esc(r.get('plantio_2526_name'))}, {esc(r.get('canonical_name'))})")
-    parts.append(batch_insert("talhao_mapping",
-        ["nome_origem", "nome_plantio_2425", "nome_plantio_2526", "nome_canonico"],
-        vals, batch_size=200))
+    # ─── 14b. PRODUTO_INSUMO (Castrolanda) ───
+    parts.append(header("14b. PRODUTO_INSUMO (Castrolanda)", "Fonte: fase_0/03_produto_insumo_castrolanda.csv (395 registros)"))
+    rows_cast = read_csv("fase_0/03_produto_insumo_castrolanda.csv")
+    # Map CSV tipo to ENUM tipo_insumo
+    tipo_map_cast = {
+        "fungicida": "fungicida",
+        "semente": "semente",
+        "herbicida": "herbicida",
+        "inseticida": "inseticida",
+        "adubo_foliar": "fertilizante",
+        "fertilizante": "fertilizante",
+        "adjuvante": "adjuvante",
+        "inoculante": "biologico",
+        "embalagem": "outros",
+        "outros": "outros",
+    }
+    vals_cast = []
+    for r in rows_cast:
+        tipo_csv = r.get('tipo', '').strip()
+        tipo_sql = tipo_map_cast.get(tipo_csv, 'outros')
+        grupo_sql = r.get('grupo', 'agricola').strip().lower()
+        is_active = esc_bool(r.get('ativo', 'True'))
+        vals_cast.append(f"({org_id()}, {esc(r.get('codigo'))}, {esc(r.get('nome'))}, '{tipo_sql}', '{grupo_sql}', {esc(r.get('unidade_medida'))}, {esc_num(r.get('custo_medio_ponderado'))}, {is_active})")
+
+    parts.append(batch_insert("produto_insumo",
+        ["organization_id", "codigo", "nome", "tipo", "grupo", "unidade_medida", "custo_medio_unitario", "ativo"],
+        vals_cast, batch_size=200))
 
     parts.append("""
 COMMIT;
@@ -823,12 +836,42 @@ BEGIN;
         ["organization_id", "arquivo_origem", "ano", "mes", "data", "produto", "quantidade", "descricao", "comprador", "localidade", "forma_pagamento", "credito", "debito", "saldo", "tipo"],
         vals, batch_size=500))
 
+    # ─── 21. COMPRA_INSUMO ───
+    parts.append(header("21. COMPRA_INSUMO", "Fonte: fase_4/11_compra_insumo_castrolanda.csv (6.331 registros)"))
+    rows = read_csv("fase_4/11_compra_insumo_castrolanda.csv")
+    # Map CSV status to ENUM status_compra
+    status_map_compra = {
+        "recebido": "recebido",
+        "cancelado": "cancelado",
+        "pendente": "pendente",
+        "parcial": "parcial",
+    }
+    vals = []
+    for r in rows:
+        status_csv = r.get('status', 'recebido').strip().lower()
+        status_sql = status_map_compra.get(status_csv, 'recebido')
+        # produto_insumo_id via subquery on codigo (Castrolanda catálogo)
+        codigo = r.get('codigo_produto', '').replace("'", "''")
+        produto_sub = f"(SELECT produto_insumo_id FROM produto_insumo WHERE codigo = '{codigo}' LIMIT 1)"
+        # parceiro_id: Castrolanda is the supplier
+        parceiro_sub = "(SELECT parceiro_comercial_id FROM parceiros_comerciais WHERE razao_social ILIKE '%castrolanda%' LIMIT 1)"
+        # cultura_destino_id: FK to culturas — map culture name to UUID
+        cultura_nome = r.get('cultura_destino', '').replace("'", "''")
+        cultura_sub = f"(SELECT cultura_id FROM culturas WHERE UPPER(nome) = '{cultura_nome}' LIMIT 1)" if cultura_nome else "NULL"
+        # observacoes: include tipo_operacao + cultura_destino for traceability
+        obs = f"{r.get('tipo_operacao', '')} | cultura: {r.get('cultura_destino', '')}"
+        vals.append(f"({org_id()}, {produto_sub}, {parceiro_sub}, 'castrolanda', {esc_date(r.get('data_compra'))}, {esc_num(r.get('quantidade'))}, {esc(r.get('unidade'))}, {esc_num(r.get('valor_unitario'))}, {esc_num(r.get('valor_total'))}, {cultura_sub}, {esc(r.get('numero_nota'))}, {esc(codigo)}, '{status_sql}', {esc(obs)})")
+
+    parts.append(batch_insert("compra_insumo",
+        ["organization_id", "produto_insumo_id", "parceiro_id", "fonte", "data_compra", "quantidade", "unidade", "valor_unitario", "valor_total", "cultura_destino_id", "numero_pedido", "castrolanda_sync_id", "status", "observacoes"],
+        vals, batch_size=200))
+
     parts.append("""
 COMMIT;
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- FIM — 02_INSERT_DADOS.sql
--- Total: ~37.000 registros inseridos
+-- Total: ~43.000 registros inseridos
 -- ═══════════════════════════════════════════════════════════════════════
 """)
 
