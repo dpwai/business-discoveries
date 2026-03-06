@@ -21,9 +21,9 @@
 **Padrão de dados:** Medallion Architecture — Bronze (raw) → Silver (limpo) → Gold (analytics)
 **O ER diagram define o Bronze layer.** Silver e Gold são transformações, não entidades.
 **Infra:** Docker + Docker Compose
-**DDL status:** ✅ 57 tabelas, 40 ENUMs, 3 views, 3 funções, ~120 indexes, ~50 triggers — tudo consolidado em SQL único
-**Prisma schema:** ✅ 57 modelos, 40 enums, relações completas
-**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (50k linhas, ~43k registros)
+**DDL status:** ✅ 66 tabelas, 45 ENUMs, 4 views, 3 funções, ~187 indexes, ~57 triggers — tudo consolidado em SQL único
+**Prisma schema:** ✅ 66 modelos, 45 enums, relações completas
+**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (63k linhas, ~56k registros)
 
 ---
 
@@ -82,8 +82,8 @@ CREATE TABLE nome_tabela (
 | Territorial | Lime #dbfaad | FAZENDAS, TALHOES, SILOS, SAFRAS, CULTURAS, TALHAO_SAFRA, PARCEIRO_COMERCIAL | ✅ DDL + CSV + INSERT |
 | Agrícola | Yellow #fff6b6 | OPERACAO_CAMPO, PLANTIO/COLHEITA/PULVERIZACAO_DETALHE, PRODUTO_INSUMO, COMPRA/ESTOQUE/APLICACAO_INSUMO | ✅ DDL + CSV parcial |
 | Operacional | Cyan #ccf4ff | MAQUINAS, OPERADORES, ABASTECIMENTOS, MANUTENCOES | ✅ DDL + CSV + INSERT |
-| Financeiro | Orange #f8d3af | NOTA_FISCAL, CONTA_PAGAR/RECEBER, CENTRO_CUSTO, CONTRATOS | ✅ DDL + CSV (Castrolanda) |
-| UBG | Yellow mix | TICKET_BALANCA, RECEBIMENTO_GRAO, CONTROLE_SECAGEM, ESTOQUE_SILO, SAIDA_GRAO | ✅ DDL + CSV + INSERT |
+| Financeiro | Orange #f8d3af | NOTA_FISCAL, CONTA_PAGAR/RECEBER, CENTRO_CUSTO, CONTRATOS, FSI (fluxo caixa, caixa escritorio, kugler×fsi, consorcios) | ✅ DDL + CSV (Castrolanda + FSI) |
+| UBG | Yellow mix | TICKET_BALANCA, RECEBIMENTO_GRAO, CONTROLE_SECAGEM, LEITURA_SECAGEM, ESTOQUE_SILO, SAIDA_GRAO | ✅ DDL + CSV + INSERT |
 | Pecuária | Green #adf0c7 | ANIMAL, LOTE, PASTO, MANEJO, REPRODUCAO... | ⛔ FORA DO ESCOPO V0 |
 
 **Entidade central:** `TALHAO_SAFRA` — 90% dos relatórios passam por ela.
@@ -167,7 +167,8 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 | **Fundação ABC** | Análise de solo, pesquisa variedades | Via Lucas (Excel/PDF) | Pendente coleta |
 | **CAR** | KML/KMZ dos talhões | Download manual → GeoJSON | Pontual |
 | **John Deere** | Telemetria de operações | API JD | ⛔ V0 fora do escopo |
-| **FSI (RH)** | Folha de pagamento | Excel 118 abas → ETL | ✅ ETL pronto (87 colaboradores, 3.122 registros, 2017-2026) |
+| **FSI (RH)** | Folha de pagamento | Excel 118 abas → ETL | ✅ ETL pronto (82 colaboradores, 3.122 registros, 2017-2026) |
+| **FSI (Financeiro)** | Contas a pagar/receber, caixa escritorio, inter-company, consorcios | Excel 14 abas → ETL | ✅ ETL pronto (10.119 fluxo caixa + 1.185 caixa + 1.499 kugler + 20 consorcios, 2017-2026) |
 
 **Regra:** AgriWin é REFERÊNCIA de quais dados existem — nunca referência de como estruturar.
 
@@ -177,19 +178,23 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 
 | Doc | Caminho | Conteúdo |
 |-----|---------|----------|
-| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 57 tabelas, 2.525 linhas, pronto para `psql -f` |
+| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 66 tabelas, ~2.900 linhas, pronto para `psql -f` |
 | **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 (23k linhas, inclui 395 insumos Castrolanda) |
-| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~43k registros de CSVs (50k linhas, inclui 6.331 compras insumos) |
-| **Prisma Schema** | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 57 modelos, 2.224 linhas |
-| **GAP Analysis** | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz 57 entidades x DDL x CSV x Prisma |
+| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~56k registros de CSVs (63k linhas, inclui 12.823 FSI + 6.331 compras insumos) |
+| **Prisma Schema** | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos, 45 enums |
+| **GAP Analysis** | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
 | **DDL Playground** | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Dashboard interativo dark theme |
 | **ER Playground** | `09_Projetos/01_SOAL/DDL/soal-er-playground.html` | ER diagram force-directed graph |
+| **Secagem Playground** | `09_Projetos/01_SOAL/DDL/soal-secagem-playground.html` | Simulador mobile controle de secagem (I.N. 029/2011) |
+| **Alocacao Playground** | `09_Projetos/01_SOAL/DDL/soal-alocacao-playground.html` | Simulador alocacao de graos nos silos |
 | Plano de Coleta | `09_Projetos/01_SOAL/DIAGRAMA_ER_SOAL/24_PLANO_COLETA_DADOS.md` | Plano completo V0 + templates CSV + checklist Dia 01 |
 | DDL Insumos | `09_Projetos/01_SOAL/DIAGRAMA_ER_SOAL/16_DDL_MODULO_INSUMOS_ESTOQUE.md` | DDL detalhado módulo insumos |
 | ER Completo | `09_Projetos/01_SOAL/DIAGRAMA_ER_SOAL/08_ESTRUTURA_ER_COMPLETA_SOAL.md` | Master ER com ~92 entidades, 7 camadas |
 | Centro de Custo | `09_Projetos/01_SOAL/DIAGRAMA_ER_SOAL/13_HIERARQUIA_CENTRO_CUSTO_SOAL.md` | Hierarquia 6 níveis + código de centro de custo |
 | ETL Registry | `09_Projetos/01_SOAL/DATA/ETL_REGISTRY.md` | Registro mestre de todos os CSVs em IMPORTS/ |
 | Reuniões SOAL | `09_Projetos/01_SOAL/REUNIOES/` | 20+ notas de reunião (Dez 2025 → Mar 2026) |
+| Diagnostico Coleta Plantio | `09_Projetos/01_SOAL/COLETA_PLANTIO_FUTURO.md` | Matriz campo×fonte×responsavel, workflow 3 momentos, prioridades P0-P3 |
+| Planejamento Safra | `09_Projetos/01_SOAL/PLANEJAMENTO_SAFRA_PROCESS_FLOW.md` | Process flow 6 etapas, DDL changes, templates seed 6 culturas |
 
 ---
 
@@ -206,10 +211,10 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 | `fase_2/` | Safras, fazendas, talhões, matrículas, parceiros | 6 | ✅ |
 | `fase_2_territorial/` | UBG, silos | 2 | ✅ (parcial — pendente Josmar) |
 | `fase_3/` | Máquinas (57), implementos (126) — com status ativo/vendido, operadores, tags Vestro, colaboradores, folha | 8 | ✅ |
-| `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga, compra insumos) | 7 | ✅ |
-| `fase_5/` | Planejamento safra | 0 | ⏳ vazio — pendente |
+| `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga, compra insumos) + FSI (fluxo caixa, caixa escritorio, kugler x FSI, consorcios) | 11 | ✅ |
+| `fase_5/` | Planejamento safra (templates + grid) | 2 | ✅ (templates CSV prontos, dados preenchidos na safra) |
 | `fase_6/` | Produção UBG, abastecimentos Vestro, caixa UBG | 3 | ✅ |
-| `fase_6_operacoes/` | Colheita, plantio, pesagens, vendas, custo insumos, freteiros, saídas | 10 | ✅ |
+| `fase_6_operacoes/` | Colheita, plantio, pesagens, vendas, custo insumos, freteiros, saídas, consumo AgriWin, plantio histórico | 11 | ✅ |
 
 ### FONTE UNIFICADA — Pasta Agrícola
 
@@ -228,7 +233,7 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 
 | Pasta | Scripts | Dados processados |
 |-------|---------|-------------------|
-| `AGRICULTURA/` | etl_pesagens, etl_saidas, etl_vendas, etl_custo_insumos, etl_freteiros, etl_agricola_utils, etl_talhao_safra | Fonte unificada agrícola |
+| `AGRICULTURA/` | etl_pesagens, etl_saidas, etl_vendas, etl_custo_insumos, etl_freteiros, etl_agricola_utils, etl_talhao_safra, etl_plantio, consumo_agriwin/etl_consumo_agriwin | Fonte unificada agrícola + consumo AgriWin |
 | `CASTROLANDA/` | etl_castrolanda_extrato, _cc, _pdf, _capital_html, _vendas, _carga_a_carga | 6 extrações portal Castrolanda |
 | `MAQUINÁRIO/` | etl_maquinas, etl_maquinario, ABASTECIMENTOS/etl_vestro_abastecimentos | Máquinas + combustível Vestro |
 | `ORG/` | etl_fazendas, etl_matriculas, etl_fuel_tanks, etl_talhoes | Estrutura territorial |
@@ -236,6 +241,7 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 | `PARCEIROS_PESSOAS/` | etl_parceiros | AgriWin parceiros |
 | `INSUMOS/` | etl_insumos, etl_insumos_castrolanda | AgriWin insumos + Castrolanda insumos/compras |
 | `UBG/` | etl_ubg_caixa | Caixa histórica UBG |
+| `FINANCEIRO/` | etl_fsi_contas | FSI contas a pagar/receber (4 CSVs, 12.823 registros) |
 
 ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl_agricola.py`
 
@@ -254,14 +260,16 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 
 | Arquivo | Métricas |
 |---------|----------|
-| `sql/00_DDL_COMPLETO_V0.sql` | 2.525 linhas, 57 tabelas, 40 ENUMs, 3 views, 3 funções, ~120 indexes, ~50 triggers |
+| `sql/00_DDL_COMPLETO_V0.sql` | 2.928 linhas, 66 tabelas, 45 ENUMs, 4 views, 3 funções, ~187 indexes, ~57 triggers |
 | `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 (inclui 395 insumos Castrolanda) |
-| `sql/02_INSERT_DADOS.sql` | 50k linhas — ~43k registros de 36 tabelas (inclui 6.331 compras insumos) |
+| `sql/02_INSERT_DADOS.sql` | 63k linhas — ~56k registros de 40 tabelas (inclui 12.823 FSI + 6.331 compras insumos) |
 | `sql/generate_inserts.py` | Script gerador de INSERTs a partir dos CSVs |
-| `prisma/schema.prisma` | 2.224 linhas, 57 modelos, 40 enums |
-| `GAP_ANALYSIS.md` | Matriz 57 entidades x DDL x CSV x Prisma |
+| `prisma/schema.prisma` | 66 modelos, 45 enums |
+| `GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
 | `soal-ddl-playground.html` | Dashboard interativo dark theme |
 | `soal-er-playground.html` | ER diagram force-directed graph |
+| `soal-secagem-playground.html` | Simulador mobile controle de secagem (I.N. 029/2011) |
+| `soal-alocacao-playground.html` | Simulador alocacao de graos nos silos |
 
 **Fontes consolidadas:** 9 DDL docs (16, 25a, 25b, 26, 27, 28, 29, 30, 31)
 
@@ -316,14 +324,14 @@ business-discoveries/
 ├── 08_Ferramentas/              # Scripts utilitários
 ├── 09_Projetos/01_SOAL/         # ⭐ PROJETO PRINCIPAL
 │   ├── DATA/                    # Bronze layer (2.261 arquivos, 1.5GB+)
-│   │   ├── AGRICULTURA/         # Fonte unificada (41 planilhas, 7 ETLs)
+│   │   ├── AGRICULTURA/         # Fonte unificada (41 planilhas, 9 ETLs) + consumo AgriWin (116 xlsx)
 │   │   ├── CASTROLANDA/         # Portal cooperativa (6 ETLs)
 │   │   ├── IMPORTS/             # CSVs organizados por fase (38 ativos)
 │   │   ├── INSUMOS/             # AgriWin legacy (18.499 registros)
 │   │   ├── MAQUINÁRIO/          # Máquinas + Vestro abastecimentos
 │   │   ├── ORG/                 # 9 fazendas, 88 matrículas, 4.127 ha, 21 CAR PDFs
 │   │   ├── PARCEIROS_PESSOAS/   # AgriWin parceiros (2.201 registros)
-│   │   ├── RH/                  # Folha pagamento FSI (87 colaboradores)
+│   │   ├── RH/                  # Folha pagamento FSI (82 colaboradores)
 │   │   ├── UBG/                 # Caixa histórica (19.177 registros)
 │   │   └── ETL_REGISTRY.md     # Registro mestre de todos CSVs
 │   ├── DDL/                     # Schema consolidado
@@ -342,4 +350,4 @@ business-discoveries/
 
 ---
 
-*Última atualização: 2026-03-04 (sessão 4 — varredura completa) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
+*Última atualização: 2026-03-06 (sessão 5 — +FSI financeiro ETL) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*

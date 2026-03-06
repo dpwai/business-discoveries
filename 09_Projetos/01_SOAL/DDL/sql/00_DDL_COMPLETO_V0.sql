@@ -1,7 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- SOAL — DDL Completo V0 (Bronze Layer)
 -- Serra da Onça Agropecuária — DeepWork AI Flows
--- Gerado: 2026-03-04
+-- Gerado: 2026-03-05
 -- PostgreSQL 15+
 --
 -- Fontes consolidadas:
@@ -12,6 +12,7 @@
 --   Doc 27  — Colaboradores + Folha de Pagamento
 --   Doc 28  — UBG (Produção + Armazenagem)
 --   Doc 29  — Financeiro Cooperativa (Castrolanda)
+--   FSI     — Financeiro Interno (Fluxo Caixa, Caixa Escritorio, Kugler×FSI, Consorcios)
 --   Doc 30  — Frete + Vendas Diretas
 --   Doc 31  — Histórico Maquinário
 --
@@ -53,7 +54,7 @@ COMMENT ON FUNCTION fn_atualizar_updated_at() IS
 -- ─── Territorial ───────────────────────────────────────────────
 CREATE TYPE tipo_fazenda AS ENUM ('propria', 'arrendada', 'parceria', 'comodato');
 CREATE TYPE tipo_solo AS ENUM ('latossolo_vermelho', 'argissolo', 'cambissolo', 'neossolo', 'nitossolo', 'outros');
-CREATE TYPE tipo_silo AS ENUM ('metalico', 'bolsa', 'armazem', 'tulha');
+CREATE TYPE tipo_silo AS ENUM ('metalico', 'bolsa', 'armazem', 'tulha', 'pulmao');
 CREATE TYPE status_safra AS ENUM ('planejamento', 'em_andamento', 'encerrada');
 CREATE TYPE epoca_safra AS ENUM ('safra', 'safrinha', 'terceira_safra');
 CREATE TYPE grupo_cultura AS ENUM ('graos', 'oleaginosa', 'cobertura', 'forrageira', 'pastagem', 'fibra', 'florestal', 'outros');
@@ -112,6 +113,8 @@ CREATE TYPE tipo_ticket_balanca AS ENUM ('entrada_producao', 'pesagem_externa', 
 CREATE TYPE status_ticket AS ENUM ('pesado', 'classificado', 'consolidado', 'cancelado');
 CREATE TYPE tipo_saida_grao AS ENUM ('venda_cooperativa', 'venda_direta', 'transferencia', 'devolucao', 'descarte');
 CREATE TYPE status_estoque_silo AS ENUM ('ativo', 'vazio', 'em_manutencao');
+CREATE TYPE tipo_secagem AS ENUM ('total', 'parcial', 'ressecagem');
+CREATE TYPE tipo_alocacao_silo AS ENUM ('entrada_secagem', 'transferencia', 'saida_expedicao', 'ajuste_inventario');
 
 -- ─── Financeiro Cooperativa (Doc 29) ──────────────────────────
 CREATE TYPE tipo_transacao_extrato AS ENUM ('saldo_anterior', 'fornecimento', 'transferencia', 'credito_venda', 'debito_compra', 'desconto', 'juros', 'outro');
@@ -119,6 +122,19 @@ CREATE TYPE tipo_transacao_cc AS ENUM ('saldo_anterior', 'fornecimento', 'transf
 CREATE TYPE tipo_transacao_capital AS ENUM ('retencao', 'capitalizacao', 'devolucao', 'juros', 'outro');
 CREATE TYPE tipo_financiamento_coop AS ENUM ('custeio', 'investimento', 'comercializacao', 'capital_giro', 'outro');
 CREATE TYPE modalidade_carga AS ENUM ('moagem', 'semente', 'consumo', 'outro');
+
+-- ─── Planejamento de Safra ────────────────────────────────────
+CREATE TYPE status_talhao_safra AS ENUM (
+    'rascunho',           -- Alessandro preenchendo
+    'em_revisao',         -- Lucas revisando
+    'aprovado',           -- Claudio aprovou
+    'preparando',         -- preparo de solo em andamento
+    'plantado',           -- plantio confirmado no campo
+    'em_desenvolvimento', -- cultura crescendo
+    'colhendo',           -- colheita em andamento
+    'colhido',            -- safra encerrada neste talhao
+    'cancelado'           -- desistiu do plantio
+);
 
 -- ─── Histórico Maquinário (Doc 31) ────────────────────────────
 CREATE TYPE tipo_registro_maquinario AS ENUM ('abastecimento', 'manutencao', 'operacao_campo');
@@ -445,16 +461,26 @@ CREATE TABLE talhao_safras (
     epoca             epoca_safra NOT NULL DEFAULT 'safra',
     area_plantada_ha  NUMERIC(10,2) NOT NULL,
     cultivar          VARCHAR(200),
+    gleba             VARCHAR(100),               -- sub-area do talhao (ex: HERMATRIA, BANACK dentro de CAPINZAL)
+    origem_semente    VARCHAR(100),               -- fonte: castrolanda, fazenda, fsi, agromusa, etc.
     data_plantio      DATE,
     data_colheita     DATE,
     produtividade_sc_ha NUMERIC(10,2),
     observacoes       TEXT,
 
+    -- Planejamento de safra (Mai-Jun)
+    status_planejamento status_talhao_safra NOT NULL DEFAULT 'rascunho',
+    meta_produtividade_sc_ha NUMERIC(10,2),
+    atribuido_por     VARCHAR(200),                -- quem definiu esta cultura
+    aprovado_por      VARCHAR(200),                -- quem aprovou
+    data_aprovacao    DATE,
+
     status            VARCHAR(20) DEFAULT 'active',
     created_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT uq_talhao_safra UNIQUE (talhao_id, safra_id, cultura_id, epoca)
+    -- PostgreSQL: NULL != NULL em UNIQUE, entao rows com gleba=NULL nao conflitam entre si
+    CONSTRAINT uq_talhao_safra UNIQUE (talhao_id, safra_id, cultura_id, epoca, gleba)
 );
 
 CREATE INDEX idx_talhao_safras_org_id ON talhao_safras(organization_id);
@@ -478,6 +504,8 @@ CREATE TABLE silos (
     nome              VARCHAR(200) NOT NULL,
     tipo              tipo_silo NOT NULL,
     capacidade_ton    NUMERIC(12,2),
+    formato_fundo     VARCHAR(20),            -- plano, conico
+    elevado           BOOLEAN DEFAULT FALSE,
     localizacao       TEXT,
     geojson           JSONB,
 
@@ -495,7 +523,7 @@ CREATE TRIGGER trg_silos_updated_at
     BEFORE UPDATE ON silos
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE silos IS 'Estruturas de armazenamento. Dados pendentes coleta Josmar.';
+COMMENT ON TABLE silos IS 'Estruturas de armazenamento. 8 silos (6 conv + 2 pulmao), 10.760t capacidade total.';
 
 
 -- ─── 3.7 PARCEIROS_COMERCIAIS ────────────────────────────────
@@ -574,8 +602,8 @@ CREATE TABLE ubgs (
     nome              VARCHAR(200) NOT NULL,
     fazenda_sede_id   UUID REFERENCES fazendas(fazenda_id),
 
-    capacidade_recepcao_t_dia   NUMERIC(10,2),
-    capacidade_secagem_t_dia    NUMERIC(10,2),
+    capacidade_recepcao_t_h     NUMERIC(10,2),
+    capacidade_secagem_t_h      NUMERIC(10,2),
     tem_balanca       BOOLEAN DEFAULT FALSE,
     tem_tombador      BOOLEAN DEFAULT FALSE,
     tem_secador       BOOLEAN DEFAULT FALSE,
@@ -598,7 +626,7 @@ CREATE TRIGGER trg_ubgs_updated_at
     BEFORE UPDATE ON ubgs
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE ubgs IS 'Unidade de Beneficiamento de Graos. Dados pendentes coleta Josmar (capacidades, GPS).';
+COMMENT ON TABLE ubgs IS 'Unidade de Beneficiamento de Graos. 45 t/h recepcao, 30 t/h secagem. Responsavel: Leomar Molin (CREA 29.420/D).';
 
 
 -- ─── 3.10 TANQUES_COMBUSTIVEL (orphan) ───────────────────────
@@ -802,7 +830,7 @@ CREATE TRIGGER trg_colaboradores_updated_at
 
 COMMENT ON TABLE colaboradores IS
     'Funcionarios de todas as areas (agricola, UBG, administrativo, pecuaria). '
-    'Substitui trabalhadores_rurais do Doc 26. Fonte: ETL folha_pagamento.py (88 registros).';
+    'Substitui trabalhadores_rurais do Doc 26. Fonte: ETL folha_pagamento.py (82 registros).';
 COMMENT ON COLUMN colaboradores.cpf IS
     'CPF formatado 000.000.000-00. Nullable para informais historicos sem documento.';
 COMMENT ON COLUMN colaboradores.data_desligamento IS
@@ -1646,6 +1674,8 @@ COMMENT ON TABLE recebimentos_grao IS 'Recebimento formal pos-classificacao. Der
 
 
 -- ─── 7.6 CONTROLES_SECAGEM ───────────────────────────────────
+-- Header: 1 por dia por cultura. Leituras granulares em leituras_secagem.
+-- Baseado no formulario fisico "MONITORAMENTO DIARIO DA SECAGEM DE GRAOS" (I.N. 029/2011 MAPA).
 CREATE TABLE controles_secagem (
     controle_secagem_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
@@ -1659,9 +1689,20 @@ CREATE TABLE controles_secagem (
     hora_inicio           TIME,
     hora_fim              TIME,
 
+    -- Campos do formulario fisico (header)
+    cultivar              VARCHAR(200),
+    n_secagem_sequencial  INTEGER,
+    secador_identificacao VARCHAR(100),
+    operador_turno_1      VARCHAR(200),
+    operador_turno_2      VARCHAR(200),
+    operador_turno_3      VARCHAR(200),
+    total_horas_secagem   DECIMAL(5,1),
+    trat_fitossanitario_total_litros DECIMAL(10,2),
+
+    -- Resumo (totais do dia — consolidado das leituras)
     umidade_entrada_pct   DECIMAL(5,2),
     umidade_saida_pct     DECIMAL(5,2),
-    temperatura_c         DECIMAL(5,1),
+    temperatura_c         DECIMAL(5,1),              -- media do dia (legacy)
     peso_entrada_kg       DECIMAL(12,2),
     peso_saida_kg         DECIMAL(12,2),
     perda_secagem_kg      DECIMAL(12,2),
@@ -1694,8 +1735,43 @@ CREATE TRIGGER trg_controle_secagem_updated
     BEFORE UPDATE ON controles_secagem
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE controles_secagem IS 'Registro de cada ciclo de secagem na UBG. Custos proprios (lenha + energia) separados da agricultura.';
+COMMENT ON TABLE controles_secagem IS 'Header do monitoramento diario de secagem (I.N. 029/2011 MAPA). 1 por dia por cultura. Leituras granulares em leituras_secagem.';
 COMMENT ON COLUMN controles_secagem.lenha_m3 IS 'Lenha e PRODUTO_INSUMO tipo LENHA, grupo geral. Consumida exclusivamente na secagem.';
+
+
+-- ─── 7.6b LEITURAS_SECAGEM ──────────────────────────────────
+-- Detalhe: N leituras por header, a cada 30 min. Formulario fisico do Josmar.
+CREATE TABLE leituras_secagem (
+    leitura_secagem_id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    controle_secagem_id   UUID NOT NULL REFERENCES controles_secagem(controle_secagem_id),
+
+    hora_leitura          TIME NOT NULL,
+    umidade_entrada_pct   DECIMAL(5,2),
+    umidade_secagem_pct   DECIMAL(5,2),
+    temp_p1_c             DECIMAL(5,1),
+    temp_p2_c             DECIMAL(5,1),
+    temp_p3_c             DECIMAL(5,1),
+    temp_grao_c           DECIMAL(5,1),
+    n_secagem_sequencial  INTEGER,
+    destino_produto       VARCHAR(200),
+    trat_fitossanitario_l DECIMAL(10,2),
+    tipo_secagem          tipo_secagem,
+    lenha_m3              DECIMAL(10,2),
+
+    created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_leitura_hora UNIQUE (controle_secagem_id, hora_leitura)
+);
+
+CREATE INDEX idx_leitura_secagem_controle ON leituras_secagem(controle_secagem_id);
+CREATE INDEX idx_leitura_secagem_hora     ON leituras_secagem(hora_leitura);
+
+CREATE TRIGGER trg_leitura_secagem_updated
+    BEFORE UPDATE ON leituras_secagem
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE leituras_secagem IS 'Leituras granulares a cada 30min do monitoramento de secagem. Filho de controles_secagem. Compliance I.N. 029/2011 MAPA.';
 
 
 -- ─── 7.7 ESTOQUES_SILO ──────────────────────────────────────
@@ -1736,6 +1812,61 @@ CREATE TRIGGER trg_estoque_silo_updated
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
 COMMENT ON TABLE estoques_silo IS 'Snapshot de estoque por silo/safra/cultura. Auto-calculado via trigger ou view materializada.';
+
+
+-- ─── 7.9 ALOCACOES_SILO ──────────────────────────────────────
+CREATE TABLE alocacoes_silo (
+    alocacao_silo_id      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
+
+    -- What
+    safra_id              UUID REFERENCES safras(safra_id),
+    cultura_id            UUID REFERENCES culturas(cultura_id),
+    tipo                  tipo_alocacao_silo NOT NULL,
+    quantidade_kg         DECIMAL(12,2) NOT NULL,
+
+    -- Where (from -> to)
+    silo_origem_id        UUID REFERENCES silos(silo_id),
+    silo_destino_id       UUID REFERENCES silos(silo_id),
+
+    -- When
+    data_alocacao         DATE NOT NULL,
+    hora_alocacao         TIME,
+
+    -- Who
+    executado_por         VARCHAR(200),
+    aprovado_por          VARCHAR(200),
+
+    -- Traceability
+    controle_secagem_id   UUID REFERENCES controles_secagem(controle_secagem_id),
+    saida_grao_id         UUID REFERENCES saidas_grao(saida_grao_id),
+    umidade_pct           DECIMAL(5,2),
+    observacoes           TEXT,
+
+    status                VARCHAR(20) DEFAULT 'active',
+    created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    -- Validations
+    CONSTRAINT chk_alocacao_origem_destino CHECK (
+        silo_origem_id IS NOT NULL OR silo_destino_id IS NOT NULL
+    ),
+    CONSTRAINT chk_alocacao_quantidade CHECK (quantidade_kg > 0)
+);
+
+CREATE INDEX idx_alocacao_silo_org      ON alocacoes_silo(organization_id);
+CREATE INDEX idx_alocacao_silo_safra    ON alocacoes_silo(safra_id);
+CREATE INDEX idx_alocacao_silo_cultura  ON alocacoes_silo(cultura_id);
+CREATE INDEX idx_alocacao_silo_origem   ON alocacoes_silo(silo_origem_id);
+CREATE INDEX idx_alocacao_silo_destino  ON alocacoes_silo(silo_destino_id);
+CREATE INDEX idx_alocacao_silo_data     ON alocacoes_silo(data_alocacao);
+CREATE INDEX idx_alocacao_silo_secagem  ON alocacoes_silo(controle_secagem_id);
+
+CREATE TRIGGER trg_alocacao_silo_updated
+    BEFORE UPDATE ON alocacoes_silo
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE alocacoes_silo IS 'Ledger transacional de movimentacao de graos entre silos. Estoque derivado = sum(entradas) - sum(saidas). Cada row = 1 evento (entrada pos-secagem, transferencia inter-silo, saida para expedicao, ajuste inventario).';
 
 
 -- ╔═══════════════════════════════════════════════════════════════╗
@@ -2041,6 +2172,138 @@ COMMENT ON TABLE custos_insumo_coop IS 'Custos de insumos fornecidos via Castrol
 
 
 -- ╔═══════════════════════════════════════════════════════════════╗
+-- ║  SEÇÃO 8b: FINANCEIRO FSI — 4 tabelas                        ║
+-- ╚═══════════════════════════════════════════════════════════════╝
+
+-- ─── Financeiro FSI (ENUMs) ─────────────────────────────────────
+CREATE TYPE tipo_registro_fsi AS ENUM ('debito', 'credito', 'operacional', 'diversos');
+CREATE TYPE situacao_consorcio AS ENUM ('Quitado', 'Contemplada', 'Contemplado', 'Não Contemplado', 'Vigente');
+
+-- ─── 8b.1 FLUXO_CAIXA_FSI ─────────────────────────────────────
+CREATE TABLE fluxo_caixa_fsi (
+    fluxo_caixa_fsi_id     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id        UUID NOT NULL REFERENCES organizations(organization_id),
+
+    data                   DATE,
+    ano                    INTEGER,
+    mes                    INTEGER,
+    descricao              TEXT,
+    setor                  VARCHAR(100),
+    conta_bancaria         VARCHAR(100),
+    debito                 DECIMAL(14,2),
+    credito                DECIMAL(14,2),
+    tipo_registro          tipo_registro_fsi DEFAULT 'diversos',
+    ano_sheet              INTEGER,
+
+    status                 VARCHAR(20) DEFAULT 'active',
+    created_at             TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at             TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_fluxo_caixa_fsi_org   ON fluxo_caixa_fsi(organization_id);
+CREATE INDEX idx_fluxo_caixa_fsi_data  ON fluxo_caixa_fsi(data);
+CREATE INDEX idx_fluxo_caixa_fsi_ano   ON fluxo_caixa_fsi(ano, mes);
+CREATE INDEX idx_fluxo_caixa_fsi_setor ON fluxo_caixa_fsi(setor);
+CREATE INDEX idx_fluxo_caixa_fsi_conta ON fluxo_caixa_fsi(conta_bancaria);
+
+CREATE TRIGGER trg_fluxo_caixa_fsi_updated
+    BEFORE UPDATE ON fluxo_caixa_fsi
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE fluxo_caixa_fsi IS 'Fluxo de caixa FSI — contas a pagar/receber. 10.119 registros (2017-2026). Fonte: Contas a pagar - FSI.xlsx.';
+
+
+-- ─── 8b.2 CAIXA_ESCRITORIO_FSI ────────────────────────────────
+CREATE TABLE caixa_escritorio_fsi (
+    caixa_escritorio_fsi_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id         UUID NOT NULL REFERENCES organizations(organization_id),
+
+    data                    DATE,
+    descricao               TEXT,
+    credito                 DECIMAL(14,2),
+    debito                  DECIMAL(14,2),
+    saldo                   DECIMAL(14,2),
+    visto                   VARCHAR(100),
+
+    status                  VARCHAR(20) DEFAULT 'active',
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_caixa_escritorio_org  ON caixa_escritorio_fsi(organization_id);
+CREATE INDEX idx_caixa_escritorio_data ON caixa_escritorio_fsi(data);
+
+CREATE TRIGGER trg_caixa_escritorio_fsi_updated
+    BEFORE UPDATE ON caixa_escritorio_fsi
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE caixa_escritorio_fsi IS 'Caixa pequeno do escritorio. 1.185 registros (2020-2026). Fonte: Contas a pagar - FSI.xlsx.';
+
+
+-- ─── 8b.3 KUGLER_X_FSI ────────────────────────────────────────
+CREATE TABLE kugler_x_fsi (
+    kugler_x_fsi_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id         UUID NOT NULL REFERENCES organizations(organization_id),
+
+    data                    DATE,
+    descricao               TEXT,
+    debito                  DECIMAL(14,2),
+    credito                 DECIMAL(14,2),
+    saldo                   DECIMAL(14,2),
+
+    status                  VARCHAR(20) DEFAULT 'active',
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_kugler_x_fsi_org  ON kugler_x_fsi(organization_id);
+CREATE INDEX idx_kugler_x_fsi_data ON kugler_x_fsi(data);
+
+CREATE TRIGGER trg_kugler_x_fsi_updated
+    BEFORE UPDATE ON kugler_x_fsi
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE kugler_x_fsi IS 'Ledger inter-company Kugler × FSI. 1.499 registros (2015-2025). Fonte: Contas a pagar - FSI.xlsx.';
+
+
+-- ─── 8b.4 CONSORCIOS_FSI ──────────────────────────────────────
+CREATE TABLE consorcios_fsi (
+    consorcio_fsi_id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id         UUID NOT NULL REFERENCES organizations(organization_id),
+
+    data_inicio             DATE,
+    consorciado             VARCHAR(50),
+    origem                  VARCHAR(100),
+    grupo                   VARCHAR(50),
+    cota                    VARCHAR(50),
+    prazo_meses             INTEGER,
+    tx_adm                  DECIMAL(6,4),
+    fun_res                 DECIMAL(6,4),
+    descricao               TEXT,
+    situacao                situacao_consorcio,
+    data_contemplacao       DATE,
+    pagamento               DECIMAL(14,2),
+    valor_bem               DECIMAL(14,2),
+    parcela_mensal          DECIMAL(14,2),
+    aquisicao               VARCHAR(200),
+    observacao              TEXT,
+
+    status                  VARCHAR(20) DEFAULT 'active',
+    created_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at              TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_consorcios_fsi_org       ON consorcios_fsi(organization_id);
+CREATE INDEX idx_consorcios_fsi_situacao  ON consorcios_fsi(situacao);
+
+CREATE TRIGGER trg_consorcios_fsi_updated
+    BEFORE UPDATE ON consorcios_fsi
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE consorcios_fsi IS 'Consorcios ativos e quitados. 20 registros. Fonte: Contas a pagar - FSI.xlsx.';
+
+
+-- ╔═══════════════════════════════════════════════════════════════╗
 -- ║  SEÇÃO 9: FRETE + VENDAS DIRETAS (Doc 30) — 2 tabelas        ║
 -- ╚═══════════════════════════════════════════════════════════════╝
 
@@ -2209,7 +2472,7 @@ CREATE TABLE talhao_mapping (
     created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-COMMENT ON TABLE talhao_mapping IS 'Tabela auxiliar de normalizacao de nomes de talhoes entre modulos AgriWin. 183 variantes → 61 canonicos.';
+COMMENT ON TABLE talhao_mapping IS 'Tabela auxiliar de normalizacao de nomes de talhoes. Sem dados ate mapping real ser gerado a partir de todas as fontes.';
 
 
 -- ─── 11.2 UBG_CAIXA ──────────────────────────────────────────
@@ -2247,6 +2510,122 @@ CREATE TRIGGER trg_ubg_caixa_updated
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
 COMMENT ON TABLE ubg_caixa IS 'Fluxo de caixa historico da UBG. 19.177 registros (2011-2026). Receitas: varejo subprodutos + pesagem publica.';
+
+
+-- ╔═══════════════════════════════════════════════════════════════╗
+-- ║  SEÇÃO 11b: PLANEJAMENTO DE SAFRA (3 tabelas)                 ║
+-- ╚═══════════════════════════════════════════════════════════════╝
+
+-- ─── 11b.1 PLANO_SAFRA_SNAPSHOTS ──────────────────────────────
+-- Snapshots versionados do planejamento (v1=Alessandro, v2=Lucas, v3=Claudio aprova)
+CREATE TABLE plano_safra_snapshots (
+    snapshot_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
+    safra_id              UUID NOT NULL REFERENCES safras(safra_id),
+
+    versao                INTEGER NOT NULL,
+    titulo                VARCHAR(200),
+    criado_por            VARCHAR(200) NOT NULL,
+
+    dados_json            JSONB NOT NULL,
+
+    total_talhoes         INTEGER,
+    total_area_ha         NUMERIC(10,2),
+    pct_gramineas         NUMERIC(5,2),
+
+    observacoes           TEXT,
+    status                VARCHAR(20) DEFAULT 'active',
+    created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_plano_snapshot_versao UNIQUE (safra_id, versao)
+);
+
+CREATE INDEX idx_plano_snapshot_org ON plano_safra_snapshots(organization_id);
+CREATE INDEX idx_plano_snapshot_safra ON plano_safra_snapshots(safra_id);
+
+CREATE TRIGGER trg_plano_safra_snapshots_updated_at
+    BEFORE UPDATE ON plano_safra_snapshots
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE plano_safra_snapshots IS 'Snapshots versionados do planejamento pre-safra. v1=rascunho Alessandro, v2=revisao Lucas, v3=aprovado Claudio. dados_json = array completo de {talhao_id, cultura, cultivar, epoca, area, obs}.';
+
+-- ─── 11b.2 TEMPLATE_CULTURA_OPERACOES ──────────────────────────
+-- Templates de operacoes por cultura (feijao=10 ops, soja=6 ops, etc.)
+CREATE TABLE template_cultura_operacoes (
+    template_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
+    cultura_id            UUID NOT NULL REFERENCES culturas(cultura_id),
+
+    tipo_operacao         tipo_operacao_campo NOT NULL,
+    nome_operacao         VARCHAR(200) NOT NULL,
+    fase                  VARCHAR(50),
+
+    dias_offset_inicio    INTEGER NOT NULL,
+    duracao_dias          INTEGER DEFAULT 1,
+
+    sequencia             INTEGER NOT NULL,
+
+    obrigatoria           BOOLEAN DEFAULT true,
+    observacoes           TEXT,
+
+    status                VARCHAR(20) DEFAULT 'active',
+    created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_template_op_org ON template_cultura_operacoes(organization_id);
+CREATE INDEX idx_template_op_cultura ON template_cultura_operacoes(cultura_id);
+CREATE INDEX idx_template_op_tipo ON template_cultura_operacoes(tipo_operacao);
+
+CREATE TRIGGER trg_template_cultura_operacoes_updated_at
+    BEFORE UPDATE ON template_cultura_operacoes
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE template_cultura_operacoes IS 'Templates de operacoes esperadas por cultura. Usados para auto-gerar safra_acoes quando plano de safra e aprovado. Ex: feijao = preparo solo, plantio, 6x pulv, colheita.';
+
+-- ─── 11b.3 SAFRA_ACOES ─────────────────────────────────────────
+-- Acoes planejadas/executadas por talhao-safra (alimenta calendario Gantt)
+CREATE TABLE safra_acoes (
+    safra_acao_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
+    talhao_safra_id       UUID NOT NULL REFERENCES talhao_safras(talhao_safra_id),
+    safra_id              UUID NOT NULL REFERENCES safras(safra_id),
+
+    tipo                  VARCHAR(50) NOT NULL,
+    titulo                VARCHAR(200) NOT NULL,
+    descricao             TEXT,
+
+    data_inicio           DATE NOT NULL,
+    data_fim              DATE,
+
+    status                VARCHAR(20) NOT NULL DEFAULT 'planejada',
+    responsavel_id        UUID REFERENCES users(user_id),
+
+    custo_estimado        NUMERIC(12,2),
+    custo_real            NUMERIC(12,2),
+    area_ha               NUMERIC(10,2),
+
+    template_id           UUID REFERENCES template_cultura_operacoes(template_id),
+    gerado_automaticamente BOOLEAN DEFAULT false,
+
+    created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_safra_acoes_org ON safra_acoes(organization_id);
+CREATE INDEX idx_safra_acoes_talhao_safra ON safra_acoes(talhao_safra_id);
+CREATE INDEX idx_safra_acoes_safra ON safra_acoes(safra_id);
+CREATE INDEX idx_safra_acoes_tipo ON safra_acoes(tipo);
+CREATE INDEX idx_safra_acoes_data ON safra_acoes(data_inicio);
+CREATE INDEX idx_safra_acoes_status ON safra_acoes(status);
+CREATE INDEX idx_safra_acoes_responsavel ON safra_acoes(responsavel_id);
+
+CREATE TRIGGER trg_safra_acoes_updated_at
+    BEFORE UPDATE ON safra_acoes
+    FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
+
+COMMENT ON TABLE safra_acoes IS 'Acoes planejadas e executadas por talhao-safra. Geradas automaticamente a partir de template_cultura_operacoes quando plano e aprovado. Alimenta calendario Gantt (SafraCalendar.tsx no dpwai-app).';
 
 
 -- ╔═══════════════════════════════════════════════════════════════╗
@@ -2507,19 +2886,43 @@ ORDER BY mi.data_movimento DESC;
 COMMENT ON VIEW vw_extrato_movimentacoes IS 'Extrato bancario do estoque - todas as movimentacoes com contexto';
 
 
+-- ─── 12.7 View: Estoque Virtual Silo (derivado de alocacoes_silo) ──
+CREATE OR REPLACE VIEW vw_estoque_silo_atual AS
+SELECT
+    a.silo_destino_id as silo_id,
+    a.safra_id,
+    a.cultura_id,
+    SUM(CASE
+        WHEN a.silo_destino_id = s.silo_id THEN a.quantidade_kg
+        ELSE 0
+    END) -
+    COALESCE(SUM(CASE
+        WHEN a.silo_origem_id = s.silo_id THEN a.quantidade_kg
+        ELSE 0
+    END), 0) as estoque_kg
+FROM alocacoes_silo a
+JOIN silos s ON s.silo_id = a.silo_destino_id OR s.silo_id = a.silo_origem_id
+WHERE a.status = 'active'
+GROUP BY s.silo_id, a.safra_id, a.cultura_id
+HAVING SUM(CASE WHEN a.silo_destino_id = s.silo_id THEN a.quantidade_kg ELSE 0 END) -
+       COALESCE(SUM(CASE WHEN a.silo_origem_id = s.silo_id THEN a.quantidade_kg ELSE 0 END), 0) > 0;
+
+COMMENT ON VIEW vw_estoque_silo_atual IS 'Estoque virtual derivado do ledger alocacoes_silo. Real-time = sum(entradas) - sum(saidas) por silo/safra/cultura. Usar estoques_silo para snapshots de reconciliacao.';
+
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- FIM DO DDL COMPLETO V0
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Resumo:
---   42 ENUMs
---   56 tabelas (9 sistema + 10 territorial + 8 operacional + 6 insumos +
---               6 operacoes campo + 7 UBG + 7 financeiro + 2 frete/vendas +
---               1 historico + 2 auxiliares = 58 objetos, incluindo 3 views)
---   ~120 indices
---   ~50 triggers
+--   45 ENUMs (inclui status_talhao_safra, tipo_registro_fsi, situacao_consorcio)
+--   66 tabelas (9 sistema + 10 territorial + 8 operacional + 6 insumos +
+--               6 operacoes campo + 9 UBG + 7 financeiro coop + 4 financeiro FSI +
+--               2 frete/vendas + 1 historico + 2 auxiliares + 3 planejamento safra = 67 objetos + 4 views)
+--   187 indices
+--   57 triggers
 --   3 funcoes de negocio
---   3 views
+--   4 views
 --
--- Gerado: 2026-03-04 — DeepWork AI Flows
+-- Gerado: 2026-03-06 — DeepWork AI Flows
 -- PostgreSQL 15+ | Projeto SOAL — Serra da Onça Agropecuária
 -- ═══════════════════════════════════════════════════════════════════════════════

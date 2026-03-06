@@ -41,11 +41,11 @@
 | TALHOES | 26 | ✅ | — | ✅ | `fase_2/03_talhoes.csv` | 71 | ✅ | completo |
 | SAFRAS | 26 | ✅ | status_safra, epoca_safra | ✅ | `fase_2/01_safras.csv` | 9 | ✅ | completo |
 | CULTURAS | 26 | ✅ | grupo_cultura | ✅ | `fase_0/01_culturas.csv` | 126 | ✅ | completo |
-| TALHAO_SAFRA | 26 | ✅ | epoca_safra | ✅ | `fase_6/09_producao_ubg.csv` (derivado) | 883 | ✅ | completo |
-| SILOS | 26 | ✅ | tipo_silo | ✅ | `fase_2_territorial/02_silos_ubg.csv` | 8 | ✅ | parcial |
+| TALHAO_SAFRA | 26 | ✅ | epoca_safra | ✅ | `fase_6/09_producao_ubg.csv` (colheita: 883) + `fase_6_operacoes/12_plantio_historico.csv` (plantio: 152, 6 safras) | 1035 | ✅ | completo |
+| SILOS | 26 | ✅ | tipo_silo | ✅ | `fase_2_territorial/02_silos_ubg.csv` | 8 | ✅ | completo |
 | PARCEIRO_COMERCIAL | 26 | ✅ | tipo_parceiro | ✅ | `fase_2/06_parceiros_agriwin.csv` | 2.201 | ✅ | completo |
 | MATRICULAS | 25b | ✅ | — | ❌ | `fase_2/04_matriculas.csv` | 88 | ❌ | completo |
-| UBG | — | ❌ | — | — | `fase_2_territorial/01_ubg.csv` | 1 | ❌ | parcial |
+| UBG | — | ✅ | — | ✅ | `fase_2_territorial/01_ubg.csv` | 1 | ✅ | completo |
 
 ### SEÇÃO 2 — OPERACIONAL (Doc 26 + Doc 27)
 
@@ -56,7 +56,7 @@
 | ABASTECIMENTOS | 26 | ✅ | tipo_combustivel | ✅ | `fase_6/10_abastecimentos_vestro.csv` | 1.200 | ✅ | completo |
 | MANUTENCOES | 26 | ✅ | tipo_manutencao, status_manutencao | ✅ | — | 0 | ✅ | sem_dados |
 | ~~TRABALHADORES_RURAIS~~ | ~~26~~ | ~~✅~~ | — | — | — | — | ~~✅~~ | **SUBSTITUÍDO** |
-| COLABORADORES | 27 | ✅ | setor_trabalho, tipo_contrato_trabalho | ✅ | `fase_3/07_colaboradores.csv` | 88 | ❌ | completo |
+| COLABORADORES | 27 | ✅ | setor_trabalho, tipo_contrato_trabalho | ✅ | `fase_3/07_colaboradores.csv` | 82 | ❌ | completo |
 | FOLHA_PAGAMENTO | 27 | ✅ | tipo_folha_pagamento | ✅ | `fase_3/08_folha_pagamento.csv` | 3.122 | ❌ | completo |
 | TAGS_VESTRO | — | ❌ | — | — | `fase_3/05_tags_maquinas_vestro.csv` | 47 | ❌ | **ÓRFÃ** |
 | TANQUES_COMBUSTIVEL | — | ❌ | — | — | `fase_3/06_fuel_tanks.csv` | 5 | ❌ | **ÓRFÃ** |
@@ -66,19 +66,19 @@
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| PRODUTO_INSUMO | 16 | ✅ | tipo_insumo, grupo_insumo, classe_toxicologica, classe_ambiental | ✅ | `fase_0/03_produto_insumo_agriwin.csv` | 18.499 | ❌ | completo |
-| COMPRA_INSUMO | 16 | ✅ | fonte_compra, status_compra | ✅ | — | 0 | ❌ | sem_dados |
+| PRODUTO_INSUMO | 16 | ✅ | tipo_insumo, grupo_insumo, classe_toxicologica, classe_ambiental | ✅ | `fase_0/03_produto_insumo_agriwin.csv` + `fase_0/03_produto_insumo_castrolanda.csv` | 18.499 + 395 | ❌ | completo |
+| COMPRA_INSUMO | 16 | ✅ | fonte_compra, status_compra | ✅ | `fase_4/11_compra_insumo_castrolanda.csv` | 6.331 | ❌ | completo |
 | ESTOQUE_INSUMO | 16 | ✅ | status_estoque | ✅ | — | 0 | ❌ | sem_dados |
 | MOVIMENTACAO_INSUMO | 16 | ✅ | tipo_movimentacao_insumo | — | — | 0 | ❌ | sem_dados |
-| APLICACAO_INSUMO | 16 | ✅ | metodo_aplicacao, contexto_aplicacao | ✅ | — | 0 | ❌ | sem_dados |
+| APLICACAO_INSUMO | 16 | ✅ | metodo_aplicacao, contexto_aplicacao | ✅ | `fase_6_operacoes/12_consumo_agriwin.csv` (raw, 9.482 ops explodidas) | 21.162 | ❌ | parcial |
 | RECEITUARIO_AGRONOMICO | 16 | ✅ | — | ✅ | — | 0 | ❌ | sem_dados |
 
 ### SEÇÃO 4 — AGRÍCOLA: OPERAÇÕES DE CAMPO (Doc 25a)
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| OPERACAO_CAMPO | 25a | ✅ | tipo_operacao_campo, status_operacao_campo | ✅ | `fase_6_operacoes/01_operacoes_campo_colheita.csv` + `02_plantio.csv` | 10 | ❌ | parcial |
-| PLANTIO_DETALHE | 25a | ✅ | — | ❌ | — | 0 | ❌ | sem_dados |
+| OPERACAO_CAMPO | 25a | ✅ | tipo_operacao_campo, status_operacao_campo | ✅ | `fase_6_operacoes/12_consumo_agriwin.csv` (9.482 ops AgriWin) + `01+02_operacoes.csv` | 9.513 | ❌ | parcial |
+| PLANTIO_DETALHE | 25a | ✅ | — | ❌ | `fase_6_operacoes/12_plantio_historico.csv` (cultivar, origem, tratamento) | 152 | ❌ | parcial |
 | COLHEITA_DETALHE | 25a | ✅ | — | ❌ | `fase_6_operacoes/03_colheita_detalhe.csv` | 1 | ❌ | sem_dados |
 | PULVERIZACAO_DETALHE | 25a | ✅ | — | ❌ | — | 0 | ❌ | sem_dados |
 | DRONE_DETALHE | 25a | ✅ | — | ❌ | — | 0 | ❌ | sem_dados |
@@ -93,8 +93,10 @@
 | PESAGEM_AGRICOLA | 28 | ✅ | — | ✅ | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 | ❌ | completo |
 | SAIDA_GRAO | 28 | ✅ | tipo_saida_grao | ✅ | `fase_6_operacoes/08_saidas_producao.csv` | 542 | ❌ | completo |
 | RECEBIMENTO_GRAO | 28 | ✅ | — | ✅ | — | 0 | ❌ | sem_dados |
-| CONTROLE_SECAGEM | 28 | ✅ | — | ✅ | — | 0 | ❌ | sem_dados |
+| CONTROLE_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | — | 0 | ✅ | sem_dados |
+| LEITURA_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | — | 0 | ✅ | sem_dados |
 | ESTOQUE_SILO | 28 | ✅ | status_estoque_silo | ✅ | — | 0 | ❌ | sem_dados |
+| ALOCACAO_SILO | 28 | ✅ | tipo_alocacao_silo | ✅ | — | 0 | ✅ | sem_dados |
 
 ### SEÇÃO 6 — FINANCEIRO / COOPERATIVA (Doc 29)
 
@@ -107,6 +109,17 @@
 | VENDA_GRAO | 29 | ✅ | — | ✅ | `fase_4/13_castrolanda_vendas.csv` | 170 | ❌ | completo |
 | CARGA_A_CARGA | 29 | ✅ | modalidade_carga | ✅ | `fase_4/14_castrolanda_carga_a_carga.csv` | 1.309 | ❌ | completo |
 | CUSTO_INSUMO_COOP | 29 | ✅ | — | ✅ | `fase_6_operacoes/06_custo_insumos_castrolanda.csv` | 553 | ❌ | completo |
+
+### SEÇÃO 6b — FINANCEIRO / FSI (4 tabelas)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| FLUXO_CAIXA_FSI | FSI | ✅ | tipo_registro_fsi | ✅ | `fase_4/15_fluxo_caixa_fsi.csv` | 10.119 | ✅ | completo |
+| CAIXA_ESCRITORIO_FSI | FSI | ✅ | — | ✅ | `fase_4/16_caixa_escritorio_fsi.csv` | 1.185 | ✅ | completo |
+| KUGLER_X_FSI | FSI | ✅ | — | ✅ | `fase_4/17_kugler_x_fsi.csv` | 1.499 | ✅ | completo |
+| CONSORCIOS_FSI | FSI | ✅ | situacao_consorcio | ✅ | `fase_4/18_consorcios_fsi.csv` | 20 | ✅ | completo |
+
+> **Nota:** Dados extraidos de "Contas a pagar - FSI (1).xlsx" (contabilidade FSI). DDL + Prisma + INSERT completos desde 2026-03-06.
 
 ### SEÇÃO 7 — FRETE + VENDAS DIRETAS (Doc 30)
 
@@ -123,6 +136,16 @@
 
 > **Nota:** `vendas_castrolanda` (13 registros) parece ser um subconjunto de `vendas_grao` (170 registros, Doc 29). O CSV `05a_vendas_castrolanda.csv` tem schema idêntico a `vendas_grao`. **Decisão:** merge no `vendas_grao` — não criar tabela separada.
 
+### SEÇÃO 8b — PLANEJAMENTO DE SAFRA (3 tabelas)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| PLANO_SAFRA_SNAPSHOT | Plan | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
+| TEMPLATE_CULTURA_OPERACOES | Plan | ✅ | tipo_operacao_campo | ✅ | `fase_5/02_template_operacoes_cultura.csv` | 42 | ✅ | sem_dados |
+| SAFRA_ACOES | Plan | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
+
+> **Nota:** Modulo de planejamento pre-safra (Mai-Jun). Templates auto-geram operacoes no calendario Gantt. `talhao_safras` ganhou 5 novos campos: `status_planejamento` (ENUM `status_talhao_safra`), `meta_produtividade_sc_ha`, `atribuido_por`, `aprovado_por`, `data_aprovacao`.
+
 ### SEÇÃO 9 — HISTÓRICO MAQUINÁRIO (Doc 31)
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
@@ -133,7 +156,7 @@
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| TALHAO_MAPPING | — | ❌ | — | — | `fase_2/03b_talhao_nome_mapping.csv` | 169 | ❌ | **ÓRFÃ** |
+| TALHAO_MAPPING | — | ❌ | — | — | — (CSV removido, sem dados) | 0 | ❌ | **ÓRFÃ** |
 | UBG_CAIXA | — | ❌ | — | — | `fase_6/14_ubg_caixa.csv` | 19.177 | ❌ | **ÓRFÃ** |
 | CENTRO_CUSTO | — | ❌ | — | — | `fase_3/07_centro_custo.csv` (playground diz 387, mas CSV não encontrado fisicamente) | 387? | ❌ | **ÓRFÃ** |
 
@@ -143,17 +166,17 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Entidades totais V0** | 57 (excluindo TRABALHADORES_RURAIS substituído) |
-| **Com CREATE TABLE** | 53 |
+| **Entidades totais V0** | 69 (excluindo TRABALHADORES_RURAIS substituído) |
+| **Com CREATE TABLE** | 66 |
 | **Sem CREATE TABLE (órfãs)** | 6 (TAGS_VESTRO, TANQUES_COMBUSTIVEL, OPERADORES_VESTRO, TALHAO_MAPPING, UBG_CAIXA, UBG) |
-| **Com CSV (dados coletados)** | 38 arquivos → ~35 entidades |
-| **Com modelo Prisma** | 19 (apenas Doc 26 fundacional + TrabalhadorRural stale) |
-| **Sem modelo Prisma** | 38 entidades |
-| **ENUMs definidos** | 40 únicos |
-| **Triggers definidos** | 44 |
-| **Indexes definidos** | 123+ |
-| **Views definidas** | 3 (Doc 16 — insumos) |
-| **Functions definidas** | 6 (4 Doc 16 + 1 Doc 26 + 1 Doc 25a) |
+| **Com CSV (dados coletados)** | 43 arquivos → ~44 entidades |
+| **Com modelo Prisma** | 65 |
+| **Sem modelo Prisma** | 4 entidades (MATRICULAS, OPERADORES_VESTRO, TANQUES_COMBUSTIVEL parcial, TAGS_VESTRO parcial) |
+| **ENUMs definidos** | 45 únicos |
+| **Triggers definidos** | 57 |
+| **Indexes definidos** | 187 |
+| **Views definidas** | 4 (Doc 16 — insumos + UBG estoque silo) |
+| **Functions definidas** | 3 (Doc 16 estoque) |
 
 ---
 
@@ -164,10 +187,14 @@
 | **TAGS_VESTRO** | 47 | `fase_3/05_tags_maquinas_vestro.csv` | Criar DDL (FK → maquinas) |
 | **TANQUES_COMBUSTIVEL** | 5 | `fase_3/06_fuel_tanks.csv` | Criar DDL (FK → fazendas) |
 | **OPERADORES_VESTRO** | 30 | `fase_3/04_operadores_vestro.csv` | Avaliar: merge com OPERADORES ou tabela de mapeamento |
-| **TALHAO_MAPPING** | 169 | `fase_2/03b_talhao_nome_mapping.csv` | Criar DDL (tabela auxiliar de normalização) |
+| **TALHAO_MAPPING** | 0 | — (CSV removido) | DDL existe, sem dados até mapping real ser gerado |
 | **UBG_CAIXA** | 19.177 | `fase_6/14_ubg_caixa.csv` | Criar DDL (caixa financeiro da UBG) |
 | **UBG** | 1 | `fase_2_territorial/01_ubg.csv` | Criar DDL (unidade de beneficiamento — entidade territorial) |
 | **CENTRO_CUSTO** | 387? | CSV não confirmado fisicamente | Criar DDL se CSV existir; senão, seed only |
+| ~~FLUXO_CAIXA_FSI~~ | 10.119 | `fase_4/15_fluxo_caixa_fsi.csv` | ✅ **RESOLVIDO** — DDL + Prisma + INSERT criados 2026-03-06 |
+| ~~CAIXA_ESCRITORIO_FSI~~ | 1.185 | `fase_4/16_caixa_escritorio_fsi.csv` | ✅ **RESOLVIDO** — DDL + Prisma + INSERT criados 2026-03-06 |
+| ~~KUGLER_X_FSI~~ | 1.499 | `fase_4/17_kugler_x_fsi.csv` | ✅ **RESOLVIDO** — DDL + Prisma + INSERT criados 2026-03-06 |
+| ~~CONSORCIOS_FSI~~ | 20 | `fase_4/18_consorcios_fsi.csv` | ✅ **RESOLVIDO** — DDL + Prisma + INSERT criados 2026-03-06 |
 
 ---
 
@@ -195,11 +222,12 @@ Seção 3:  Territorial (9 tabelas — Doc 26 + 25b + órfãs UBG)
 Seção 4:  Operacional (8 tabelas — Doc 26 + 27 + órfãs tags/tanques)
 Seção 5:  Insumos (6 tabelas — Doc 16)
 Seção 6:  Operações Campo (6 tabelas — Doc 25a)
-Seção 7:  UBG/Pós-colheita (7 tabelas — Doc 28)
+Seção 7:  UBG/Pós-colheita (8 tabelas — Doc 28)
 Seção 8:  Financeiro (7 tabelas — Doc 29)
 Seção 9:  Frete + Vendas (2 tabelas — Doc 30)
 Seção 10: Histórico (1 tabela — Doc 31)
 Seção 11: Auxiliares (3 tabelas — órfãs)
+Seção 11b: Planejamento Safra (3 tabelas — plano_safra_snapshots, template_cultura_operacoes, safra_acoes)
 Seção 12: Triggers (44+)
 Seção 13: Views (3)
 Seção 14: Indexes (123+)
@@ -207,4 +235,4 @@ Seção 14: Indexes (123+)
 
 ---
 
-*Atualizado: 2026-03-04 | Fonte: DDL Docs 16, 25a, 25b, 26, 27, 28, 29, 30, 31 + CSVs em IMPORTS/*
+*Atualizado: 2026-03-06 | Fonte: DDL Docs 16, 25a, 25b, 26, 27, 28, 29, 30, 31 + CSVs em IMPORTS/ | +leituras_secagem (I.N. 029/2011 MAPA) | +FSI contas (4 CSVs, 12.823 registros)*

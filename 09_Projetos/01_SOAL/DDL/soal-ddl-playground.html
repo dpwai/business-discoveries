@@ -123,7 +123,7 @@ tr[data-sec="auxiliar"] td.entity-cell::before{background:#b8b8b8}
 <div class="header">
   <div class="header-inner">
     <h1><span>SOAL</span> DDL Playground</h1>
-    <span class="header-badge">Bronze Layer V0 -- 2026-03-04</span>
+    <span class="header-badge">Bronze Layer V0 -- 2026-03-06</span>
   </div>
 </div>
 
@@ -162,7 +162,7 @@ tr[data-sec="auxiliar"] td.entity-cell::before{background:#b8b8b8}
 </div>
 
 <div class="footer">
-  SOAL DDL Playground V0 -- <span>DeepWork AI Flows</span> -- 2026-03-04
+  SOAL DDL Playground V0 -- <span>DeepWork AI Flows</span> -- 2026-03-06
 </div>
 
 <script>
@@ -184,11 +184,11 @@ var ENTITIES = [
   {name:'TALHOES',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/03_talhoes.csv',csvRecords:71,hasPrisma:true,status:'completo'},
   {name:'SAFRAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/01_safras.csv',csvRecords:9,hasPrisma:true,status:'completo'},
   {name:'CULTURAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_0/01_culturas.csv',csvRecords:126,hasPrisma:true,status:'completo'},
-  {name:'TALHAO_SAFRA',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_6/09_producao_ubg.csv',csvRecords:883,hasPrisma:true,status:'completo'},
-  {name:'SILOS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/02_silos_ubg.csv',csvRecords:8,hasPrisma:true,status:'parcial'},
+  {name:'TALHAO_SAFRA',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_6/09_producao_ubg.csv + fase_6_operacoes/12_plantio_historico.csv',csvRecords:1035,hasPrisma:true,status:'completo'},
+  {name:'SILOS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/02_silos_ubg.csv',csvRecords:8,hasPrisma:true,status:'completo'},
   {name:'PARCEIRO_COMERCIAL',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/06_parceiros_agriwin.csv',csvRecords:2201,hasPrisma:true,status:'completo'},
   {name:'MATRICULAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 25b',hasDdl:true,hasCsv:true,csvFile:'fase_2/04_matriculas.csv',csvRecords:88,hasPrisma:true,status:'completo'},
-  {name:'UBG',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/01_ubg.csv',csvRecords:1,hasPrisma:true,status:'parcial'},
+  {name:'UBG',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/01_ubg.csv',csvRecords:1,hasPrisma:true,status:'completo'},
   {name:'TANQUES_COMBUSTIVEL',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_3/06_fuel_tanks.csv',csvRecords:5,hasPrisma:true,status:'parcial'},
 
   {name:'MAQUINAS',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_3/04_maquinas.csv + 04_implementos.csv',csvRecords:183,hasPrisma:true,status:'completo'},
@@ -199,15 +199,15 @@ var ENTITIES = [
   {name:'FOLHA_PAGAMENTO',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 27',hasDdl:true,hasCsv:true,csvFile:'fase_3/08_folha_pagamento.csv',csvRecords:3122,hasPrisma:true,status:'completo'},
   {name:'TAGS_VESTRO',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_3/05_tags_maquinas_vestro.csv',csvRecords:47,hasPrisma:true,status:'completo'},
 
-  {name:'PRODUTO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_0/03_produto_insumo_agriwin.csv',csvRecords:18499,hasPrisma:true,status:'completo'},
+  {name:'PRODUTO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_0/03_produto_insumo_agriwin.csv + castrolanda.csv',csvRecords:18894,hasPrisma:true,status:'completo'},
   {name:'RECEITUARIO_AGRONOMICO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
-  {name:'COMPRA_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'COMPRA_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_4/11_compra_insumo_castrolanda.csv',csvRecords:6331,hasPrisma:true,status:'completo'},
   {name:'ESTOQUE_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
-  {name:'APLICACAO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'APLICACAO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/12_consumo_agriwin.csv (raw)',csvRecords:21162,hasPrisma:true,status:'parcial'},
   {name:'MOVIMENTACAO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
 
   {name:'OPERACAO_CAMPO',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/01+02_operacoes_campo.csv',csvRecords:10,hasPrisma:true,status:'parcial'},
-  {name:'PLANTIO_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'PLANTIO_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/12_plantio_historico.csv',csvRecords:152,hasPrisma:true,status:'parcial'},
   {name:'COLHEITA_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/03_colheita_detalhe.csv',csvRecords:1,hasPrisma:true,status:'sem_dados'},
   {name:'PULVERIZACAO_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
   {name:'DRONE_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
@@ -219,7 +219,9 @@ var ENTITIES = [
   {name:'SAIDA_GRAO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/08_saidas_producao.csv',csvRecords:542,hasPrisma:true,status:'completo'},
   {name:'RECEBIMENTO_GRAO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
   {name:'CONTROLE_SECAGEM',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'LEITURA_SECAGEM',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
   {name:'ESTOQUE_SILO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'ALOCACAO_SILO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
 
   {name:'EXTRATO_COOPERATIVA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/07_extrato_cooperativa.csv',csvRecords:8211,hasPrisma:true,status:'completo'},
   {name:'CC_COOPERATIVA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/09_cc_cooperativa.csv',csvRecords:2891,hasPrisma:true,status:'completo'},
@@ -228,14 +230,22 @@ var ENTITIES = [
   {name:'VENDA_GRAO',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/13_venda_grao.csv',csvRecords:170,hasPrisma:true,status:'completo'},
   {name:'CARGA_A_CARGA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/14_carga_a_carga.csv',csvRecords:1309,hasPrisma:true,status:'completo'},
   {name:'CUSTO_INSUMO_COOP',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/06_custo_insumo_coop.csv',csvRecords:553,hasPrisma:true,status:'completo'},
+  {name:'FLUXO_CAIXA_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/15_fluxo_caixa_fsi.csv',csvRecords:10119,hasPrisma:true,status:'completo'},
+  {name:'CAIXA_ESCRITORIO_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/16_caixa_escritorio_fsi.csv',csvRecords:1185,hasPrisma:true,status:'completo'},
+  {name:'KUGLER_X_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/17_kugler_x_fsi.csv',csvRecords:1499,hasPrisma:true,status:'completo'},
+  {name:'CONSORCIOS_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/18_consorcios_fsi.csv',csvRecords:20,hasPrisma:true,status:'completo'},
 
   {name:'FRETEIRO',section:'Frete/Vendas',sectionColor:'#e8a84d',secKey:'frete_vendas',ddlDoc:'Doc 30',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/07_freteiros.csv',csvRecords:116,hasPrisma:true,status:'completo'},
   {name:'VENDA_DIRETA',section:'Frete/Vendas',sectionColor:'#e8a84d',secKey:'frete_vendas',ddlDoc:'Doc 30',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/05b_vendas_diretas.csv',csvRecords:73,hasPrisma:true,status:'completo'},
 
   {name:'HISTORICO_MAQUINAS',section:'Historico',sectionColor:'#b8b8b8',secKey:'historico',ddlDoc:'Doc 31',hasDdl:true,hasCsv:true,csvFile:'historico/maquinario_historico.csv',csvRecords:32516,hasPrisma:true,status:'completo'},
 
-  {name:'TALHAO_MAPPING',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_2/03b_talhao_mapping.csv',csvRecords:169,hasPrisma:true,status:'completo'},
-  {name:'UBG_CAIXA',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_6/14_ubg_caixa.csv',csvRecords:19177,hasPrisma:true,status:'completo'}
+  {name:'TALHAO_MAPPING',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'pendente'},
+  {name:'UBG_CAIXA',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_6/14_ubg_caixa.csv',csvRecords:19177,hasPrisma:true,status:'completo'},
+
+  {name:'PLANO_SAFRA_SNAPSHOT',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'TEMPLATE_CULTURA_OP',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:true,csvFile:'fase_5/02_template_operacoes_cultura.csv',csvRecords:42,hasPrisma:true,status:'sem_dados'},
+  {name:'SAFRA_ACAO',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'}
 ];
 
 function fmt(n){ return n.toLocaleString('pt-BR'); }
