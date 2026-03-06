@@ -463,6 +463,7 @@ CREATE TABLE talhao_safras (
     cultivar          VARCHAR(200),
     gleba             VARCHAR(100),               -- sub-area do talhao (ex: HERMATRIA, BANACK dentro de CAPINZAL)
     origem_semente    VARCHAR(100),               -- fonte: castrolanda, fazenda, fsi, agromusa, etc.
+    data_plantio_prevista DATE,                   -- estimativa de plantio (ancora para calendario SAFRA_ACAO)
     data_plantio      DATE,
     data_colheita     DATE,
     produtividade_sc_ha NUMERIC(10,2),

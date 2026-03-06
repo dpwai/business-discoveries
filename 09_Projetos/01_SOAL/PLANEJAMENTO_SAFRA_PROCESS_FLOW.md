@@ -57,6 +57,7 @@ Acao:
   1. Para cada talhao, selecionar:
      - Cultura safra (dropdown: soja, milho, feijao, trigo, cevada...)
      - Cultivar (text: BMX 56IX58, AS 3595 I2X...)
+     - Data plantio prevista (date — sistema sugere default regional, Alessandro ajusta)
      - Cultura safrinha (opcional)
      - Cultivar safrinha (opcional)
      - Observacoes (text livre)
@@ -105,10 +106,15 @@ Quem: Sistema automatico
 Acao:
   1. Para cada TALHAO_SAFRA aprovado:
      - Buscar TEMPLATE da cultura (ex: feijao)
-     - Gerar SAFRA_ACAO records com datas relativas ao plantio estimado
-     - Ex feijao: preparo_solo (-30d), plantio (dia 0), pulv_herbicida (+7d),
-       pulv_inseticida (+14d), pulv_fungicida (+21d), pulv_fungicida (+35d),
-       pulv_inseticida (+49d), pulv_fungicida (+63d), colheita (+90d)
+     - Usar `data_plantio_prevista` como ancora (dia 0) para calcular datas das SAFRA_ACAO
+       - Se nao preenchida, sistema sugere default do calendario agricola regional
+       - Ver: CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md para defaults por cultura
+     - Gerar SAFRA_ACAO records com datas absolutas:
+       data_prevista = data_plantio_prevista + dias_offset_inicio
+     - Ex feijao (data_plantio_prevista=25/ago):
+       preparo_solo (26/jul), plantio (25/ago), pulv_herbicida (01/set),
+       pulv_inseticida (08/set), pulv_fungicida (15/set), 2o_fungicida (29/set),
+       2o_inseticida (13/out), 3o_fungicida (27/out), colheita (23/nov)
   2. Operacoes aparecem no calendario Gantt do Joao
   3. Status SAFRA muda pra 'em_andamento' quando primeiro plantio acontecer
 Output: Calendario pre-montado com todas operacoes esperadas
@@ -128,6 +134,7 @@ Output: Calendario pre-montado com todas operacoes esperadas
 |-------|------|-----------|
 | `status_planejamento` | `status_talhao_safra NOT NULL DEFAULT 'rascunho'` | Lifecycle do planejamento/execucao |
 | `meta_produtividade_sc_ha` | `NUMERIC(10,2)` | Meta de produtividade em sacas/ha |
+| `data_plantio_prevista` | `DATE` | Estimativa de plantio — ancora para gerar datas das SAFRA_ACAO |
 | `atribuido_por` | `VARCHAR(200)` | Quem definiu esta cultura |
 | `aprovado_por` | `VARCHAR(200)` | Quem aprovou |
 | `data_aprovacao` | `DATE` | Quando foi aprovado |
@@ -150,7 +157,7 @@ Acoes geradas automaticamente a partir dos templates. FK para `talhao_safras`, `
 
 ### `01_planejamento_safra.csv`
 
-Headers: `safra,fazenda,talhao,gleba,cultura,epoca,cultivar,area_plantada_ha,meta_produtividade_sc_ha,origem_semente,observacoes`
+Headers: `safra,fazenda,talhao,gleba,cultura,epoca,cultivar,area_plantada_ha,meta_produtividade_sc_ha,origem_semente,data_plantio_prevista,observacoes`
 
 ### `02_template_operacoes_cultura.csv`
 

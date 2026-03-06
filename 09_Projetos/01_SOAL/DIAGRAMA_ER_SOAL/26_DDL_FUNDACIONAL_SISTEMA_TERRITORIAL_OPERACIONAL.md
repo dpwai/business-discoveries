@@ -349,7 +349,7 @@ COMMENT ON TABLE fazendas IS 'Propriedades rurais. SOAL tem 9 fazendas (4.127 ha
 -- =============================================
 -- TALHOES — Subdivisoes das fazendas
 -- CSV referencia: IMPORTS/fase_2/03_talhoes.csv (71 talhoes)
--- IMPORTANTE: Naming inconsistente entre modulos AgriWin — usar 03b_talhao_nome_mapping.csv
+-- IMPORTANTE: Naming inconsistente entre modulos AgriWin — normalizar via talhao_mapping (sem dados ainda)
 -- =============================================
 
 CREATE TABLE talhoes (
@@ -466,17 +466,27 @@ CREATE TABLE talhao_safras (
     epoca             epoca_safra NOT NULL DEFAULT 'safra',  -- safra/safrinha/terceira_safra
     area_plantada_ha  NUMERIC(10,2) NOT NULL,
     cultivar          VARCHAR(200),                       -- ex: DM 56I59 RSF IPRO
+    gleba             VARCHAR(100),                       -- sub-area do talhao (ex: HERMATRIA, BANACK dentro de CAPINZAL)
+    origem_semente    VARCHAR(100),                       -- fonte: castrolanda, fazenda, fsi, agromusa, etc.
+    data_plantio_prevista DATE,                           -- estimativa de plantio (ancora para calendario SAFRA_ACAO)
     data_plantio      DATE,
     data_colheita     DATE,
     produtividade_sc_ha NUMERIC(10,2),                    -- sacas/ha (calculado pos-colheita)
     observacoes       TEXT,
 
+    -- Planejamento de safra (Mai-Jun)
+    status_planejamento status_talhao_safra NOT NULL DEFAULT 'rascunho',
+    meta_produtividade_sc_ha NUMERIC(10,2),
+    atribuido_por     VARCHAR(200),                       -- quem definiu esta cultura
+    aprovado_por      VARCHAR(200),                       -- quem aprovou
+    data_aprovacao    DATE,
+
     status            VARCHAR(20) DEFAULT 'active',
     created_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    -- Mesmo talhao pode ter safra + safrinha na mesma safra, mas nao duplicar epoca
-    CONSTRAINT uq_talhao_safra UNIQUE (talhao_id, safra_id, cultura_id, epoca)
+    -- PostgreSQL: NULL != NULL em UNIQUE, entao rows com gleba=NULL nao conflitam entre si
+    CONSTRAINT uq_talhao_safra UNIQUE (talhao_id, safra_id, cultura_id, epoca, gleba)
 );
 
 CREATE INDEX idx_talhao_safras_org_id ON talhao_safras(organization_id);
@@ -496,7 +506,7 @@ COMMENT ON TABLE talhao_safras IS 'Entidade CENTRAL. Vincula talhao+safra+cultur
 ```sql
 -- =============================================
 -- SILOS — Estruturas de armazenamento
--- Dados pendentes: Josmar + Claudio
+-- 8 silos: 6 conv metalicos + 2 pulmao, 10.760t total
 -- =============================================
 
 CREATE TABLE silos (
@@ -507,6 +517,8 @@ CREATE TABLE silos (
     nome              VARCHAR(200) NOT NULL,
     tipo              tipo_silo NOT NULL,
     capacidade_ton    NUMERIC(12,2),
+    formato_fundo     VARCHAR(20),                        -- plano, conico
+    elevado           BOOLEAN DEFAULT FALSE,
     localizacao       TEXT,                               -- descricao textual V0
     geojson           JSONB,                              -- coordenada pontual
 
@@ -524,7 +536,7 @@ CREATE TRIGGER trg_silos_updated_at
     BEFORE UPDATE ON silos
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE silos IS 'Estruturas de armazenamento. Dados pendentes coleta Josmar.';
+COMMENT ON TABLE silos IS 'Estruturas de armazenamento. 8 silos (6 conv + 2 pulmao), 10.760t capacidade total.';
 ```
 
 ### 4.7 PARCEIROS_COMERCIAIS
@@ -803,7 +815,10 @@ COMMENT ON TABLE trabalhadores_rurais IS 'Funcionarios rurais. Dados pendentes V
 | 5 | `CULTURAS` sem organization_id | Catalogo universal — soja e soja em qualquer org |
 | 6 | `PERMISSIONS` sem organization_id | Catalogo global de acoes — roles da org combinam |
 | 7 | `tipo_documento` em parceiros_comerciais | Diferencia CPF de CNPJ para validacoes futuras |
-| 8 | `epoca_safra` ENUM em `talhao_safras` | Campo pendente confirmado — mesmo talhao com safra+safrinha |
+| 8 | `epoca_safra` ENUM em `talhao_safras` | Campo confirmado — mesmo talhao com safra+safrinha |
+| 9 | `data_plantio_prevista` em `talhao_safras` | Ancora para gerar calendario SAFRA_ACAO. Defaults regionais em CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md |
+| 10 | `gleba` em `talhao_safras` + UNIQUE constraint | Sub-area do talhao (ex: HERMATRIA dentro de CAPINZAL). NULL != NULL em UNIQUE |
+| 11 | Campos planejamento safra em `talhao_safras` | status_planejamento, meta_produtividade, atribuido_por, aprovado_por, data_aprovacao |
 | 9 | RBAC simplificado V0 | Sem INVITE_TOKENS, sem USER_PERMISSIONS diretas |
 | 10 | `status VARCHAR(20) DEFAULT 'active'` para soft-delete | Padrao CLAUDE.md secao 4.3 |
 

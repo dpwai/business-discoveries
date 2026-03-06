@@ -152,6 +152,7 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 - **Histórico patógenos por talhão:** Esclerotínia (mofo branco) no LAGARTO, não no MASSACRE — decisões de manejo por talhão baseadas em histórico.
 - **Capinzal:** Distância operacional = cultura única (100% milho OU 100% soja, nunca fracionado).
 - **Fundação ABC:** Fonte de pesquisa para variedades e coberturas. Lucas traz resultados, filtrados por microclima local.
+- **`data_plantio_prevista`:** Campo ancora em TALHAO_SAFRA. Alessandro preenche no planejamento (Fase 5). Sistema sugere default regional por cultura (ver `CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md`). Usado para calcular datas absolutas das SAFRA_ACAO (`data_prevista = data_plantio_prevista + dias_offset_inicio`).
 - **AgriWin sync NF falha:** Castrolanda demora 2-3 dias, nem todas NFs sincronizam. Até 1 dia lancando manual quando falha.
 
 ---
@@ -195,6 +196,8 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 | Reuniões SOAL | `09_Projetos/01_SOAL/REUNIOES/` | 20+ notas de reunião (Dez 2025 → Mar 2026) |
 | Diagnostico Coleta Plantio | `09_Projetos/01_SOAL/COLETA_PLANTIO_FUTURO.md` | Matriz campo×fonte×responsavel, workflow 3 momentos, prioridades P0-P3 |
 | Planejamento Safra | `09_Projetos/01_SOAL/PLANEJAMENTO_SAFRA_PROCESS_FLOW.md` | Process flow 6 etapas, DDL changes, templates seed 6 culturas |
+| Calendario Agricola | `09_Projetos/01_SOAL/CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md` | Janelas plantio/colheita por cultura, sequencias rotacao, defaults `data_plantio_prevista` |
+| Revisao Fases | `09_Projetos/01_SOAL/PROCESS_FLOW_REVISAO_FASES.md` | Revisao cronologica Fase 0-7, gaps consolidados, numeros |
 
 ---
 

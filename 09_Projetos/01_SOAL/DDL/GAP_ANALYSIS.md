@@ -41,7 +41,7 @@
 | TALHOES | 26 | ✅ | — | ✅ | `fase_2/03_talhoes.csv` | 71 | ✅ | completo |
 | SAFRAS | 26 | ✅ | status_safra, epoca_safra | ✅ | `fase_2/01_safras.csv` | 9 | ✅ | completo |
 | CULTURAS | 26 | ✅ | grupo_cultura | ✅ | `fase_0/01_culturas.csv` | 126 | ✅ | completo |
-| TALHAO_SAFRA | 26 | ✅ | epoca_safra | ✅ | `fase_6/09_producao_ubg.csv` (colheita: 883) + `fase_6_operacoes/12_plantio_historico.csv` (plantio: 152, 6 safras) | 1035 | ✅ | completo |
+| TALHAO_SAFRA | 26 | ✅ | epoca_safra, status_talhao_safra | ✅ | `fase_6/09_producao_ubg.csv` (colheita: 883) + `fase_6_operacoes/12_plantio_historico.csv` (plantio: 152, 6 safras) | 1035 | ✅ | completo. Campos planejamento: data_plantio_prevista, status_planejamento, meta_produtividade_sc_ha, atribuido_por, aprovado_por, data_aprovacao |
 | SILOS | 26 | ✅ | tipo_silo | ✅ | `fase_2_territorial/02_silos_ubg.csv` | 8 | ✅ | completo |
 | PARCEIRO_COMERCIAL | 26 | ✅ | tipo_parceiro | ✅ | `fase_2/06_parceiros_agriwin.csv` | 2.201 | ✅ | completo |
 | MATRICULAS | 25b | ✅ | — | ❌ | `fase_2/04_matriculas.csv` | 88 | ❌ | completo |

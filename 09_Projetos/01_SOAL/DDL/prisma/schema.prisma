@@ -821,6 +821,7 @@ model TalhaoSafra {
   cultivar          String?    @db.VarChar(200)
   gleba             String?    @db.VarChar(100)  /// Sub-area do talhao (ex: HERMATRIA, BANACK dentro de CAPINZAL)
   origemSemente     String?    @map("origem_semente") @db.VarChar(100)  /// Fonte: castrolanda, fazenda, fsi, agromusa
+  dataPlantioEstimada DateTime? @map("data_plantio_prevista") @db.Date  /// Estimativa plantio — ancora para gerar calendario SAFRA_ACAO
   dataPlantio       DateTime?  @map("data_plantio") @db.Date
   dataColheita      DateTime?  @map("data_colheita") @db.Date
   produtividadeScHa Decimal?           @map("produtividade_sc_ha") @db.Decimal(10, 2)

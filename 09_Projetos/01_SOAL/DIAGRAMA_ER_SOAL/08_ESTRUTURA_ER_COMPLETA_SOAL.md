@@ -96,7 +96,7 @@ CULTURAS ◄──────────────────────�
 | SILOS | codigo, capacidade_ton, tipo, localizacao |
 | SAFRAS | ano_agricola, data_inicio, data_fim |
 | CULTURAS | nome, codigo, ciclo_dias |
-| TALHAO_SAFRA | talhao_id, safra_id, cultura_id, area_plantada |
+| TALHAO_SAFRA | talhao_id, safra_id, cultura_id, epoca, area_plantada_ha, cultivar, gleba, origem_semente, data_plantio_prevista, data_plantio, data_colheita, produtividade_sc_ha, status_planejamento, meta_produtividade_sc_ha |
 
 ### Contratos Terra (x=4000)
 

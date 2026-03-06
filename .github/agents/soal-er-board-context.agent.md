@@ -212,7 +212,7 @@ This agent provides complete, real-time context about the SOAL project ER diagra
 | SILOS | Storage silos (codigo, capacidade_ton, tipo, localizacao) |
 | SAFRAS | Agricultural seasons (ano_agricola, data_inicio Jul 1, data_fim Jun 30) |
 | CULTURAS | Crop types (nome, codigo, ciclo_dias) |
-| TALHAO_SAFRA | Field-season assignment (talhao_id, safra_id, cultura_id, area_plantada) |
+| TALHAO_SAFRA | Field-season assignment (talhao_id, safra_id, cultura_id, epoca, area_plantada_ha, cultivar, gleba, origem_semente, data_plantio_prevista, data_plantio, data_colheita, produtividade_sc_ha, status_planejamento, meta_produtividade_sc_ha) |
 | PARCEIRO_COMERCIAL | Business partners (razao_social, cnpj_cpf, tipo: fornecedor/cliente/arrendador/transportador) |
 | CONTRATO_ARRENDAMENTO | Land lease (numero, data_inicio, data_fim, valor_ha) |
 
