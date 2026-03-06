@@ -66,9 +66,12 @@ enum EpocaSafra {
 
 enum GrupoCultura {
   graos
+  oleaginosa
+  cobertura
   forrageira
   pastagem
-  oleaginosa
+  fibra
+  florestal
   outros
 }
 
@@ -322,7 +325,7 @@ model RolePermission {
 // CAMADA TERRITORIAL
 // =============================================================================
 
-/// Propriedades rurais da org (~12 fazendas SOAL)
+/// Propriedades rurais da org (9 fazendas SOAL, 4.127 ha)
 model Fazenda {
   id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   organizationId    String       @map("organization_id") @db.Uuid
@@ -395,7 +398,7 @@ model Safra {
   @@map("safras")
 }
 
-/// Catalogo de culturas (9 culturas V0). Sem org — universal.
+/// Catalogo de culturas (126 culturas V0). Sem org — universal.
 model Cultura {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nome            String       @unique @db.VarChar(100)
@@ -414,7 +417,7 @@ model Cultura {
 
 /// Entidade CENTRAL — 90% dos relatorios passam por aqui
 model TalhaoSafra {
-  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @map("talhao_safra_id") @db.Uuid
   organizationId    String     @map("organization_id") @db.Uuid
   talhaoId          String     @map("talhao_id") @db.Uuid
   safraId           String     @map("safra_id") @db.Uuid
@@ -422,10 +425,18 @@ model TalhaoSafra {
   epoca             EpocaSafra @default(safra)
   areaPlantadaHa    Decimal    @map("area_plantada_ha") @db.Decimal(10, 2)
   cultivar          String?    @db.VarChar(200)
+  gleba             String?    @db.VarChar(100)  /// Sub-area do talhao (ex: HERMATRIA, BANACK dentro de CAPINZAL)
+  origemSemente     String?    @map("origem_semente") @db.VarChar(100)  /// Fonte: castrolanda, fazenda, fsi, agromusa
+  dataPlantioEstimada DateTime? @map("data_plantio_prevista") @db.Date  /// Estimativa plantio — ancora para gerar calendario SAFRA_ACAO
   dataPlantio       DateTime?  @map("data_plantio") @db.Date
   dataColheita      DateTime?  @map("data_colheita") @db.Date
   produtividadeScHa Decimal?   @map("produtividade_sc_ha") @db.Decimal(10, 2)
   observacoes       String?
+  statusPlanejamento StatusTalhaoSafra @default(rascunho) @map("status_planejamento")
+  metaProdutividadeScHa Decimal?      @map("meta_produtividade_sc_ha") @db.Decimal(10, 2)
+  atribuidoPor      String?           @map("atribuido_por") @db.VarChar(200)
+  aprovadoPor       String?           @map("aprovado_por") @db.VarChar(200)
+  dataAprovacao     DateTime?         @map("data_aprovacao") @db.Date
   status            String     @default("active") @db.VarChar(20)
   createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -435,15 +446,17 @@ model TalhaoSafra {
   safra        Safra        @relation(fields: [safraId], references: [id])
   cultura      Cultura      @relation(fields: [culturaId], references: [id])
 
-  @@unique([talhaoId, safraId, culturaId, epoca])
+  // PostgreSQL: NULL != NULL em UNIQUE — rows com gleba=NULL nao conflitam
+  @@unique([talhaoId, safraId, culturaId, epoca, gleba])
   @@index([organizationId])
   @@index([talhaoId])
   @@index([safraId])
   @@index([culturaId])
+  @@index([statusPlanejamento])
   @@map("talhao_safras")
 }
 
-/// Estruturas de armazenamento (dados pendentes Josmar)
+/// Estruturas de armazenamento (8 silos: 6 conv + 2 pulmao, 10.760t total)
 model Silo {
   id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   organizationId String   @map("organization_id") @db.Uuid

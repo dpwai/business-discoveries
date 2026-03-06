@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL DDL Playground</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --fg:#e6edf3;--fg2:#8b949e;--fg3:#484f58;
+  --accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;
+  --radius:8px;--shadow:0 2px 8px rgba(0,0,0,.4);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.5;min-height:100vh;padding:0 0 3rem}
+
+/* Header */
+.header{background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);border-bottom:1px solid var(--bg4);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.header h1 span{color:var(--accent)}
+.header-badge{background:var(--bg3);color:var(--fg2);font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-family:var(--mono)}
+
+/* Summary Cards */
+.summary{max-width:1400px;margin:1.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1.25rem;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.card-value{font-size:1.8rem;font-weight:700;font-family:var(--mono);line-height:1.1}
+.card-label{font-size:.8rem;color:var(--fg2);margin-top:.35rem;text-transform:uppercase;letter-spacing:.04em}
+.card-bar{height:4px;border-radius:2px;margin-top:.75rem;background:var(--bg4);overflow:hidden}
+.card-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* Filters */
+.filters{max-width:1400px;margin:1.5rem auto;padding:0 1.5rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.filter-input{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.9rem;padding:.6rem 1rem;outline:none;transition:border-color .2s;font-family:var(--font)}
+.filter-input:focus{border-color:var(--accent)}
+.filter-input::placeholder{color:var(--fg3)}
+input.filter-input{flex:1;min-width:200px}
+select.filter-input{cursor:pointer;min-width:160px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.25rem}
+.filter-count{color:var(--fg2);font-size:.8rem;font-family:var(--mono);margin-left:auto;white-space:nowrap}
+
+/* Table */
+.table-wrap{max-width:1400px;margin:1rem auto;padding:0 1.5rem;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead th{background:var(--bg2);color:var(--fg2);font-weight:600;text-transform:uppercase;font-size:.72rem;letter-spacing:.06em;padding:.75rem .6rem;text-align:left;border-bottom:2px solid var(--bg4);white-space:nowrap}
+thead th:first-child{border-radius:var(--radius) 0 0 0}
+thead th:last-child{border-radius:0 var(--radius) 0 0}
+tbody tr.entity-row{border-bottom:1px solid var(--bg3);cursor:pointer;transition:background .15s}
+tbody tr.entity-row:hover{background:var(--bg2)}
+tbody tr.entity-row.expanded{background:var(--bg2)}
+tbody td{padding:.65rem .6rem;vertical-align:middle}
+tbody td.entity-cell{position:relative;padding-left:1.25rem}
+tbody td.entity-cell::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:0 2px 2px 0}
+
+/* Section color bars via data attribute */
+tr[data-sec="sistema"] td.entity-cell::before{background:#4a90d9}
+tr[data-sec="territorial"] td.entity-cell::before{background:#7bc67e}
+tr[data-sec="operacional"] td.entity-cell::before{background:#5cc8db}
+tr[data-sec="insumos"] td.entity-cell::before{background:#e8d44d}
+tr[data-sec="op_campo"] td.entity-cell::before{background:#e8d44d}
+tr[data-sec="ubg"] td.entity-cell::before{background:#e8c94d}
+tr[data-sec="financeiro"] td.entity-cell::before{background:#e8a84d}
+tr[data-sec="frete_vendas"] td.entity-cell::before{background:#e8a84d}
+tr[data-sec="historico"] td.entity-cell::before{background:#b8b8b8}
+tr[data-sec="auxiliar"] td.entity-cell::before{background:#b8b8b8}
+
+.entity-name{font-family:var(--mono);font-weight:600;font-size:.85rem;letter-spacing:.02em}
+
+/* Badges */
+.badge{display:inline-block;font-size:.72rem;font-weight:600;padding:.15rem .5rem;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.badge-yes{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.25)}
+.badge-no{background:rgba(248,81,73,.1);color:var(--red);border:1px solid rgba(248,81,73,.2)}
+
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:.2rem .65rem;border-radius:20px;white-space:nowrap}
+.pill-completo{background:rgba(63,185,80,.15);color:var(--green)}
+.pill-parcial{background:rgba(210,153,34,.15);color:var(--yellow)}
+.pill-sem_dados{background:rgba(139,148,158,.12);color:var(--fg3)}
+
+.section-tag{display:inline-block;font-size:.68rem;font-weight:600;padding:.15rem .55rem;border-radius:4px;letter-spacing:.03em;white-space:nowrap;opacity:.85}
+
+.records{font-family:var(--mono);font-size:.82rem;text-align:right;color:var(--fg2)}
+.records.has-data{color:var(--fg)}
+
+.ddl-doc{font-family:var(--mono);font-size:.78rem;color:var(--fg2)}
+
+/* Detail row */
+.detail-row{display:none}
+.detail-row.show{display:table-row}
+.detail-row td{padding:.5rem .6rem .75rem 1.25rem;background:var(--bg3);border-bottom:1px solid var(--bg4)}
+.detail-content{font-size:.82rem;color:var(--fg2);line-height:1.6}
+.detail-content strong{color:var(--fg);font-weight:600}
+.detail-content code{background:var(--bg);padding:.15rem .4rem;border-radius:3px;font-family:var(--mono);font-size:.8rem;color:var(--accent)}
+
+/* Footer */
+.footer{max-width:1400px;margin:3rem auto 0;padding:1.5rem;text-align:center;color:var(--fg3);font-size:.78rem;border-top:1px solid var(--bg3)}
+.footer span{color:var(--fg2)}
+
+/* Mobile */
+@media(max-width:768px){
+  .header{padding:1rem}
+  .header h1{font-size:1.1rem}
+  .summary{grid-template-columns:repeat(2,1fr);padding:0 1rem}
+  .filters{padding:0 1rem}
+  .table-wrap{padding:0 .5rem}
+  table{font-size:.8rem}
+  thead th{font-size:.65rem;padding:.5rem .35rem}
+  tbody td{padding:.5rem .35rem}
+  .badge,.pill{font-size:.65rem;padding:.1rem .35rem}
+  .card-value{font-size:1.4rem}
+}
+@media(max-width:480px){
+  .summary{grid-template-columns:1fr 1fr}
+  .card{padding:.9rem}
+  .filter-count{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1><span>SOAL</span> DDL Playground</h1>
+    <span class="header-badge">Bronze Layer V0 -- 2026-03-06</span>
+  </div>
+</div>
+
+<div class="summary" id="summary"></div>
+
+<div class="filters">
+  <input class="filter-input" type="text" id="searchInput" placeholder="Buscar entidade...">
+  <select class="filter-input" id="sectionFilter">
+    <option value="">Todas as camadas</option>
+  </select>
+  <select class="filter-input" id="statusFilter">
+    <option value="">Todos os status</option>
+    <option value="completo">Completo</option>
+    <option value="parcial">Parcial</option>
+    <option value="sem_dados">Sem dados</option>
+  </select>
+  <span class="filter-count" id="filterCount"></span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Entidade</th>
+        <th>Camada</th>
+        <th>DDL Doc</th>
+        <th>DDL</th>
+        <th>CSV</th>
+        <th style="text-align:right">Registros</th>
+        <th>Prisma</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<div class="footer">
+  SOAL DDL Playground V0 -- <span>DeepWork AI Flows</span> -- 2026-03-06
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var ENTITIES = [
+  {name:'ADMINS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'OWNERS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'ORGANIZATIONS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_1/01_organizations.csv',csvRecords:1,hasPrisma:true,status:'completo'},
+  {name:'ORG_SETTINGS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'USERS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_1/02_users.csv',csvRecords:8,hasPrisma:true,status:'completo'},
+  {name:'ROLES',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'PERMISSIONS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'USER_ROLES',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'ROLE_PERMISSIONS',section:'Sistema',sectionColor:'#4a90d9',secKey:'sistema',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+
+  {name:'FAZENDAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/02_fazendas.csv',csvRecords:8,hasPrisma:true,status:'completo'},
+  {name:'TALHOES',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/03_talhoes.csv',csvRecords:71,hasPrisma:true,status:'completo'},
+  {name:'SAFRAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/01_safras.csv',csvRecords:9,hasPrisma:true,status:'completo'},
+  {name:'CULTURAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_0/01_culturas.csv',csvRecords:126,hasPrisma:true,status:'completo'},
+  {name:'TALHAO_SAFRA',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_6/09_producao_ubg.csv + fase_6_operacoes/12_plantio_historico.csv',csvRecords:1035,hasPrisma:true,status:'completo'},
+  {name:'SILOS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/02_silos_ubg.csv',csvRecords:8,hasPrisma:true,status:'completo'},
+  {name:'PARCEIRO_COMERCIAL',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_2/06_parceiros_agriwin.csv',csvRecords:2201,hasPrisma:true,status:'completo'},
+  {name:'MATRICULAS',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'Doc 25b',hasDdl:true,hasCsv:true,csvFile:'fase_2/04_matriculas.csv',csvRecords:88,hasPrisma:true,status:'completo'},
+  {name:'UBG',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_2_territorial/01_ubg.csv',csvRecords:1,hasPrisma:true,status:'completo'},
+  {name:'TANQUES_COMBUSTIVEL',section:'Territorial',sectionColor:'#7bc67e',secKey:'territorial',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_3/06_fuel_tanks.csv',csvRecords:5,hasPrisma:true,status:'parcial'},
+
+  {name:'MAQUINAS',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_3/04_maquinas.csv + 04_implementos.csv',csvRecords:183,hasPrisma:true,status:'completo'},
+  {name:'OPERADORES',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_3/05_operadores.csv',csvRecords:15,hasPrisma:true,status:'completo'},
+  {name:'ABASTECIMENTOS',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 26',hasDdl:true,hasCsv:true,csvFile:'fase_6/10_abastecimentos_vestro.csv',csvRecords:1200,hasPrisma:true,status:'completo'},
+  {name:'MANUTENCOES',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 26',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'COLABORADORES',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 27',hasDdl:true,hasCsv:true,csvFile:'fase_3/07_colaboradores.csv',csvRecords:88,hasPrisma:true,status:'completo'},
+  {name:'FOLHA_PAGAMENTO',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'Doc 27',hasDdl:true,hasCsv:true,csvFile:'fase_3/08_folha_pagamento.csv',csvRecords:3122,hasPrisma:true,status:'completo'},
+  {name:'TAGS_VESTRO',section:'Operacional',sectionColor:'#5cc8db',secKey:'operacional',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_3/05_tags_maquinas_vestro.csv',csvRecords:47,hasPrisma:true,status:'completo'},
+
+  {name:'PRODUTO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_0/03_produto_insumo_agriwin.csv + castrolanda.csv',csvRecords:18894,hasPrisma:true,status:'completo'},
+  {name:'RECEITUARIO_AGRONOMICO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'COMPRA_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_4/11_compra_insumo_castrolanda.csv',csvRecords:6331,hasPrisma:true,status:'completo'},
+  {name:'ESTOQUE_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'APLICACAO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/12_consumo_agriwin.csv (raw)',csvRecords:21162,hasPrisma:true,status:'parcial'},
+  {name:'MOVIMENTACAO_INSUMO',section:'Insumos',sectionColor:'#e8d44d',secKey:'insumos',ddlDoc:'Doc 16',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+
+  {name:'OPERACAO_CAMPO',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/01+02_operacoes_campo.csv',csvRecords:10,hasPrisma:true,status:'parcial'},
+  {name:'PLANTIO_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/12_plantio_historico.csv',csvRecords:152,hasPrisma:true,status:'parcial'},
+  {name:'COLHEITA_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/03_colheita_detalhe.csv',csvRecords:1,hasPrisma:true,status:'sem_dados'},
+  {name:'PULVERIZACAO_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'DRONE_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'TRANSPORTE_COLHEITA_DETALHE',section:'Op. Campo',sectionColor:'#e8d44d',secKey:'op_campo',ddlDoc:'Doc 25a',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+
+  {name:'TICKET_BALANCA',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:true,csvFile:'fase_6/09_producao_ubg.csv',csvRecords:883,hasPrisma:true,status:'completo'},
+  {name:'PRODUCAO_UBG',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:true,csvFile:'fase_6/09_producao_ubg.csv',csvRecords:883,hasPrisma:true,status:'completo'},
+  {name:'PESAGEM_AGRICOLA',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/04_pesagens_agricola.csv',csvRecords:806,hasPrisma:true,status:'completo'},
+  {name:'SAIDA_GRAO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/08_saidas_producao.csv',csvRecords:542,hasPrisma:true,status:'completo'},
+  {name:'RECEBIMENTO_GRAO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'CONTROLE_SECAGEM',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'LEITURA_SECAGEM',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'ESTOQUE_SILO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'ALOCACAO_SILO',section:'UBG',sectionColor:'#e8c94d',secKey:'ubg',ddlDoc:'Doc 28',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+
+  {name:'EXTRATO_COOPERATIVA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/07_extrato_cooperativa.csv',csvRecords:8211,hasPrisma:true,status:'completo'},
+  {name:'CC_COOPERATIVA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/09_cc_cooperativa.csv',csvRecords:2891,hasPrisma:true,status:'completo'},
+  {name:'CONTA_CAPITAL',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/12_conta_capital.csv',csvRecords:95,hasPrisma:true,status:'completo'},
+  {name:'FINANCIAMENTO_COOP',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/11_financiamento_coop.csv',csvRecords:220,hasPrisma:true,status:'completo'},
+  {name:'VENDA_GRAO',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/13_venda_grao.csv',csvRecords:170,hasPrisma:true,status:'completo'},
+  {name:'CARGA_A_CARGA',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_4/14_carga_a_carga.csv',csvRecords:1309,hasPrisma:true,status:'completo'},
+  {name:'CUSTO_INSUMO_COOP',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'Doc 29',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/06_custo_insumo_coop.csv',csvRecords:553,hasPrisma:true,status:'completo'},
+  {name:'FLUXO_CAIXA_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/15_fluxo_caixa_fsi.csv',csvRecords:10119,hasPrisma:true,status:'completo'},
+  {name:'CAIXA_ESCRITORIO_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/16_caixa_escritorio_fsi.csv',csvRecords:1185,hasPrisma:true,status:'completo'},
+  {name:'KUGLER_X_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/17_kugler_x_fsi.csv',csvRecords:1499,hasPrisma:true,status:'completo'},
+  {name:'CONSORCIOS_FSI',section:'Financeiro',sectionColor:'#e8a84d',secKey:'financeiro',ddlDoc:'FSI',hasDdl:true,hasCsv:true,csvFile:'fase_4/18_consorcios_fsi.csv',csvRecords:20,hasPrisma:true,status:'completo'},
+
+  {name:'FRETEIRO',section:'Frete/Vendas',sectionColor:'#e8a84d',secKey:'frete_vendas',ddlDoc:'Doc 30',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/07_freteiros.csv',csvRecords:116,hasPrisma:true,status:'completo'},
+  {name:'VENDA_DIRETA',section:'Frete/Vendas',sectionColor:'#e8a84d',secKey:'frete_vendas',ddlDoc:'Doc 30',hasDdl:true,hasCsv:true,csvFile:'fase_6_operacoes/05b_vendas_diretas.csv',csvRecords:73,hasPrisma:true,status:'completo'},
+
+  {name:'HISTORICO_MAQUINAS',section:'Historico',sectionColor:'#b8b8b8',secKey:'historico',ddlDoc:'Doc 31',hasDdl:true,hasCsv:true,csvFile:'historico/maquinario_historico.csv',csvRecords:32516,hasPrisma:true,status:'completo'},
+
+  {name:'TALHAO_MAPPING',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'pendente'},
+  {name:'UBG_CAIXA',section:'Auxiliar',sectionColor:'#b8b8b8',secKey:'auxiliar',ddlDoc:'orphan',hasDdl:true,hasCsv:true,csvFile:'fase_6/14_ubg_caixa.csv',csvRecords:19177,hasPrisma:true,status:'completo'},
+
+  {name:'PLANO_SAFRA_SNAPSHOT',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'},
+  {name:'TEMPLATE_CULTURA_OP',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:true,csvFile:'fase_5/02_template_operacoes_cultura.csv',csvRecords:42,hasPrisma:true,status:'sem_dados'},
+  {name:'SAFRA_ACAO',section:'Planejamento Safra',sectionColor:'#7cb342',secKey:'planejamento',ddlDoc:'Plan',hasDdl:true,hasCsv:false,csvFile:'',csvRecords:0,hasPrisma:true,status:'sem_dados'}
+];
+
+function fmt(n){ return n.toLocaleString('pt-BR'); }
+
+function computeStats(list){
+  var total = list.length;
+  var ddl = 0, prisma = 0, csv = 0, records = 0, completo = 0, parcial = 0, sem = 0;
+  for(var i = 0; i < list.length; i++){
+    var e = list[i];
+    if(e.hasDdl) ddl++;
+    if(e.hasPrisma) prisma++;
+    if(e.hasCsv) csv++;
+    records += e.csvRecords;
+    if(e.status === 'completo') completo++;
+    else if(e.status === 'parcial') parcial++;
+    else sem++;
+  }
+  return {total:total,ddl:ddl,prisma:prisma,csv:csv,records:records,completo:completo,parcial:parcial,sem:sem};
+}
+
+function renderSummary(){
+  var s = computeStats(ENTITIES);
+  var cards = [
+    {label:'Entidades',value:String(s.total),pct:100,color:'var(--accent)'},
+    {label:'DDL Prontos',value:s.ddl+'/'+s.total,pct:(s.ddl/s.total)*100,color:'var(--green)'},
+    {label:'Prisma Prontos',value:s.prisma+'/'+s.total,pct:(s.prisma/s.total)*100,color:'var(--green)'},
+    {label:'CSVs Coletados',value:String(s.csv),pct:(s.csv/s.total)*100,color:'var(--accent)'},
+    {label:'Total Registros',value:fmt(s.records),pct:100,color:'var(--yellow)'},
+    {label:'Completo',value:String(s.completo),pct:(s.completo/s.total)*100,color:'var(--green)'},
+    {label:'Parcial',value:String(s.parcial),pct:(s.parcial/s.total)*100,color:'var(--yellow)'},
+    {label:'Sem Dados',value:String(s.sem),pct:(s.sem/s.total)*100,color:'var(--fg3)'}
+  ];
+  var container = document.getElementById('summary');
+  while(container.firstChild) container.removeChild(container.firstChild);
+  for(var i = 0; i < cards.length; i++){
+    var c = cards[i];
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var val = document.createElement('div');
+    val.className = 'card-value';
+    val.style.color = c.color;
+    val.textContent = c.value;
+    card.appendChild(val);
+
+    var lbl = document.createElement('div');
+    lbl.className = 'card-label';
+    lbl.textContent = c.label;
+    card.appendChild(lbl);
+
+    var bar = document.createElement('div');
+    bar.className = 'card-bar';
+    var fill = document.createElement('div');
+    fill.className = 'card-bar-fill';
+    fill.style.width = c.pct + '%';
+    fill.style.background = c.color;
+    bar.appendChild(fill);
+    card.appendChild(bar);
+
+    container.appendChild(card);
+  }
+}
+
+function populateSectionFilter(){
+  var sel = document.getElementById('sectionFilter');
+  var seen = {};
+  for(var i = 0; i < ENTITIES.length; i++){
+    var sec = ENTITIES[i].section;
+    if(!seen[sec]){
+      seen[sec] = true;
+      var o = document.createElement('option');
+      o.value = sec;
+      o.textContent = sec;
+      sel.appendChild(o);
+    }
+  }
+}
+
+function createBadge(isYes){
+  var span = document.createElement('span');
+  span.className = 'badge ' + (isYes ? 'badge-yes' : 'badge-no');
+  span.textContent = isYes ? 'Sim' : 'Nao';
+  return span;
+}
+
+function createPill(status){
+  var span = document.createElement('span');
+  span.className = 'pill pill-' + status;
+  if(status === 'sem_dados') span.textContent = 'Sem dados';
+  else if(status === 'parcial') span.textContent = 'Parcial';
+  else span.textContent = 'Completo';
+  return span;
+}
+
+function createSectionTag(e){
+  var span = document.createElement('span');
+  span.className = 'section-tag';
+  span.style.background = e.sectionColor + '22';
+  span.style.color = e.sectionColor;
+  span.style.border = '1px solid ' + e.sectionColor + '44';
+  span.textContent = e.section;
+  return span;
+}
+
+function renderTable(filtered){
+  var tbody = document.getElementById('tableBody');
+  while(tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+  for(var i = 0; i < filtered.length; i++){
+    (function(e, idx){
+      var tr = document.createElement('tr');
+      tr.className = 'entity-row';
+      tr.setAttribute('data-sec', e.secKey);
+
+      var td0 = document.createElement('td');
+      td0.className = 'entity-cell';
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'entity-name';
+      nameSpan.textContent = e.name;
+      td0.appendChild(nameSpan);
+      tr.appendChild(td0);
+
+      var td1 = document.createElement('td');
+      td1.appendChild(createSectionTag(e));
+      tr.appendChild(td1);
+
+      var td2 = document.createElement('td');
+      var docSpan = document.createElement('span');
+      docSpan.className = 'ddl-doc';
+      docSpan.textContent = e.ddlDoc;
+      td2.appendChild(docSpan);
+      tr.appendChild(td2);
+
+      var td3 = document.createElement('td');
+      td3.appendChild(createBadge(e.hasDdl));
+      tr.appendChild(td3);
+
+      var td4 = document.createElement('td');
+      td4.appendChild(createBadge(e.hasCsv));
+      tr.appendChild(td4);
+
+      var td5 = document.createElement('td');
+      td5.className = 'records' + (e.csvRecords > 0 ? ' has-data' : '');
+      td5.style.textAlign = 'right';
+      td5.textContent = e.csvRecords > 0 ? fmt(e.csvRecords) : '-';
+      tr.appendChild(td5);
+
+      var td6 = document.createElement('td');
+      td6.appendChild(createBadge(e.hasPrisma));
+      tr.appendChild(td6);
+
+      var td7 = document.createElement('td');
+      td7.appendChild(createPill(e.status));
+      tr.appendChild(td7);
+
+      tbody.appendChild(tr);
+
+      // Detail row
+      var detailTr = document.createElement('tr');
+      detailTr.className = 'detail-row';
+      var detailTd = document.createElement('td');
+      detailTd.colSpan = 8;
+
+      var detailDiv = document.createElement('div');
+      detailDiv.className = 'detail-content';
+
+      var line1 = document.createElement('div');
+      var s1 = document.createElement('strong');
+      s1.textContent = 'Entidade: ';
+      line1.appendChild(s1);
+      line1.appendChild(document.createTextNode(e.name + '  |  '));
+      var s2 = document.createElement('strong');
+      s2.textContent = 'Camada: ';
+      line1.appendChild(s2);
+      line1.appendChild(document.createTextNode(e.section + '  |  '));
+      var s3 = document.createElement('strong');
+      s3.textContent = 'DDL: ';
+      line1.appendChild(s3);
+      line1.appendChild(document.createTextNode(e.ddlDoc));
+      detailDiv.appendChild(line1);
+
+      var line2 = document.createElement('div');
+      var s4 = document.createElement('strong');
+      s4.textContent = 'CSV: ';
+      line2.appendChild(s4);
+      if(e.csvFile){
+        var code = document.createElement('code');
+        code.textContent = 'IMPORTS/' + e.csvFile;
+        line2.appendChild(code);
+        line2.appendChild(document.createTextNode('  (' + fmt(e.csvRecords) + ' registros)'));
+      } else {
+        line2.appendChild(document.createTextNode('Nenhum arquivo coletado'));
+      }
+      detailDiv.appendChild(line2);
+
+      var line3 = document.createElement('div');
+      var s5 = document.createElement('strong');
+      s5.textContent = 'Prisma: ';
+      line3.appendChild(s5);
+      line3.appendChild(document.createTextNode(e.hasPrisma ? 'Schema definido' : 'Pendente'));
+      line3.appendChild(document.createTextNode('  |  '));
+      var s6 = document.createElement('strong');
+      s6.textContent = 'Status: ';
+      line3.appendChild(s6);
+      var statusText = e.status === 'sem_dados' ? 'Sem dados coletados' : e.status === 'parcial' ? 'Dados parciais - pendente completar' : 'Dados completos';
+      line3.appendChild(document.createTextNode(statusText));
+      detailDiv.appendChild(line3);
+
+      detailTd.appendChild(detailDiv);
+      detailTr.appendChild(detailTd);
+      tbody.appendChild(detailTr);
+
+      tr.addEventListener('click', function(){
+        var wasExpanded = detailTr.classList.contains('show');
+        var allDetails = document.querySelectorAll('.detail-row.show');
+        for(var j = 0; j < allDetails.length; j++) allDetails[j].classList.remove('show');
+        var allExpanded = document.querySelectorAll('tbody tr.expanded');
+        for(var j = 0; j < allExpanded.length; j++) allExpanded[j].classList.remove('expanded');
+        if(!wasExpanded){
+          detailTr.classList.add('show');
+          tr.classList.add('expanded');
+        }
+      });
+    })(filtered[i], i);
+  }
+
+  document.getElementById('filterCount').textContent = filtered.length + ' de ' + ENTITIES.length + ' entidades';
+}
+
+function applyFilters(){
+  var search = document.getElementById('searchInput').value.toLowerCase().trim();
+  var section = document.getElementById('sectionFilter').value;
+  var status = document.getElementById('statusFilter').value;
+  var filtered = [];
+  for(var i = 0; i < ENTITIES.length; i++){
+    var e = ENTITIES[i];
+    if(search && e.name.toLowerCase().indexOf(search) === -1) continue;
+    if(section && e.section !== section) continue;
+    if(status && e.status !== status) continue;
+    filtered.push(e);
+  }
+  renderTable(filtered);
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('sectionFilter').addEventListener('change', applyFilters);
+document.getElementById('statusFilter').addEventListener('change', applyFilters);
+
+renderSummary();
+populateSectionFilter();
+renderTable(ENTITIES);
+
+})();
+</script>
+</body>
+</html>

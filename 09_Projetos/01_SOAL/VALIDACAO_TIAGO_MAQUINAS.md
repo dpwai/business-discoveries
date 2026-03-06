@@ -218,4 +218,4 @@ Existem **144 abastecimentos** para veículos de terceiros (prestadores de servi
 ---
 
 *Gerado por: DeepWork AI Flows | Rodrigo Kugler*
-*Fontes: Lista_Maquinas_Consolidado.csv (183 registros) + Vestro_Abastecimentos_Clean.csv (1.172 registros)*
+*Fontes: lista maquinas.xlsx → 04_maquinas.csv (57 total: 52 ativo + 5 vendido) + 04_implementos.csv (126 total: 103 ativo + 23 vendido) + Vestro_Abastecimentos_Clean.csv (1.172 registros)*

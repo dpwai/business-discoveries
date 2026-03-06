@@ -7,13 +7,13 @@
 
 | Arquivo | Caminho | Conteúdo |
 |---------|---------|----------|
-| DDL Completo V0 | `09_Projetos/02_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 2.525 linhas, 57 tabelas, 40 ENUMs, 3 views, 3 funções |
-| Prisma Schema | `09_Projetos/02_SOAL/DDL/prisma/schema.prisma` | 57 modelos + 40 enums |
-| GAP Analysis | `09_Projetos/02_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
-| DDL Playground | `09_Projetos/02_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |
-| ETL Registry | `09_Projetos/02_SOAL/DATA/ETL_REGISTRY.md` | Registro de CSVs e ETLs |
+| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | ~2.928 linhas, 66 tabelas, 45 ENUMs, 4 views, 3 funções |
+| Prisma Schema | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos + 45 enums |
+| GAP Analysis | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
+| DDL Playground | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |
+| ETL Registry | `09_Projetos/01_SOAL/DATA/ETL_REGISTRY.md` | Registro de CSVs e ETLs |
 
-## 2. Estrutura do Banco — 57 Tabelas em 12 Seções
+## 2. Estrutura do Banco — 63 Tabelas em 13 Seções
 
 ### Seção 0: Funções
 - `fn_atualizar_updated_at()` — trigger reutilizada por todas as tabelas
@@ -21,14 +21,15 @@
 - `fn_saida_aplicacao_estoque()` — validação de saldo (Doc 16)
 - `fn_aplicacao_custo_from_estoque()` — custo automático (Doc 16)
 
-### Seção 1: ENUMs (40)
+### Seção 1: ENUMs (44)
 Territorial: tipo_fazenda, tipo_solo, tipo_silo, status_safra, epoca_safra, grupo_cultura, tipo_parceiro
 Operacional: categoria_maquina, tipo_maquina, status_maquina, tipo_combustivel, tipo_manutencao, status_manutencao, tipo_cnh
 Colaboradores: tipo_contrato_trabalho, setor_trabalho, tipo_folha_pagamento
 Op.Campo: tipo_operacao_campo, status_operacao_campo, tipo_transporte
 Insumos: tipo_insumo, grupo_insumo, classe_toxicologica, classe_ambiental, fonte_compra, status_compra, status_estoque, tipo_movimentacao_insumo, metodo_aplicacao, contexto_aplicacao
-UBG: tipo_ticket_balanca, status_ticket, tipo_saida_grao, status_estoque_silo
-Financeiro: tipo_transacao_extrato, tipo_transacao_cc, tipo_transacao_capital, tipo_financiamento_coop, modalidade_carga
+UBG: tipo_ticket_balanca, status_ticket, tipo_saida_grao, status_estoque_silo, tipo_secagem, tipo_alocacao_silo
+Financeiro Coop: tipo_transacao_extrato, tipo_transacao_cc, tipo_transacao_capital, tipo_financiamento_coop, modalidade_carga
+Financeiro FSI: tipo_registro_fsi, situacao_consorcio
 Histórico: tipo_registro_maquinario
 
 ### Seção 2: Sistema (9 tabelas — Doc 26)
@@ -46,11 +47,14 @@ produto_insumo, receituario_agronomico, compra_insumo, estoque_insumo, aplicacao
 ### Seção 6: Operações Campo (6 tabelas — Doc 25a)
 operacoes_campo, plantio_detalhes, colheita_detalhes, pulverizacao_detalhes, drone_detalhes, transporte_colheita_detalhes + ALTER aplicacao_insumo→operacoes_campo
 
-### Seção 7: UBG (7 tabelas — Doc 28)
-ticket_balancas, producao_ubg, pesagens_agricola, saidas_grao, recebimentos_grao, controles_secagem, estoques_silo + ALTER transporte→ticket_balancas
+### Seção 7: UBG (9 tabelas — Doc 28)
+ticket_balancas, producao_ubg, pesagens_agricola, saidas_grao, recebimentos_grao, controles_secagem, leituras_secagem, estoques_silo, alocacoes_silo
 
-### Seção 8: Financeiro (7 tabelas — Doc 29)
+### Seção 8: Financeiro Coop (7 tabelas — Doc 29)
 extratos_cooperativa, cc_cooperativa, contas_capital, financiamentos_coop, vendas_grao, cargas_a_carga, custos_insumo_coop
+
+### Seção 8b: Financeiro FSI (4 tabelas)
+fluxo_caixa_fsi, caixa_escritorio_fsi, kugler_x_fsi, consorcios_fsi
 
 ### Seção 9: Frete+Vendas (2 tabelas — Doc 30)
 freteiros, vendas_diretas
@@ -61,8 +65,8 @@ historico_maquinas
 ### Seção 11: Auxiliar (2 tabelas — orphans)
 talhao_mapping, ubg_caixa
 
-### Seção 12: Views (3 — Doc 16)
-vw_estoque_consolidado, vw_custo_insumo_talhao_safra, vw_extrato_movimentacoes
+### Seção 12: Views (4 — Doc 16 + UBG)
+vw_estoque_consolidado, vw_custo_insumo_talhao_safra, vw_extrato_movimentacoes, vw_estoque_silo_atual
 
 ## 3. Conflitos Resolvidos
 
@@ -103,7 +107,7 @@ vw_estoque_consolidado, vw_custo_insumo_talhao_safra, vw_extrato_movimentacoes
 5. **Triggers:** TODAS as tabelas devem ter trigger updated_at
 6. **Indexes:** TODAS as FKs devem ter index
 
-## 6. Dados Coletados (~93k registros)
+## 6. Dados Coletados (~106k registros)
 
 | Fase | Registros | Entidades |
 |------|-----------|-----------|
@@ -111,7 +115,7 @@ vw_estoque_consolidado, vw_custo_insumo_talhao_safra, vw_extrato_movimentacoes
 | fase_1 | 9 | ORGANIZATIONS, USERS |
 | fase_2 | 2.560 | FAZENDAS→TALHAO_MAPPING |
 | fase_3 | 3.555 | MAQUINAS→FOLHA_PAGAMENTO |
-| fase_4 | 12.896 | EXTRATO→CARGA_A_CARGA |
+| fase_4 | 25.719 | EXTRATO→CARGA_A_CARGA + FSI (fluxo_caixa 10.119 + caixa_escritorio 1.185 + kugler_x_fsi 1.499 + consorcios 20) |
 | fase_6 | 21.260 | TICKET→UBG_CAIXA |
 | fase_6_operacoes | 1.600 | OP_CAMPO→SAIDAS |
 | historico | 32.516 | HISTORICO_MAQUINAS |
@@ -125,11 +129,11 @@ vw_estoque_consolidado, vw_custo_insumo_talhao_safra, vw_extrato_movimentacoes
 
 ## 8. Próximos Passos para João
 
-1. `psql -f 00_DDL_COMPLETO_V0.sql` — criar 57 tabelas
+1. `psql -f 00_DDL_COMPLETO_V0.sql` — criar 66 tabelas
 2. `npx prisma db pull` — verificar sync
 3. Seed fase_0 → fase_1 → fase_2 (ordem obrigatória)
 4. Import CSVs usando scripts Python em DATA/
 5. Confirmar `epoca` ENUM em TALHAO_SAFRA
 
 ---
-*Gerado: 2026-03-04 | DeepWork AI Flows*
+*Atualizado: 2026-03-06 | DeepWork AI Flows*
