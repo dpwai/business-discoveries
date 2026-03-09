@@ -498,6 +498,86 @@ BEGIN;
         ["organization_id", "cultura_id", "tipo_operacao", "nome_operacao", "fase", "dias_offset_inicio", "duracao_dias", "sequencia", "obrigatoria"],
         vals))
 
+    # ─── 16. RBAC: ROLES ───
+    parts.append(header("16. RBAC: ROLES", "5 roles para V0"))
+    parts.append(f"""INSERT INTO roles (organization_id, nome, descricao) VALUES
+  ({org_id()}, 'admin', 'Acesso total ao sistema (DeepWork AI)'),
+  ({org_id()}, 'agronomo', 'Planejamento safra, operações campo, receituários'),
+  ({org_id()}, 'operador_campo', 'Execução operações, abastecimentos, maquinário'),
+  ({org_id()}, 'operador_ubg', 'Balança, secagem, silos, saídas'),
+  ({org_id()}, 'administrativo', 'Financeiro, NFs, contas a pagar/receber');
+""")
+
+    # ─── 17. RBAC: PERMISSIONS ───
+    parts.append(header("17. RBAC: PERMISSIONS", "CRUD para módulos principais"))
+    modules = ['safra', 'operacao_campo', 'insumo', 'maquina', 'ubg', 'financeiro', 'usuario', 'relatorio']
+    actions = ['criar', 'ler', 'editar', 'deletar']
+    perm_vals = []
+    for mod in modules:
+        for act in actions:
+            perm_vals.append(f"('{mod}', '{act}')")
+    parts.append(batch_insert("permissions", ["recurso", "acao"], perm_vals,
+        on_conflict="ON CONFLICT (recurso, acao) DO NOTHING"))
+
+    # ─── 18. RBAC: ROLE_PERMISSIONS ───
+    parts.append(header("18. RBAC: ROLE_PERMISSIONS", "admin=tudo, outros=módulos específicos"))
+
+    def role_sub(nome):
+        return f"(SELECT role_id FROM roles WHERE nome = '{nome}' AND organization_id = {org_id()} LIMIT 1)"
+    def perm_sub(recurso, acao):
+        return f"(SELECT permission_id FROM permissions WHERE recurso = '{recurso}' AND acao = '{acao}' LIMIT 1)"
+
+    # admin gets all permissions
+    rp_vals = []
+    for mod in modules:
+        for act in actions:
+            rp_vals.append(f"({role_sub('admin')}, {perm_sub(mod, act)})")
+
+    # agronomo: safra, operacao_campo, insumo, relatorio (all CRUD)
+    for mod in ['safra', 'operacao_campo', 'insumo', 'relatorio']:
+        for act in actions:
+            rp_vals.append(f"({role_sub('agronomo')}, {perm_sub(mod, act)})")
+
+    # operador_campo: operacao_campo CRUD, maquina ler/editar, relatorio ler
+    for act in actions:
+        rp_vals.append(f"({role_sub('operador_campo')}, {perm_sub('operacao_campo', act)})")
+    for act in ['ler', 'editar']:
+        rp_vals.append(f"({role_sub('operador_campo')}, {perm_sub('maquina', act)})")
+    rp_vals.append(f"({role_sub('operador_campo')}, {perm_sub('relatorio', 'ler')})")
+
+    # operador_ubg: ubg CRUD, relatorio ler
+    for act in actions:
+        rp_vals.append(f"({role_sub('operador_ubg')}, {perm_sub('ubg', act)})")
+    rp_vals.append(f"({role_sub('operador_ubg')}, {perm_sub('relatorio', 'ler')})")
+
+    # administrativo: financeiro CRUD, relatorio CRUD, usuario ler
+    for act in actions:
+        rp_vals.append(f"({role_sub('administrativo')}, {perm_sub('financeiro', act)})")
+        rp_vals.append(f"({role_sub('administrativo')}, {perm_sub('relatorio', act)})")
+    rp_vals.append(f"({role_sub('administrativo')}, {perm_sub('usuario', 'ler')})")
+
+    parts.append(batch_insert("role_permissions", ["role_id", "permission_id"], rp_vals,
+        on_conflict="ON CONFLICT (role_id, permission_id) DO NOTHING"))
+
+    # ─── 19. RBAC: USER_ROLES ───
+    parts.append(header("19. RBAC: USER_ROLES", "Vincular 8 users aos roles corretos"))
+
+    def user_sub(nome_like):
+        return f"(SELECT user_id FROM users WHERE nome ILIKE '%{nome_like}%' LIMIT 1)"
+
+    ur_vals = [
+        f"({user_sub('Rodrigo')}, {role_sub('admin')})",
+        f"({user_sub('João Vitor')}, {role_sub('admin')})",
+        f"({user_sub('Claudio')}, {role_sub('admin')})",
+        f"({user_sub('Tiago')}, {role_sub('operador_campo')})",
+        f"({user_sub('Alessandro')}, {role_sub('agronomo')})",
+        f"({user_sub('Josmar')}, {role_sub('operador_ubg')})",
+        f"({user_sub('Vanessa')}, {role_sub('operador_ubg')})",
+        f"({user_sub('Valentina')}, {role_sub('administrativo')})",
+    ]
+    parts.append(batch_insert("user_roles", ["user_id", "role_id"], ur_vals,
+        on_conflict="ON CONFLICT (user_id, role_id) DO NOTHING"))
+
     parts.append("""
 COMMIT;
 
@@ -1451,12 +1531,23 @@ WHERE ts.safra_id = s.safra_id
         vals, batch_size=100,
         on_conflict="ON CONFLICT (silo_id, safra_id, cultura_id, data_referencia) DO NOTHING"))
 
+    # ─── 37. CONSUMO_AGRIWIN (staging Bronze) ───
+    parts.append(header("37. CONSUMO_AGRIWIN (staging Bronze)", "Fonte: fase_6_operacoes/12_consumo_agriwin.csv (21.162 registros, R$99.2M, 8 safras)"))
+    rows = read_csv("fase_6_operacoes/12_consumo_agriwin.csv")
+    vals = []
+    for r in rows:
+        safra_code = r.get('safra', '').strip()
+        vals.append(f"({org_id()}, {safra_id(safra_code)}, {esc_date(r.get('data_aplicacao'))}, {esc(r.get('tipo_rateio'))}, {esc(r.get('rateio_detalhe'))}, {esc(r.get('tipo_operacao'))}, {esc(r.get('responsavel'))}, {esc(r.get('imobilizados'))}, {esc(r.get('produto_nome'))}, {esc(r.get('produto_unidade'))}, {esc_num(r.get('valor_total_operacao'))}, {esc_int(r.get('num_produtos_operacao'))}, {esc(r.get('arquivo_origem'))})")
+    parts.append(batch_insert("consumo_agriwin",
+        ["organization_id", "safra_id", "data_aplicacao", "tipo_rateio", "rateio_detalhe", "tipo_operacao", "responsavel", "imobilizados", "produto_nome", "produto_unidade", "valor_total_operacao", "num_produtos_operacao", "arquivo_origem"],
+        vals, batch_size=500))
+
     parts.append("""
 COMMIT;
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- FIM — 02_INSERT_DADOS.sql
--- Total: ~56.000 registros inseridos (inclui 12.823 FSI + fase 5 lifecycle + UBG secagem/silos)
+-- Total: ~77.000 registros inseridos (inclui 12.823 FSI + fase 5 lifecycle + UBG secagem/silos + 21.162 consumo_agriwin)
 -- ═══════════════════════════════════════════════════════════════════════
 """)
 

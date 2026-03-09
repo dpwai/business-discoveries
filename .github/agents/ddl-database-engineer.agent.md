@@ -7,7 +7,7 @@
 
 | Arquivo | Caminho | Conteúdo |
 |---------|---------|----------|
-| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | ~3.048 linhas, 66 tabelas, 45 ENUMs, 4 views, 6 funções |
+| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 3.031 linhas, 66 tabelas (-producao_ubg +consumo_agriwin), 45 ENUMs, 4 views, 6 funções |
 | Prisma Schema | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos + 45 enums |
 | GAP Analysis | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
 | DDL Playground | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |
@@ -48,7 +48,7 @@ produto_insumo, receituario_agronomico, compra_insumo, estoque_insumo, aplicacao
 operacoes_campo, plantio_detalhes, colheita_detalhes, pulverizacao_detalhes, drone_detalhes, transporte_colheita_detalhes + ALTER aplicacao_insumo→operacoes_campo
 
 ### Seção 7: UBG (9 tabelas — Doc 28)
-ticket_balancas, producao_ubg, pesagens_agricola, saidas_grao, recebimentos_grao, controles_secagem, leituras_secagem, estoques_silo, alocacoes_silo
+ticket_balancas, pesagens_agricola, saidas_grao, recebimentos_grao, controles_secagem, leituras_secagem, estoques_silo, alocacoes_silo, consumo_agriwin
 
 ### Seção 8: Financeiro Coop (7 tabelas — Doc 29)
 extratos_cooperativa, cc_cooperativa, contas_capital, financiamentos_coop, vendas_grao, cargas_a_carga, custos_insumo_coop

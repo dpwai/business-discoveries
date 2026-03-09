@@ -2,7 +2,7 @@
 -- SOAL — 01_INSERT_SEEDS.sql
 -- Seeds & Dados de Referência (Fases 0-2)
 -- ═══════════════════════════════════════════════════════════════════════
--- Gerado em: 2026-03-08 21:40
+-- Gerado em: 2026-03-09 09:15
 -- Rodar APÓS: psql -f 00_DDL_COMPLETO_V0.sql
 -- Ordem de dependência FK respeitada
 -- ═══════════════════════════════════════════════════════════════════════
@@ -23387,6 +23387,147 @@ INSERT INTO template_cultura_operacoes (organization_id, cultura_id, tipo_operac
   ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), (SELECT cultura_id FROM culturas WHERE nome = 'Aveia Preta' LIMIT 1), 'plantio', 'Plantio', 'plantio', 0, 3, 1, TRUE),
   ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), (SELECT cultura_id FROM culturas WHERE nome = 'Aveia Preta' LIMIT 1), 'pulverizacao_herbicida', 'Herbicida pos-emergente', 'manejo', 15, 1, 2, FALSE),
   ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), (SELECT cultura_id FROM culturas WHERE nome = 'Aveia Preta' LIMIT 1), 'dessecacao_pre_plantio', 'Dessecacao (rolagem)', 'manejo', 90, 2, 3, TRUE);
+
+-- ======================================================================
+-- 16. RBAC: ROLES
+-- ======================================================================
+-- 5 roles para V0
+INSERT INTO roles (organization_id, nome, descricao) VALUES
+  ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), 'admin', 'Acesso total ao sistema (DeepWork AI)'),
+  ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), 'agronomo', 'Planejamento safra, operações campo, receituários'),
+  ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), 'operador_campo', 'Execução operações, abastecimentos, maquinário'),
+  ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), 'operador_ubg', 'Balança, secagem, silos, saídas'),
+  ((SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1), 'administrativo', 'Financeiro, NFs, contas a pagar/receber');
+
+-- ======================================================================
+-- 17. RBAC: PERMISSIONS
+-- ======================================================================
+-- CRUD para módulos principais
+INSERT INTO permissions (recurso, acao) VALUES
+  ('safra', 'criar'),
+  ('safra', 'ler'),
+  ('safra', 'editar'),
+  ('safra', 'deletar'),
+  ('operacao_campo', 'criar'),
+  ('operacao_campo', 'ler'),
+  ('operacao_campo', 'editar'),
+  ('operacao_campo', 'deletar'),
+  ('insumo', 'criar'),
+  ('insumo', 'ler'),
+  ('insumo', 'editar'),
+  ('insumo', 'deletar'),
+  ('maquina', 'criar'),
+  ('maquina', 'ler'),
+  ('maquina', 'editar'),
+  ('maquina', 'deletar'),
+  ('ubg', 'criar'),
+  ('ubg', 'ler'),
+  ('ubg', 'editar'),
+  ('ubg', 'deletar'),
+  ('financeiro', 'criar'),
+  ('financeiro', 'ler'),
+  ('financeiro', 'editar'),
+  ('financeiro', 'deletar'),
+  ('usuario', 'criar'),
+  ('usuario', 'ler'),
+  ('usuario', 'editar'),
+  ('usuario', 'deletar'),
+  ('relatorio', 'criar'),
+  ('relatorio', 'ler'),
+  ('relatorio', 'editar'),
+  ('relatorio', 'deletar')
+  ON CONFLICT (recurso, acao) DO NOTHING;
+
+-- ======================================================================
+-- 18. RBAC: ROLE_PERMISSIONS
+-- ======================================================================
+-- admin=tudo, outros=módulos específicos
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'usuario' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'usuario' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'usuario' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'usuario' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'safra' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'insumo' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'operacao_campo' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'maquina' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'ubg' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'criar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'ler' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'editar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'financeiro' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'relatorio' AND acao = 'deletar' LIMIT 1)),
+  ((SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1), (SELECT permission_id FROM permissions WHERE recurso = 'usuario' AND acao = 'ler' LIMIT 1))
+  ON CONFLICT (role_id, permission_id) DO NOTHING;
+
+-- ======================================================================
+-- 19. RBAC: USER_ROLES
+-- ======================================================================
+-- Vincular 8 users aos roles corretos
+INSERT INTO user_roles (user_id, role_id) VALUES
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Rodrigo%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%João Vitor%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Claudio%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'admin' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Tiago%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'operador_campo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Alessandro%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'agronomo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Josmar%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Vanessa%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'operador_ubg' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1)),
+  ((SELECT user_id FROM users WHERE nome ILIKE '%Valentina%' LIMIT 1), (SELECT role_id FROM roles WHERE nome = 'administrativo' AND organization_id = (SELECT organization_id FROM organizations WHERE nome = 'Serra da Onça Agropecuária' LIMIT 1) LIMIT 1))
+  ON CONFLICT (user_id, role_id) DO NOTHING;
 
 COMMIT;
 

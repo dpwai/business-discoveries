@@ -530,7 +530,7 @@ model Organization {
   operacoesCampo          OperacaoCampo[]
   // Relacoes filhas — UBG
   ticketBalancas          TicketBalanca[]
-  producaoUbgs            ProducaoUbg[]
+  consumoAgriwin          ConsumoAgriwin[]
   pesagensAgricola        PesagemAgricola[]
   saidasGrao              SaidaGrao[]
   recebimentosGrao        RecebimentoGrao[]
@@ -560,6 +560,17 @@ model Organization {
   planoSafraSnapshots     PlanoSafraSnapshot[]
   templateCulturaOps      TemplateCulturaOperacao[]
   safraAcoes              SafraAcao[]
+  // Relacoes filhas — Financeiro Target (Fases 1-3)
+  centroCustos            CentroCusto[]
+  custoOperacoes          CustoOperacao[]
+  orcamentoSafras         OrcamentoSafra[]
+  notasFiscais            NotaFiscal[]
+  contasPagar             ContaPagar[]
+  contasReceber           ContaReceber[]
+  contratosComerciais     ContratoComercial[]
+  cprDocumentos           CprDocumento[]
+  contratosArrendamento   ContratoArrendamento[]
+  depreciacaoAtivos       DepreciacaoAtivo[]
 
   @@index([ownerId])
   @@map("organizations")
@@ -602,6 +613,8 @@ model User {
   movimentacaoInsumos MovimentacaoInsumo[] @relation("responsavel")
   // Reverse — Planejamento
   safraAcoes          SafraAcao[]
+  // Reverse — Financeiro
+  orcamentoSafrasAprovadas OrcamentoSafra[]
 
   @@unique([organizationId, cpf])
   @@index([organizationId])
@@ -702,6 +715,8 @@ model Fazenda {
   // Reverse — Insumos + Operacoes
   estoqueInsumos     EstoqueInsumo[]
   operacoesCampo     OperacaoCampo[]
+  // Reverse — Financeiro
+  centroCustos       CentroCusto[]
 
   @@unique([organizationId, nome])
   @@index([organizationId])
@@ -726,6 +741,10 @@ model Talhao {
 
   fazenda      Fazenda       @relation(fields: [fazendaId], references: [id])
   talhaoSafras TalhaoSafra[]
+  // Reverse — Financeiro
+  centroCustos                  CentroCusto[]
+  custoOperacoes                CustoOperacao[]
+  contratoArrendamentoTalhoes   ContratoArrendamentoTalhao[]
 
   @@unique([organizationId, fazendaId, nome])
   @@index([organizationId])
@@ -750,7 +769,7 @@ model Safra {
   talhaoSafras     TalhaoSafra[]
   // Reverse — UBG
   ticketBalancas   TicketBalanca[]
-  producaoUbgs     ProducaoUbg[]
+  consumoAgriwin   ConsumoAgriwin[]
   pesagensAgricola PesagemAgricola[]
   saidasGrao       SaidaGrao[]
   recebimentosGrao RecebimentoGrao[]
@@ -767,6 +786,11 @@ model Safra {
   // Reverse — Planejamento
   planoSafraSnapshots PlanoSafraSnapshot[]
   safraAcoes          SafraAcao[]
+  // Reverse — Financeiro
+  centroCustos          CentroCusto[]
+  custoOperacoes        CustoOperacao[]
+  orcamentoSafras       OrcamentoSafra[]
+  contratosComerciais   ContratoComercial[]
 
   @@unique([organizationId, anoAgricola])
   @@index([organizationId])
@@ -788,7 +812,7 @@ model Cultura {
   talhaoSafras     TalhaoSafra[]
   // Reverse — UBG
   ticketBalancas   TicketBalanca[]
-  producaoUbgs     ProducaoUbg[]
+  consumoAgriwin   ConsumoAgriwin[]
   pesagensAgricola PesagemAgricola[]
   saidasGrao       SaidaGrao[]
   recebimentosGrao RecebimentoGrao[]
@@ -805,6 +829,10 @@ model Cultura {
   vendasDiretas    VendaDireta[]
   // Reverse — Planejamento
   templateCulturaOps TemplateCulturaOperacao[]
+  // Reverse — Financeiro
+  centroCustos        CentroCusto[]
+  custoOperacoes      CustoOperacao[]
+  contratosComerciais ContratoComercial[]
 
   @@map("culturas")
 }
@@ -882,6 +910,8 @@ model Silo {
   estoquesSilo            EstoqueSilo[]
   alocacoesSiloOrigem     AlocacaoSilo[]    @relation("siloOrigem")
   alocacoesSiloDestino    AlocacaoSilo[]    @relation("siloDestino_alocacao")
+  // Reverse — Financeiro
+  centroCustos            CentroCusto[]
 
   @@unique([organizationId, codigo])
   @@index([organizationId])
@@ -913,6 +943,12 @@ model ParceiroComercial {
   organization  Organization   @relation(fields: [organizationId], references: [id])
   // Reverse — Insumos
   compraInsumos CompraInsumo[]
+  // Reverse — Financeiro
+  notasFiscais            NotaFiscal[]
+  contasPagar             ContaPagar[]
+  contasReceber           ContaReceber[]
+  contratosComerciais     ContratoComercial[]
+  contratosArrendamento   ContratoArrendamento[]
 
   @@unique([organizationId, cpfCnpj])
   @@index([organizationId])
@@ -1034,6 +1070,10 @@ model Maquina {
   // Reverse — Operacoes + Historico
   operacoesCampo    OperacaoCampo[]
   historicoMaquinas HistoricoMaquina[]
+  // Reverse — Financeiro
+  centroCustos      CentroCusto[]
+  custoOperacoes    CustoOperacao[]
+  depreciacaoAtivo  DepreciacaoAtivo?
 
   @@unique([organizationId, codigoInterno])
   @@index([organizationId])
@@ -1087,6 +1127,8 @@ model Abastecimento {
   organization Organization @relation(fields: [organizationId], references: [id])
   maquina      Maquina      @relation(fields: [maquinaId], references: [id])
   operador     Operador?    @relation(fields: [operadorId], references: [id])
+  // Reverse — Financeiro
+  custoOperacoes CustoOperacao[]
 
   @@index([organizationId])
   @@index([maquinaId])
@@ -1118,6 +1160,8 @@ model Manutencao {
   maquina          Maquina           @relation(fields: [maquinaId], references: [id])
   // Reverse — Insumos
   aplicacaoInsumos AplicacaoInsumo[]
+  // Reverse — Financeiro
+  custoOperacoes   CustoOperacao[]
 
   @@index([organizationId])
   @@index([maquinaId])
@@ -1236,6 +1280,9 @@ model ProdutoInsumo {
   compraInsumos    CompraInsumo[]
   estoqueInsumos   EstoqueInsumo[]
   aplicacaoInsumos AplicacaoInsumo[]
+  // Reverse — Financeiro
+  notaFiscalItens     NotaFiscalItem[]
+  contratosComerciais ContratoComercial[]
 
   @@unique([organizationId, codigo])
   @@index([organizationId])
@@ -1309,6 +1356,8 @@ model CompraInsumo {
   safra               Safra?               @relation(fields: [safraId], references: [id])
   culturaDestino      Cultura?             @relation("culturaDestino", fields: [culturaDestinoId], references: [id])
   movimentacaoInsumos MovimentacaoInsumo[]
+  // Reverse — Financeiro
+  custoOperacoes      CustoOperacao[]
 
   @@index([organizationId])
   @@index([produtoInsumoId])
@@ -1386,6 +1435,8 @@ model AplicacaoInsumo {
   manutencao          Manutencao?            @relation(fields: [manutencaoId], references: [id])
   receituario         ReceituarioAgronomico? @relation(fields: [receituarioId], references: [id])
   movimentacaoInsumos MovimentacaoInsumo[]
+  // Reverse — Financeiro
+  custoOperacoes      CustoOperacao[]
 
   @@index([organizationId])
   @@index([produtoInsumoId])
@@ -1477,6 +1528,8 @@ model OperacaoCampo {
   aplicacaoInsumos          AplicacaoInsumo[]
   // Reverse — TransporteColheita (colheita_origem_id)
   transportesOrigem         TransporteColheitaDetalhe[] @relation("ColheitaTransporte")
+  // Reverse — Financeiro
+  custoOperacoes            CustoOperacao[]
 
   @@index([organizationId])
   @@index([talhaoSafraId])
@@ -1627,6 +1680,8 @@ model TicketBalanca {
   // Reverse
   recebimentosGrao           RecebimentoGrao[]
   transporteColheitaDetalhes TransporteColheitaDetalhe[]
+  // Reverse — Financeiro
+  contratoEntregas           ContratoEntrega[]
 
   @@index([organizationId])
   @@index([safraId])
@@ -1637,51 +1692,34 @@ model TicketBalanca {
   @@map("ticket_balancas")
 }
 
-/// Dados historicos de producao UBG importados das planilhas de controle
-model ProducaoUbg {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @map("producao_ubg_id") @db.Uuid
-  organizationId    String    @map("organization_id") @db.Uuid
-  safraId           String?   @map("safra_id") @db.Uuid
-  culturaId         String?   @map("cultura_id") @db.Uuid
-  arquivoFonte      String?   @map("arquivo_fonte") @db.VarChar(200)
-  aba               String?   @db.VarChar(100)
-  talhaoHeader      String?   @map("talhao_header") @db.VarChar(100)
-  areaHa            Decimal?  @map("area_ha") @db.Decimal(10, 4)
-  produtividadeKgHa Decimal?  @map("produtividade_kg_ha") @db.Decimal(10, 2)
-  produtoVariedade  String?   @map("produto_variedade") @db.VarChar(100)
-  producaoTotalKg   Decimal?  @map("producao_total_kg") @db.Decimal(12, 2)
-  dataPesagem       DateTime? @map("data_pesagem") @db.Date
-  horaPesagem       DateTime? @map("hora_pesagem") @db.Time()
-  gleba             String?   @db.VarChar(100)
-  destino           String?   @db.VarChar(100)
-  variedadeTicket   String?   @map("variedade_ticket") @db.VarChar(100)
-  motorista         String?   @db.VarChar(100)
-  placa             String?   @db.VarChar(10)
-  pesoBrutoKg       Decimal?  @map("peso_bruto_kg") @db.Decimal(12, 2)
-  pesoTaraKg        Decimal?  @map("peso_tara_kg") @db.Decimal(12, 2)
-  pesoLiquidoKg     Decimal?  @map("peso_liquido_kg") @db.Decimal(12, 2)
-  umidadePct        Decimal?  @map("umidade_pct") @db.Decimal(5, 2)
-  ph                Decimal?  @db.Decimal(5, 2)
-  impurezaPct       Decimal?  @map("impureza_pct") @db.Decimal(5, 2)
-  ardidosPct        Decimal?  @map("ardidos_pct") @db.Decimal(5, 2)
-  avariadoPct       Decimal?  @map("avariado_pct") @db.Decimal(5, 2)
-  verdesPct         Decimal?  @map("verdes_pct") @db.Decimal(5, 2)
-  quebradoPct       Decimal?  @map("quebrado_pct") @db.Decimal(5, 2)
-  descontoKg        Decimal?  @map("desconto_kg") @db.Decimal(12, 2)
-  pesoFinalKg       Decimal?  @map("peso_final_kg") @db.Decimal(12, 2)
-  status            String    @default("active") @db.VarChar(20)
-  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+/// Staging Bronze: dados AgriWin consumo (21.162 registros). Nao normalizado.
+model ConsumoAgriwin {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @map("consumo_agriwin_id") @db.Uuid
+  organizationId       String    @map("organization_id") @db.Uuid
+  safraId              String?   @map("safra_id") @db.Uuid
+  dataAplicacao        DateTime  @map("data_aplicacao") @db.Date
+  tipoRateio           String?   @map("tipo_rateio") @db.VarChar(20)
+  rateioDetalhe        String?   @map("rateio_detalhe") @db.VarChar(200)
+  tipoOperacao         String?   @map("tipo_operacao") @db.VarChar(100)
+  responsavel          String?   @db.VarChar(200)
+  imobilizados         String?
+  produtoNome          String?   @map("produto_nome") @db.VarChar(300)
+  produtoUnidade       String?   @map("produto_unidade") @db.VarChar(20)
+  valorTotalOperacao   Decimal?  @map("valor_total_operacao") @db.Decimal(14, 2)
+  numProdutosOperacao  Int?      @map("num_produtos_operacao")
+  arquivoOrigem        String?   @map("arquivo_origem") @db.VarChar(200)
+  status               String    @default("active") @db.VarChar(20)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   organization Organization @relation(fields: [organizationId], references: [id])
   safra        Safra?       @relation(fields: [safraId], references: [id])
-  cultura      Cultura?     @relation(fields: [culturaId], references: [id])
 
   @@index([organizationId])
   @@index([safraId])
-  @@index([culturaId])
-  @@index([dataPesagem])
-  @@map("producao_ubg")
+  @@index([dataAplicacao])
+  @@index([tipoOperacao])
+  @@map("consumo_agriwin")
 }
 
 /// Pesagens agricolas no campo (perspectiva agricola)
@@ -1769,6 +1807,8 @@ model SaidaGrao {
   safra         Safra?         @relation(fields: [safraId], references: [id])
   cultura       Cultura?       @relation(fields: [culturaId], references: [id])
   alocacoesSilo AlocacaoSilo[]
+  // Reverse — Financeiro
+  contratoEntregas ContratoEntrega[]
 
   @@index([organizationId])
   @@index([safraId])
@@ -2173,6 +2213,8 @@ model CargaACarga {
   organization Organization @relation(fields: [organizationId], references: [id])
   safra        Safra?       @relation(fields: [safraId], references: [id])
   cultura      Cultura?     @relation(fields: [culturaId], references: [id])
+  // Reverse — Financeiro
+  contratoEntregas ContratoEntrega[]
 
   @@index([organizationId])
   @@index([safraId])
@@ -2587,4 +2629,607 @@ model SafraAcao {
   @@map("safra_acoes")
 }
 
-// FIM DO SCHEMA — 66 modelos + 45 ENUMs
+// =============================================================================
+// CAMADA FINANCEIRA TARGET — Fases 1-3 (14 ENUMs + 12 models)
+// =============================================================================
+
+// --- ENUMs Fase 1: Custeio ---
+
+enum TipoCentroCusto {
+  organizacao
+  fazenda
+  safra
+  cultura
+  talhao
+  departamento
+  subdepartamento
+  equipamento
+  maquina
+  operacao
+  silo
+}
+
+enum NaturezaCentroCusto {
+  producao
+  apoio
+  administrativo
+  financeiro
+}
+
+enum TipoCusto {
+  insumo
+  mao_obra
+  mecanizacao
+  servico
+  depreciacao
+  arrendamento
+  administrativo
+}
+
+enum TipoRateio {
+  direto
+  por_area
+  por_hora_maquina
+  por_producao
+  por_receita
+}
+
+// --- ENUMs Fase 2: Contas P/R ---
+
+enum TipoNotaFiscal {
+  entrada
+  saida
+}
+
+enum StatusNotaFiscal {
+  emitida
+  autorizada
+  cancelada
+  inutilizada
+  denegada
+}
+
+enum OrigemNotaFiscal {
+  sefaz
+  castrolanda
+  manual
+  importada
+}
+
+enum CategoriaContaPagar {
+  insumo
+  servico
+  folha
+  arrendamento
+  financiamento
+  imposto
+  consorcio
+  outros
+}
+
+enum StatusConta {
+  pendente
+  paga
+  recebida
+  vencida
+  cancelada
+}
+
+enum FormaPagamento {
+  boleto
+  transferencia
+  pix
+  cheque
+  dinheiro
+  compensacao
+}
+
+enum CategoriaContaReceber {
+  venda_cooperativa
+  venda_direta
+  arrendamento_receber
+  servico_prestado
+  restituicao
+  outros
+}
+
+// --- ENUMs Fase 3: Contratos ---
+
+enum TipoContratoComercial {
+  venda_antecipada
+  barter
+  fixacao
+  cpr
+  spot
+}
+
+enum StatusContrato {
+  negociacao
+  ativo
+  cumprido
+  cancelado
+  vencido
+}
+
+enum MetodoDepreciacao {
+  linear
+  por_uso
+  acelerada
+}
+
+// =============================================================================
+// MODELS — Fase 1: Centro de Custo + Custeio
+// =============================================================================
+
+/// Hierarquia de centros de custo, 6 niveis (Doc 13). Self-referential.
+model CentroCusto {
+  id                String               @id @default(dbgenerated("gen_random_uuid()")) @map("centro_custo_id") @db.Uuid
+  organizationId    String               @map("organization_id") @db.Uuid
+  parentId          String?              @map("parent_id") @db.Uuid
+  codigo            String               @db.VarChar(20)
+  nome              String               @db.VarChar(200)
+  nivel             Int
+  tipo              TipoCentroCusto
+  natureza          NaturezaCentroCusto
+  permiteLancamento Boolean?             @default(false) @map("permite_lancamento")
+  ativo             Boolean?             @default(true)
+  fazendaId         String?              @map("fazenda_id") @db.Uuid
+  safraId           String?              @map("safra_id") @db.Uuid
+  culturaId         String?              @map("cultura_id") @db.Uuid
+  talhaoId          String?              @map("talhao_id") @db.Uuid
+  maquinaId         String?              @map("maquina_id") @db.Uuid
+  siloId            String?              @map("silo_id") @db.Uuid
+  status            String               @default("active") @db.VarChar(20)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization  Organization    @relation(fields: [organizationId], references: [id])
+  parent        CentroCusto?    @relation("CentroCustoHierarquia", fields: [parentId], references: [id])
+  children      CentroCusto[]   @relation("CentroCustoHierarquia")
+  fazenda       Fazenda?        @relation(fields: [fazendaId], references: [id])
+  safra         Safra?          @relation(fields: [safraId], references: [id])
+  cultura       Cultura?        @relation(fields: [culturaId], references: [id])
+  talhao        Talhao?         @relation(fields: [talhaoId], references: [id])
+  maquina       Maquina?        @relation(fields: [maquinaId], references: [id])
+  silo          Silo?           @relation(fields: [siloId], references: [id])
+  custoOperacoes    CustoOperacao[]
+  custoOperacoesRateio CustoOperacao[] @relation("RateioOrigem")
+  orcamentoSafras   OrcamentoSafra[]
+  contasPagar       ContaPagar[]
+
+  @@unique([organizationId, codigo])
+  @@index([parentId])
+  @@index([organizationId])
+  @@index([codigo])
+  @@index([nivel])
+  @@index([tipo])
+  @@map("centro_custos")
+}
+
+/// Custos acumulados por centro de custo. Silver layer.
+model CustoOperacao {
+  id                String       @id @default(dbgenerated("gen_random_uuid()")) @map("custo_operacao_id") @db.Uuid
+  organizationId    String       @map("organization_id") @db.Uuid
+  centroCustoId     String       @map("centro_custo_id") @db.Uuid
+  tipoCusto         TipoCusto    @map("tipo_custo")
+  subtipo           String?      @db.VarChar(50)
+  descricao         String?
+  dataCusto         DateTime     @map("data_custo") @db.Date
+  quantidade        Decimal?     @db.Decimal(14, 4)
+  unidade           String?      @db.VarChar(20)
+  valorUnitario     Decimal?     @map("valor_unitario") @db.Decimal(14, 4)
+  valorTotal        Decimal      @map("valor_total") @db.Decimal(14, 2)
+  custoPorHa        Decimal?     @map("custo_por_ha") @db.Decimal(10, 2)
+  areaRateioHa      Decimal?     @map("area_rateio_ha") @db.Decimal(10, 2)
+  rateioTipo        TipoRateio?  @default(direto) @map("rateio_tipo")
+  rateioPercentual  Decimal?     @map("rateio_percentual") @db.Decimal(5, 2)
+  rateioOrigemCcId  String?      @map("rateio_origem_cc_id") @db.Uuid
+  notaFiscalId      String?      @map("nota_fiscal_id") @db.Uuid
+  abastecimentoId   String?      @map("abastecimento_id") @db.Uuid
+  manutencaoId      String?      @map("manutencao_id") @db.Uuid
+  operacaoCampoId   String?      @map("operacao_campo_id") @db.Uuid
+  aplicacaoInsumoId String?      @map("aplicacao_insumo_id") @db.Uuid
+  compraInsumoId    String?      @map("compra_insumo_id") @db.Uuid
+  safraId           String?      @map("safra_id") @db.Uuid
+  culturaId         String?      @map("cultura_id") @db.Uuid
+  talhaoId          String?      @map("talhao_id") @db.Uuid
+  maquinaId         String?      @map("maquina_id") @db.Uuid
+  sourceTable       String?      @map("source_table") @db.VarChar(50)
+  sourceId          String?      @map("source_id") @db.Uuid
+  status            String       @default("active") @db.VarChar(20)
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization    Organization    @relation(fields: [organizationId], references: [id])
+  centroCusto     CentroCusto     @relation(fields: [centroCustoId], references: [id])
+  rateioOrigemCc  CentroCusto?    @relation("RateioOrigem", fields: [rateioOrigemCcId], references: [id])
+  notaFiscal      NotaFiscal?     @relation(fields: [notaFiscalId], references: [id])
+  abastecimento   Abastecimento?  @relation(fields: [abastecimentoId], references: [id])
+  manutencao      Manutencao?     @relation(fields: [manutencaoId], references: [id])
+  operacaoCampo   OperacaoCampo?  @relation(fields: [operacaoCampoId], references: [id])
+  aplicacaoInsumo AplicacaoInsumo? @relation(fields: [aplicacaoInsumoId], references: [id])
+  compraInsumo    CompraInsumo?   @relation(fields: [compraInsumoId], references: [id])
+  safra           Safra?          @relation(fields: [safraId], references: [id])
+  cultura         Cultura?        @relation(fields: [culturaId], references: [id])
+  talhao          Talhao?         @relation(fields: [talhaoId], references: [id])
+  maquina         Maquina?        @relation(fields: [maquinaId], references: [id])
+
+  @@index([organizationId])
+  @@index([centroCustoId])
+  @@index([tipoCusto])
+  @@index([dataCusto])
+  @@index([sourceTable, sourceId])
+  @@map("custo_operacoes")
+}
+
+/// Orcamento por centro de custo x safra x categoria
+model OrcamentoSafra {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @map("orcamento_safra_id") @db.Uuid
+  organizationId  String    @map("organization_id") @db.Uuid
+  safraId         String    @map("safra_id") @db.Uuid
+  centroCustoId   String    @map("centro_custo_id") @db.Uuid
+  categoria       TipoCusto
+  descricao       String?   @db.VarChar(200)
+  valorPrevisto   Decimal   @map("valor_previsto") @db.Decimal(14, 2)
+  valorPorHa      Decimal?  @map("valor_por_ha") @db.Decimal(10, 2)
+  areaPrevistaHa  Decimal?  @map("area_prevista_ha") @db.Decimal(10, 2)
+  aprovadoPor     String?   @map("aprovado_por") @db.Uuid
+  dataAprovacao   DateTime? @map("data_aprovacao") @db.Date
+  observacoes     String?
+  status          String    @default("active") @db.VarChar(20)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  safra        Safra        @relation(fields: [safraId], references: [id])
+  centroCusto  CentroCusto  @relation(fields: [centroCustoId], references: [id])
+  aprovador    User?        @relation(fields: [aprovadoPor], references: [id])
+
+  @@unique([safraId, centroCustoId, categoria])
+  @@index([organizationId])
+  @@index([safraId])
+  @@index([centroCustoId])
+  @@map("orcamento_safras")
+}
+
+// =============================================================================
+// MODELS — Fase 2: Nota Fiscal + Contas P/R
+// =============================================================================
+
+/// Notas fiscais eletronicas (NF-e / NFS-e)
+model NotaFiscal {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @map("nota_fiscal_id") @db.Uuid
+  organizationId   String            @map("organization_id") @db.Uuid
+  chaveNfe         String?           @unique @map("chave_nfe") @db.VarChar(44)
+  numero           String?           @db.VarChar(20)
+  serie            String?           @db.VarChar(5)
+  tipo             TipoNotaFiscal
+  statusNf         StatusNotaFiscal? @default(autorizada) @map("status_nf")
+  origem           OrigemNotaFiscal? @default(manual)
+  parceiroId       String?           @map("parceiro_id") @db.Uuid
+  dataEmissao      DateTime          @map("data_emissao") @db.Date
+  dataEntradaSaida DateTime?         @map("data_entrada_saida") @db.Date
+  valorProdutos    Decimal?          @map("valor_produtos") @db.Decimal(14, 2)
+  valorFrete       Decimal?          @map("valor_frete") @db.Decimal(14, 2)
+  valorSeguro      Decimal?          @map("valor_seguro") @db.Decimal(14, 2)
+  valorDesconto    Decimal?          @map("valor_desconto") @db.Decimal(14, 2)
+  valorTotal       Decimal           @map("valor_total") @db.Decimal(14, 2)
+  impostosJson     Json?             @map("impostos_json") @db.JsonB
+  observacoes      String?
+  status           String            @default("active") @db.VarChar(20)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization    Organization       @relation(fields: [organizationId], references: [id])
+  parceiro        ParceiroComercial? @relation(fields: [parceiroId], references: [id])
+  itens           NotaFiscalItem[]
+  custoOperacoes  CustoOperacao[]
+  contasPagar     ContaPagar[]
+  contasReceber   ContaReceber[]
+  contratoEntregas ContratoEntrega[]
+
+  @@index([organizationId])
+  @@index([numero])
+  @@index([parceiroId])
+  @@index([dataEmissao])
+  @@index([tipo])
+  @@map("notas_fiscais")
+}
+
+/// Itens de nota fiscal
+model NotaFiscalItem {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @map("nota_fiscal_item_id") @db.Uuid
+  notaFiscalId     String   @map("nota_fiscal_id") @db.Uuid
+  produtoInsumoId  String?  @map("produto_insumo_id") @db.Uuid
+  sequencia        Int
+  codigoProduto    String?  @map("codigo_produto") @db.VarChar(50)
+  descricao        String   @db.VarChar(300)
+  ncm              String?  @db.VarChar(10)
+  cfop             String?  @db.VarChar(10)
+  unidade          String?  @db.VarChar(20)
+  quantidade       Decimal  @db.Decimal(14, 4)
+  valorUnitario    Decimal  @map("valor_unitario") @db.Decimal(14, 4)
+  valorTotal       Decimal  @map("valor_total") @db.Decimal(14, 2)
+  valorDesconto    Decimal? @map("valor_desconto") @db.Decimal(14, 2)
+  impostosItemJson Json?    @map("impostos_item_json") @db.JsonB
+  status           String   @default("active") @db.VarChar(20)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  notaFiscal    NotaFiscal     @relation(fields: [notaFiscalId], references: [id], onDelete: Cascade)
+  produtoInsumo ProdutoInsumo? @relation(fields: [produtoInsumoId], references: [id])
+
+  @@index([notaFiscalId])
+  @@index([produtoInsumoId])
+  @@map("nota_fiscal_itens")
+}
+
+/// Contas a pagar — operacao diaria da Valentina
+model ContaPagar {
+  id                      String              @id @default(dbgenerated("gen_random_uuid()")) @map("conta_pagar_id") @db.Uuid
+  organizationId          String              @map("organization_id") @db.Uuid
+  parceiroId              String?             @map("parceiro_id") @db.Uuid
+  centroCustoId           String?             @map("centro_custo_id") @db.Uuid
+  notaFiscalId            String?             @map("nota_fiscal_id") @db.Uuid
+  contratoArrendamentoId  String?             @map("contrato_arrendamento_id") @db.Uuid
+  categoria               CategoriaContaPagar
+  descricao               String
+  dataEmissao             DateTime            @map("data_emissao") @db.Date
+  dataVencimento          DateTime            @map("data_vencimento") @db.Date
+  dataPagamento           DateTime?           @map("data_pagamento") @db.Date
+  valorOriginal           Decimal             @map("valor_original") @db.Decimal(14, 2)
+  valorJuros              Decimal?            @default(0) @map("valor_juros") @db.Decimal(14, 2)
+  valorMulta              Decimal?            @default(0) @map("valor_multa") @db.Decimal(14, 2)
+  valorDesconto           Decimal?            @default(0) @map("valor_desconto") @db.Decimal(14, 2)
+  valorPago               Decimal?            @map("valor_pago") @db.Decimal(14, 2)
+  formaPagamento          FormaPagamento?     @map("forma_pagamento")
+  contaBancaria           String?             @map("conta_bancaria") @db.VarChar(100)
+  numeroParcela           Int?                @default(1) @map("numero_parcela")
+  totalParcelas           Int?                @default(1) @map("total_parcelas")
+  statusConta             StatusConta?        @default(pendente) @map("status_conta")
+  sourceTable             String?             @map("source_table") @db.VarChar(50)
+  sourceId                String?             @map("source_id") @db.Uuid
+  observacoes             String?
+  status                  String              @default("active") @db.VarChar(20)
+  createdAt               DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization        Organization          @relation(fields: [organizationId], references: [id])
+  parceiro            ParceiroComercial?    @relation(fields: [parceiroId], references: [id])
+  centroCusto         CentroCusto?          @relation(fields: [centroCustoId], references: [id])
+  notaFiscal          NotaFiscal?           @relation(fields: [notaFiscalId], references: [id])
+  contratoArrendamento ContratoArrendamento? @relation(fields: [contratoArrendamentoId], references: [id])
+
+  @@index([organizationId])
+  @@index([parceiroId])
+  @@index([centroCustoId])
+  @@index([categoria])
+  @@index([dataVencimento])
+  @@index([statusConta])
+  @@map("contas_pagar")
+}
+
+/// Contas a receber — vendas cooperativa, diretas, servicos
+model ContaReceber {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @map("conta_receber_id") @db.Uuid
+  organizationId        String                @map("organization_id") @db.Uuid
+  parceiroId            String?               @map("parceiro_id") @db.Uuid
+  notaFiscalId          String?               @map("nota_fiscal_id") @db.Uuid
+  contratoComercialId   String?               @map("contrato_comercial_id") @db.Uuid
+  categoria             CategoriaContaReceber
+  descricao             String
+  dataEmissao           DateTime              @map("data_emissao") @db.Date
+  dataVencimento        DateTime              @map("data_vencimento") @db.Date
+  dataRecebimento       DateTime?             @map("data_recebimento") @db.Date
+  valorOriginal         Decimal               @map("valor_original") @db.Decimal(14, 2)
+  valorJuros            Decimal?              @default(0) @map("valor_juros") @db.Decimal(14, 2)
+  valorDesconto         Decimal?              @default(0) @map("valor_desconto") @db.Decimal(14, 2)
+  valorRecebido         Decimal?              @map("valor_recebido") @db.Decimal(14, 2)
+  formaPagamento        FormaPagamento?       @map("forma_pagamento")
+  contaBancaria         String?               @map("conta_bancaria") @db.VarChar(100)
+  numeroParcela         Int?                  @default(1) @map("numero_parcela")
+  totalParcelas         Int?                  @default(1) @map("total_parcelas")
+  statusConta           StatusConta?          @default(pendente) @map("status_conta")
+  sourceTable           String?               @map("source_table") @db.VarChar(50)
+  sourceId              String?               @map("source_id") @db.Uuid
+  observacoes           String?
+  status                String                @default("active") @db.VarChar(20)
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization      Organization        @relation(fields: [organizationId], references: [id])
+  parceiro          ParceiroComercial?  @relation(fields: [parceiroId], references: [id])
+  notaFiscal        NotaFiscal?         @relation(fields: [notaFiscalId], references: [id])
+  contratoComercial ContratoComercial?  @relation(fields: [contratoComercialId], references: [id])
+
+  @@index([organizationId])
+  @@index([parceiroId])
+  @@index([categoria])
+  @@index([dataVencimento])
+  @@index([statusConta])
+  @@map("contas_receber")
+}
+
+// =============================================================================
+// MODELS — Fase 3: Contratos + Comercializacao + Depreciacao
+// =============================================================================
+
+/// Contratos de venda de graos (venda antecipada, barter, fixacao, CPR, spot)
+model ContratoComercial {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @map("contrato_comercial_id") @db.Uuid
+  organizationId        String                 @map("organization_id") @db.Uuid
+  parceiroId            String?                @map("parceiro_id") @db.Uuid
+  safraId               String?                @map("safra_id") @db.Uuid
+  culturaId             String?                @map("cultura_id") @db.Uuid
+  tipo                  TipoContratoComercial
+  statusContrato        StatusContrato?        @default(ativo) @map("status_contrato")
+  numeroContrato        String?                @map("numero_contrato") @db.VarChar(50)
+  descricao             String?
+  dataInicio            DateTime?              @map("data_inicio") @db.Date
+  dataFim               DateTime?              @map("data_fim") @db.Date
+  quantidadeKg          Decimal?               @map("quantidade_kg") @db.Decimal(14, 2)
+  quantidadeSacas       Decimal?               @map("quantidade_sacas") @db.Decimal(14, 2)
+  precoPorSaca          Decimal?               @map("preco_por_saca") @db.Decimal(10, 2)
+  valorTotal            Decimal?               @map("valor_total") @db.Decimal(14, 2)
+  barterProdutoInsumoId String?                @map("barter_produto_insumo_id") @db.Uuid
+  barterValorInsumo     Decimal?               @map("barter_valor_insumo") @db.Decimal(14, 2)
+  quantidadeEntregueKg  Decimal?               @default(0) @map("quantidade_entregue_kg") @db.Decimal(14, 2)
+  valorRecebido         Decimal?               @default(0) @map("valor_recebido") @db.Decimal(14, 2)
+  pctEntregue           Decimal?               @default(0) @map("pct_entregue") @db.Decimal(5, 2)
+  observacoes           String?
+  status                String                 @default("active") @db.VarChar(20)
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization      Organization        @relation(fields: [organizationId], references: [id])
+  parceiro          ParceiroComercial?  @relation(fields: [parceiroId], references: [id])
+  safra             Safra?              @relation(fields: [safraId], references: [id])
+  cultura           Cultura?            @relation(fields: [culturaId], references: [id])
+  barterProdutoInsumo ProdutoInsumo?    @relation(fields: [barterProdutoInsumoId], references: [id])
+  entregas          ContratoEntrega[]
+  cprDocumentos     CprDocumento[]
+  contasReceber     ContaReceber[]
+
+  @@unique([organizationId, numeroContrato])
+  @@index([organizationId])
+  @@index([parceiroId])
+  @@index([safraId])
+  @@index([culturaId])
+  @@index([tipo])
+  @@index([statusContrato])
+  @@map("contratos_comerciais")
+}
+
+/// Entregas individuais contra contrato comercial
+model ContratoEntrega {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @map("contrato_entrega_id") @db.Uuid
+  contratoComercialId  String   @map("contrato_comercial_id") @db.Uuid
+  notaFiscalId         String?  @map("nota_fiscal_id") @db.Uuid
+  ticketBalancaId      String?  @map("ticket_balanca_id") @db.Uuid
+  saidaGraoId          String?  @map("saida_grao_id") @db.Uuid
+  cargaACargaId        String?  @map("carga_a_carga_id") @db.Uuid
+  dataEntrega          DateTime @map("data_entrega") @db.Date
+  quantidadeKg         Decimal  @map("quantidade_kg") @db.Decimal(14, 2)
+  quantidadeSacas      Decimal? @map("quantidade_sacas") @db.Decimal(14, 2)
+  numeroDocumento      String?  @map("numero_documento") @db.VarChar(50)
+  placa                String?  @db.VarChar(10)
+  motorista            String?  @db.VarChar(100)
+  qualidadeJson        Json?    @map("qualidade_json") @db.JsonB
+  observacoes          String?
+  status               String   @default("active") @db.VarChar(20)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  contratoComercial ContratoComercial @relation(fields: [contratoComercialId], references: [id])
+  notaFiscal        NotaFiscal?       @relation(fields: [notaFiscalId], references: [id])
+  ticketBalanca     TicketBalanca?    @relation(fields: [ticketBalancaId], references: [id])
+  saidaGrao         SaidaGrao?        @relation(fields: [saidaGraoId], references: [id])
+  cargaACarga       CargaACarga?      @relation(fields: [cargaACargaId], references: [id])
+
+  @@index([contratoComercialId])
+  @@index([dataEntrega])
+  @@map("contrato_entregas")
+}
+
+/// Cedulas de Produto Rural (CPR)
+model CprDocumento {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @map("cpr_documento_id") @db.Uuid
+  organizationId       String   @map("organization_id") @db.Uuid
+  contratoComercialId  String?  @map("contrato_comercial_id") @db.Uuid
+  numeroCpr            String?  @map("numero_cpr") @db.VarChar(50)
+  tipoCpr              String?  @default("fisica") @map("tipo_cpr") @db.VarChar(20)
+  dataEmissao          DateTime? @map("data_emissao") @db.Date
+  dataVencimento       DateTime? @map("data_vencimento") @db.Date
+  produto              String?  @db.VarChar(100)
+  quantidadeKg         Decimal? @map("quantidade_kg") @db.Decimal(14, 2)
+  valorTotal           Decimal? @map("valor_total") @db.Decimal(14, 2)
+  credor               String?  @db.VarChar(200)
+  cartorio             String?  @db.VarChar(200)
+  registroCartorio     String?  @map("registro_cartorio") @db.VarChar(50)
+  statusCpr            String?  @default("ativo") @map("status_cpr") @db.VarChar(20)
+  observacoes          String?
+  status               String   @default("active") @db.VarChar(20)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization      Organization       @relation(fields: [organizationId], references: [id])
+  contratoComercial ContratoComercial? @relation(fields: [contratoComercialId], references: [id])
+
+  @@index([organizationId])
+  @@index([contratoComercialId])
+  @@map("cpr_documentos")
+}
+
+/// Contratos de arrendamento de terra
+model ContratoArrendamento {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @map("contrato_arrendamento_id") @db.Uuid
+  organizationId    String          @map("organization_id") @db.Uuid
+  parceiroId        String?         @map("parceiro_id") @db.Uuid
+  numeroContrato    String?         @map("numero_contrato") @db.VarChar(50)
+  descricao         String?
+  dataInicio        DateTime?       @map("data_inicio") @db.Date
+  dataFim           DateTime?       @map("data_fim") @db.Date
+  areaTotalHa       Decimal?        @map("area_total_ha") @db.Decimal(10, 2)
+  valorPorHa        Decimal?        @map("valor_por_ha") @db.Decimal(10, 2)
+  valorTotalAnual   Decimal?        @map("valor_total_anual") @db.Decimal(14, 2)
+  formaPagamento    String?         @map("forma_pagamento") @db.VarChar(100)
+  statusContrato    StatusContrato? @default(ativo) @map("status_contrato")
+  observacoes       String?
+  status            String          @default("active") @db.VarChar(20)
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization  Organization        @relation(fields: [organizationId], references: [id])
+  parceiro      ParceiroComercial?  @relation(fields: [parceiroId], references: [id])
+  contasPagar   ContaPagar[]
+  talhoes       ContratoArrendamentoTalhao[]
+
+  @@index([organizationId])
+  @@index([parceiroId])
+  @@index([statusContrato])
+  @@map("contratos_arrendamento")
+}
+
+/// Tabela associativa N:N contrato_arrendamento x talhao
+model ContratoArrendamentoTalhao {
+  contratoArrendamentoId String   @map("contrato_arrendamento_id") @db.Uuid
+  talhaoId               String   @map("talhao_id") @db.Uuid
+  areaHa                 Decimal? @map("area_ha") @db.Decimal(10, 2)
+
+  contratoArrendamento ContratoArrendamento @relation(fields: [contratoArrendamentoId], references: [id], onDelete: Cascade)
+  talhao               Talhao               @relation(fields: [talhaoId], references: [id])
+
+  @@id([contratoArrendamentoId, talhaoId])
+  @@index([talhaoId])
+  @@map("contrato_arrendamento_talhoes")
+}
+
+/// Depreciacao de maquinas e implementos
+model DepreciacaoAtivo {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @map("depreciacao_ativo_id") @db.Uuid
+  organizationId       String             @map("organization_id") @db.Uuid
+  maquinaId            String             @unique @map("maquina_id") @db.Uuid
+  metodo               MetodoDepreciacao? @default(linear)
+  dataAquisicao        DateTime?          @map("data_aquisicao") @db.Date
+  valorAquisicao       Decimal?           @map("valor_aquisicao") @db.Decimal(14, 2)
+  valorResidual        Decimal?           @default(0) @map("valor_residual") @db.Decimal(14, 2)
+  vidaUtilAnos         Int?               @map("vida_util_anos")
+  vidaUtilHoras        Int?               @map("vida_util_horas")
+  depreciacaoMensal    Decimal?           @map("depreciacao_mensal") @db.Decimal(14, 2)
+  depreciacaoAcumulada Decimal?           @default(0) @map("depreciacao_acumulada") @db.Decimal(14, 2)
+  valorContabilAtual   Decimal?           @map("valor_contabil_atual") @db.Decimal(14, 2)
+  dataUltimoCalculo    DateTime?          @map("data_ultimo_calculo") @db.Date
+  observacoes          String?
+  status               String             @default("active") @db.VarChar(20)
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  maquina      Maquina      @relation(fields: [maquinaId], references: [id])
+
+  @@index([organizationId])
+  @@index([maquinaId])
+  @@map("depreciacao_ativos")
+}
+
+// FIM DO SCHEMA — 79 modelos (66 V0 + 12 financeiro + 1 associativa) + 59 ENUMs (45 V0 + 14 financeiro)

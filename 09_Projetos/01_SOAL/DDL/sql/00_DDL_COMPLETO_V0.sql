@@ -1460,58 +1460,40 @@ ALTER TABLE transporte_colheita_detalhes
     FOREIGN KEY (ticket_balanca_id) REFERENCES ticket_balancas(ticket_balanca_id);
 
 
--- ─── 7.2 PRODUCAO_UBG ────────────────────────────────────────
-CREATE TABLE producao_ubg (
-    producao_ubg_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+-- ─── 7.2 CONSUMO_AGRIWIN (staging Bronze) ────────────────────
+-- Dados AgriWin nível safra+cultura/fazenda. Não normalizado (sem talhao_safra_id).
+-- Transformação para operacoes_campo + aplicacao_insumo fica no Silver layer.
+CREATE TABLE consumo_agriwin (
+    consumo_agriwin_id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
-
     safra_id              UUID REFERENCES safras(safra_id),
-    cultura_id            UUID REFERENCES culturas(cultura_id),
 
-    arquivo_fonte         VARCHAR(200),
-    aba                   VARCHAR(100),
-    talhao_header         VARCHAR(100),
-    area_ha               DECIMAL(10,4),
-    produtividade_kg_ha   DECIMAL(10,2),
-    produto_variedade     VARCHAR(100),
-    producao_total_kg     DECIMAL(12,2),
-
-    data_pesagem          DATE,
-    hora_pesagem          TIME,
-    gleba                 VARCHAR(100),
-    destino               VARCHAR(100),
-    variedade_ticket      VARCHAR(100),
-    motorista             VARCHAR(100),
-    placa                 VARCHAR(10),
-    peso_bruto_kg         DECIMAL(12,2),
-    peso_tara_kg          DECIMAL(12,2),
-    peso_liquido_kg       DECIMAL(12,2),
-
-    umidade_pct           DECIMAL(5,2),
-    ph                    DECIMAL(5,2),
-    impureza_pct          DECIMAL(5,2),
-    ardidos_pct           DECIMAL(5,2),
-    avariado_pct          DECIMAL(5,2),
-    verdes_pct            DECIMAL(5,2),
-    quebrado_pct          DECIMAL(5,2),
-
-    desconto_kg           DECIMAL(12,2),
-    peso_final_kg         DECIMAL(12,2),
+    data_aplicacao        DATE NOT NULL,
+    tipo_rateio           VARCHAR(20),
+    rateio_detalhe        VARCHAR(200),
+    tipo_operacao         VARCHAR(100),
+    responsavel           VARCHAR(200),
+    imobilizados          TEXT,
+    produto_nome          VARCHAR(300),
+    produto_unidade       VARCHAR(20),
+    valor_total_operacao  DECIMAL(14,2),
+    num_produtos_operacao INTEGER,
+    arquivo_origem        VARCHAR(200),
 
     status                VARCHAR(20) DEFAULT 'active',
     created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_producao_ubg_safra   ON producao_ubg(safra_id);
-CREATE INDEX idx_producao_ubg_cultura ON producao_ubg(cultura_id);
-CREATE INDEX idx_producao_ubg_data    ON producao_ubg(data_pesagem);
+CREATE INDEX idx_consumo_agriwin_safra ON consumo_agriwin(safra_id);
+CREATE INDEX idx_consumo_agriwin_data  ON consumo_agriwin(data_aplicacao);
+CREATE INDEX idx_consumo_agriwin_tipo  ON consumo_agriwin(tipo_operacao);
 
-CREATE TRIGGER trg_producao_ubg_updated
-    BEFORE UPDATE ON producao_ubg
+CREATE TRIGGER trg_consumo_agriwin_updated
+    BEFORE UPDATE ON consumo_agriwin
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE producao_ubg IS 'Dados historicos de producao UBG importados das planilhas de controle (2022-2026). 883 tickets, 7 culturas.';
+COMMENT ON TABLE consumo_agriwin IS 'Staging Bronze: dados AgriWin consumo (21.162 registros, R$99.2M, 8 safras). Nao normalizado — Silver layer transforma em operacoes_campo + aplicacao_insumo.';
 
 
 -- ─── 7.3 PESAGENS_AGRICOLA ───────────────────────────────────
@@ -3036,13 +3018,14 @@ COMMENT ON FUNCTION fn_fechar_colheita(UUID) IS
 -- Resumo:
 --   45 ENUMs (inclui status_talhao_safra, tipo_registro_fsi, situacao_consorcio)
 --   66 tabelas (9 sistema + 10 territorial + 8 operacional + 6 insumos +
---               6 operacoes campo + 9 UBG + 7 financeiro coop + 4 financeiro FSI +
+--               6 operacoes campo + 8 UBG (-producao_ubg) + 1 staging (consumo_agriwin) +
+--               7 financeiro coop + 4 financeiro FSI +
 --               2 frete/vendas + 1 historico + 2 auxiliares + 3 planejamento safra = 67 objetos + 4 views)
 --   ~188 indices
 --   57 triggers
 --   5 funcoes de negocio (+fn_gerar_safra_acoes, +fn_fechar_colheita — Doc 32)
 --   4 views
 --
--- Gerado: 2026-03-08 — DeepWork AI Flows
+-- Gerado: 2026-03-09 — DeepWork AI Flows
 -- PostgreSQL 15+ | Projeto SOAL — Serra da Onça Agropecuária
 -- ═══════════════════════════════════════════════════════════════════════════════

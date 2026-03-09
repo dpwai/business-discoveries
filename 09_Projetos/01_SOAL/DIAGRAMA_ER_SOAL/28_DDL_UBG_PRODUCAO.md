@@ -151,7 +151,9 @@ COMMENT ON COLUMN ticket_balancas.gleba IS 'Sub-area dentro de um talhao. Ex: ta
 COMMENT ON COLUMN ticket_balancas.flag_semente IS 'True quando a producao e de semente certificada para Castrolanda (cultura separada).';
 ```
 
-### 2.2 PRODUCAO_UBG
+### 2.2 ~~PRODUCAO_UBG~~ (REMOVIDA 2026-03-09)
+
+> **DEPRECADO:** Tabela `producao_ubg` foi REMOVIDA do DDL consolidado em 2026-03-09. Substituída por `ticket_balancas` + `recebimentos_grao`. O DDL abaixo é referência histórica apenas.
 
 ```sql
 -- =============================================

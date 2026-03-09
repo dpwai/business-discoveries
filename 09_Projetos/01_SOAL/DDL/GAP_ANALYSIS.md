@@ -1,7 +1,7 @@
 # GAP ANALYSIS — Entidade × DDL × CSV × Prisma
 
-> Gerado: 2026-03-04 | Projeto SOAL V0 (Bronze Layer)
-> Cruzamento de 9 DDL docs, 38 CSVs em IMPORTS/, 19 modelos Prisma, 48 entidades do playground
+> Atualizado: 2026-03-09 | Projeto SOAL V0 (Bronze Layer)
+> Cruzamento de 10 DDL docs, 38 CSVs em IMPORTS/, 66 modelos Prisma, 66 tabelas DDL
 
 ---
 
@@ -28,10 +28,10 @@
 | ORGANIZATIONS | 26 | ✅ | — | ✅ | `fase_1_sistema/01_organizations.csv` | 1 | ✅ | completo |
 | ORG_SETTINGS | 26 | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
 | USERS | 26 | ✅ | — | ✅ | `fase_1_sistema/02_users.csv` | 8 | ✅ | completo |
-| ROLES | 26 | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
-| PERMISSIONS | 26 | ✅ | — | — | — | 0 | ✅ | sem_dados |
-| USER_ROLES | 26 | ✅ | — | — | — | 0 | ✅ | sem_dados |
-| ROLE_PERMISSIONS | 26 | ✅ | — | — | — | 0 | ✅ | sem_dados |
+| ROLES | 26 | ✅ | — | ✅ | seed | 5 | ✅ | completo (5 roles: admin, agronomo, operador_campo, operador_ubg, administrativo) |
+| PERMISSIONS | 26 | ✅ | — | — | seed | 32 | ✅ | completo (8 módulos × 4 ações CRUD) |
+| USER_ROLES | 26 | ✅ | — | — | seed | 8 | ✅ | completo (8 users vinculados) |
+| ROLE_PERMISSIONS | 26 | ✅ | — | — | seed | ~60 | ✅ | completo (admin=tudo, outros=módulos específicos) |
 
 ### SEÇÃO 1 — TERRITORIAL (Doc 26 + Doc 25b)
 
@@ -89,7 +89,7 @@
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
 | TICKET_BALANCA | 28+32 | ✅ | tipo_ticket_balanca, status_ticket | ✅ | `fase_6/15_ticket_balancas.csv` (883) | 883 | ✅ | completo. PESO ONLY — campos qualidade em RECEBIMENTO_GRAO |
-| PRODUCAO_UBG | 28 | ✅ | — | ✅ | `fase_6/_archive/09_producao_ubg.csv` (arquivado) | 883 | ✅ | completo. Tabela legada — dados reais agora em ticket_balancas + recebimentos_grao |
+| ~~PRODUCAO_UBG~~ | ~~28~~ | ~~✅~~ | — | — | — | — | — | **REMOVIDA 2026-03-09** — substituída por ticket_balancas + recebimentos_grao |
 | PESAGEM_AGRICOLA | 28 | ✅ | — | ✅ | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 | ✅ | completo |
 | SAIDA_GRAO | 28 | ✅ | tipo_saida_grao | ✅ | `fase_6_operacoes/08_saidas_producao.csv` | 542 | ✅ | completo |
 | RECEBIMENTO_GRAO | 28 | ✅ | — | ✅ | `fase_6/16_recebimentos_grao.csv` (875) | 875 | ✅ | completo. Classificacao pre-secagem (Josmar). FK subquery por ticket match |
@@ -152,13 +152,48 @@
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
 | HISTORICO_MAQUINAS | 31 | ✅ | tipo_registro_maquinario | ✅ | — | 32.516 | ❌ | completo |
 
-### SEÇÃO 10 — ENTIDADES AUXILIARES (Sem DDL)
+### SEÇÃO 9b — STAGING BRONZE (dados não normalizados)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| CONSUMO_AGRIWIN | — | ✅ | — | ✅ | `fase_6_operacoes/12_consumo_agriwin.csv` | 21.162 | ✅ | completo. Staging Bronze — Silver layer transforma em operacoes_campo + aplicacao_insumo |
+
+> **Nota:** `consumo_agriwin` é tabela staging (Medallion Bronze). Dados AgriWin nível safra+cultura/fazenda, sem `talhao_safra_id`. Transformação para entidades normalizadas fica no Silver layer quando `talhao_mapping` estiver populado.
+
+### SEÇÃO 10 — FINANCEIRO TARGET: CUSTEIO (Fase 1 — Doc 13)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| CENTRO_CUSTO | 13 | ✅ | tipo_centro_custo, natureza_centro_custo | ✅ | seed script | ~300-500 | ✅ | completo. Hierarquia 6 níveis, self-referential |
+| CUSTO_OPERACAO | Fin | ✅ | tipo_custo, tipo_rateio | ✅ | ETL Bronze→Silver | ~23k (custos_insumo+consumo_agriwin+abastecimentos) | ✅ | completo. Silver layer |
+| ORCAMENTO_SAFRA | Fin | ✅ | — (usa tipo_custo) | ✅ | — | 0 | ✅ | sem_dados. Claudio preenche 25/26+26/27 |
+
+### SEÇÃO 10b — FINANCEIRO TARGET: CONTAS P/R (Fase 2)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| NOTA_FISCAL | Fin | ✅ | tipo_nota_fiscal, status_nota_fiscal, origem_nota_fiscal | ✅ | — | 0 | ✅ | sem_dados. Sparse — sem XML SEFAZ |
+| NOTA_FISCAL_ITEM | Fin | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
+| CONTA_PAGAR | Fin | ✅ | categoria_conta_pagar, status_conta, forma_pagamento | ✅ | ETL Bronze→Silver | ~10k (fluxo_caixa_fsi+financiamentos) | ✅ | completo |
+| CONTA_RECEBER | Fin | ✅ | categoria_conta_receber | ✅ | ETL Bronze→Silver | ~5k (fluxo_caixa_fsi+vendas_grao+vendas_diretas) | ✅ | completo |
+
+### SEÇÃO 10c — FINANCEIRO TARGET: CONTRATOS (Fase 3)
+
+| Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
+|----------|---------|-------------|-------|----------|-----|---------|--------|--------|
+| CONTRATO_COMERCIAL | Fin | ✅ | tipo_contrato_comercial, status_contrato | ✅ | ETL vendas_grao | ~30 distintos | ✅ | completo |
+| CONTRATO_ENTREGA | Fin | ✅ | — | ✅ | ETL cargas_a_carga | ~1.309 | ✅ | completo |
+| CPR_DOCUMENTO | Fin | ✅ | — | ✅ | — | 0 | ✅ | sem_dados. Pendente Valentina |
+| CONTRATO_ARRENDAMENTO | Fin | ✅ | — (usa status_contrato) | ✅ | — | 0 | ✅ | sem_dados. Pendente Valentina |
+| CONTRATO_ARRENDAMENTO_TALHAO | Fin | ✅ | — | — | — | 0 | ✅ | sem_dados. N:N associativa |
+| DEPRECIACAO_ATIVO | Fin | ✅ | metodo_depreciacao | ✅ | seed 183 ativos | 183 | ✅ | sem_dados. Tiago confirma valores |
+
+### SEÇÃO 11 — ENTIDADES AUXILIARES (Sem DDL)
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
 | TALHAO_MAPPING | — | ❌ | — | — | — (CSV removido, sem dados) | 0 | ❌ | **ÓRFÃ** |
 | UBG_CAIXA | — | ❌ | — | — | `fase_6/14_ubg_caixa.csv` | 19.177 | ❌ | **ÓRFÃ** |
-| CENTRO_CUSTO | — | ❌ | — | — | `fase_3/07_centro_custo.csv` (playground diz 387, mas CSV não encontrado fisicamente) | 387? | ❌ | **ÓRFÃ** |
 
 ---
 
@@ -166,17 +201,19 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Entidades totais V0** | 69 (excluindo TRABALHADORES_RURAIS substituído) |
-| **Com CREATE TABLE** | 66 |
-| **Sem CREATE TABLE (órfãs)** | 6 (TAGS_VESTRO, TANQUES_COMBUSTIVEL, OPERADORES_VESTRO, TALHAO_MAPPING, UBG_CAIXA, UBG) |
-| **Com CSV (dados coletados)** | 43 arquivos → ~44 entidades |
-| **Com modelo Prisma** | 65 |
-| **Sem modelo Prisma** | 4 entidades (MATRICULAS, OPERADORES_VESTRO, TANQUES_COMBUSTIVEL parcial, TAGS_VESTRO parcial) |
-| **ENUMs definidos** | 45 únicos |
-| **Triggers definidos** | 57 |
-| **Indexes definidos** | 187 |
-| **Views definidas** | 4 (Doc 16 — insumos + UBG estoque silo) |
-| **Functions definidas** | 3 (Doc 16 estoque) |
+| **Entidades totais V0** | 69 Bronze + 12 Financeiro Target = 81 |
+| **Com CREATE TABLE** | 78 (66 Bronze + 12 Financeiro Target) |
+| **Sem CREATE TABLE (órfãs)** | 5 (TAGS_VESTRO, TANQUES_COMBUSTIVEL, OPERADORES_VESTRO, TALHAO_MAPPING, UBG) |
+| **Com CSV (dados coletados)** | 44 arquivos → ~45 entidades |
+| **Com modelo Prisma** | 78 (+12 financeiro target) |
+| **Sem modelo Prisma** | 3 entidades (MATRICULAS, OPERADORES_VESTRO, TANQUES_COMBUSTIVEL parcial) |
+| **ENUMs definidos** | 59 (45 originais + 14 financeiro target) |
+| **Triggers definidos** | 69 (57 + 12 financeiro target) |
+| **Indexes definidos** | ~240 (~190 + ~50 financeiro target) |
+| **Views definidas** | 13 (4 originais + 3 custeio + 3 contas P/R + 6 Gold dashboards - 3 overlap) |
+| **Functions definidas** | 6 (5 originais + 1 fn_custo_acumulado) |
+| **Registros INSERT Seeds** | ~24k linhas (23.5k originais + centro_custo ~300-500) |
+| **Registros INSERT Dados** | ~112k registros (~77k originais + ~35k ETL Bronze→Silver) |
 
 ---
 
@@ -215,24 +252,33 @@
 ## 5. Ordem de Execução SQL
 
 ```
+=== V0 (00_DDL_COMPLETO_V0.sql) ===
 Seção 0:  Extensões + Funções
-Seção 1:  ENUMs (TODOS, 40+)
-Seção 2:  Sistema (9 tabelas — Doc 26)
-Seção 3:  Territorial (9 tabelas — Doc 26 + 25b + órfãs UBG)
-Seção 4:  Operacional (8 tabelas — Doc 26 + 27 + órfãs tags/tanques)
-Seção 5:  Insumos (6 tabelas — Doc 16)
-Seção 6:  Operações Campo (6 tabelas — Doc 25a)
-Seção 7:  UBG/Pós-colheita (8 tabelas — Doc 28)
-Seção 8:  Financeiro (7 tabelas — Doc 29)
-Seção 9:  Frete + Vendas (2 tabelas — Doc 30)
-Seção 10: Histórico (1 tabela — Doc 31)
-Seção 11: Auxiliares (3 tabelas — órfãs)
-Seção 11b: Planejamento Safra (3 tabelas — plano_safra_snapshots, template_cultura_operacoes, safra_acoes)
-Seção 12: Triggers (44+)
-Seção 13: Views (3)
-Seção 14: Indexes (123+)
+Seção 1:  ENUMs (45)
+Seção 2:  Sistema (9 tabelas)
+Seção 3:  Territorial (9 tabelas)
+Seção 4:  Operacional (8 tabelas)
+Seção 5:  Insumos (6 tabelas)
+Seção 6:  Operações Campo (6 tabelas)
+Seção 7:  UBG/Pós-colheita (8 tabelas)
+Seção 8:  Financeiro Bronze (11 tabelas)
+Seção 9:  Frete + Vendas (2 tabelas)
+Seção 10: Histórico (1 tabela)
+Seção 11: Auxiliares (2 tabelas)
+Seção 11b: Planejamento Safra (3 tabelas)
+Seção 12: Views + Funções (4 views, 5 funções)
+
+=== Financeiro Target (03-06 scripts) ===
+Fase 1:   03_DDL_FINANCEIRO_CUSTEIO.sql (4 ENUMs, 3 tabelas, 3 views, 1 função)
+          03_INSERT_CENTRO_CUSTO_SEED.sql (seed ~300-500 registros)
+          03_ETL_CUSTO_OPERACAO.sql (ETL Bronze→Silver ~23k registros)
+Fase 2:   04_DDL_FINANCEIRO_CONTAS.sql (7 ENUMs, 4 tabelas, 3 views)
+          04_ETL_CONTAS_PR.sql (ETL Bronze→Silver ~15k registros)
+Fase 3:   05_DDL_FINANCEIRO_CONTRATOS.sql (3 ENUMs, 5+1 tabelas, 3 ALTERs)
+          05_ETL_CONTRATOS.sql (ETL Bronze→Silver ~1.3k registros)
+Fase 4:   06_VIEWS_GOLD_FINANCEIRO.sql (6 views Gold para dashboards)
 ```
 
 ---
 
-*Atualizado: 2026-03-06 | Fonte: DDL Docs 16, 25a, 25b, 26, 27, 28, 29, 30, 31 + CSVs em IMPORTS/ | +leituras_secagem (I.N. 029/2011 MAPA) | +FSI contas (4 CSVs, 12.823 registros)*
+*Atualizado: 2026-03-09 | +Financeiro Target: 12 tabelas (4 fases), 14 ENUMs, 9 views, 1 função, 3 ETLs Bronze→Silver (~35k registros) | Prisma: 78 modelos, 59 enums*

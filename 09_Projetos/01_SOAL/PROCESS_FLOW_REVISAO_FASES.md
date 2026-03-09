@@ -194,7 +194,7 @@
 | `fase_6_operacoes/06_custo_insumos_castrolanda.csv` | 553 | (referencia custeio) | MISSING_SRC |
 | `fase_6_operacoes/07_freteiros.csv` | 116 | (referencia frete) | MISSING_SRC |
 | `fase_6_operacoes/08_saidas_producao.csv` | 542 | saidas_grao | MISSING_SRC |
-| `fase_6_operacoes/12_consumo_agriwin.csv` | 21.162 | (referencia consumo) | OK |
+| `fase_6_operacoes/12_consumo_agriwin.csv` | 21.162 | consumo_agriwin (staging Bronze, INSERT §37) | OK |
 | `fase_6_operacoes/12_plantio_historico.csv` | 145 | (referencia plantio) | OK |
 
 **Observacoes:**
@@ -307,9 +307,9 @@ FASE 7 (Auto) <-- triggers no DDL, ativados em producao
 | CSVs com dados (OK + MISSING_SRC + DEMO) | 54 |
 | CSVs template (sem dados) | 4 |
 | CSVs removidos historicamente | 4 |
-| Total registros em Seeds (01_INSERT) | ~23k linhas |
-| Total registros em Dados (02_INSERT) | ~56k registros + fase 5 lifecycle + 48 UBG demo (5 secagem + 25 leituras + 8 alocação + 10 estoque) — 78k linhas SQL |
-| Tabelas no DDL | 66 |
+| Total registros em Seeds (01_INSERT) | ~23k linhas (inclui RBAC: 5 roles, 32 permissions, user_roles) |
+| Total registros em Dados (02_INSERT) | ~77k registros + 21k consumo_agriwin + fase 5 lifecycle + 48 UBG demo — 99k linhas SQL |
+| Tabelas no DDL | 66 (-producao_ubg +consumo_agriwin) |
 | ENUMs | 45 |
 | ETL scripts ativos | 30+ |
 | Fontes externas processadas | 10 (AgriWin, Vestro, Castrolanda, FSI, CAR, Agricola, Maquinario, RH, Parceiros, Insumos) |
@@ -318,4 +318,4 @@ FASE 7 (Auto) <-- triggers no DDL, ativados em producao
 
 ---
 
-*Gerado: 2026-03-08 | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
+*Gerado: 2026-03-09 | Mantido por: Rodrigo Kugler & DeepWork AI Flows*

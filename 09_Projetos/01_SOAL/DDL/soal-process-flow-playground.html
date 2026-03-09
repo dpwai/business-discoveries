@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL Process Flow Pipeline</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --fg:#e6edf3;--fg2:#8b949e;--fg3:#484f58;
+  --accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;--purple:#8957e5;--pink:#f778ba;--cyan:#39d2c0;
+  --radius:8px;--shadow:0 2px 8px rgba(0,0,0,.4);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,sans-serif;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.5;min-height:100vh;padding:0 0 3rem}
+
+/* Header */
+.header{background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);border-bottom:1px solid var(--bg4);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.header h1 span{color:var(--accent)}
+.header-badge{background:var(--bg3);color:var(--fg2);font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-family:var(--mono)}
+
+/* Summary Cards */
+.summary{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1.1rem;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.card-value{font-size:1.6rem;font-weight:700;font-family:var(--mono);line-height:1.1}
+.card-label{font-size:.75rem;color:var(--fg2);margin-top:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.card-bar{height:4px;border-radius:2px;margin-top:.6rem;background:var(--bg4);overflow:hidden}
+.card-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* Filters */
+.filters{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.filter-input{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.9rem;padding:.6rem 1rem;outline:none;transition:border-color .2s;font-family:var(--font)}
+.filter-input:focus{border-color:var(--accent)}
+.filter-input::placeholder{color:var(--fg3)}
+input.filter-input{flex:1;min-width:200px}
+select.filter-input{cursor:pointer;min-width:150px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.25rem}
+.filter-count{color:var(--fg2);font-size:.8rem;font-family:var(--mono);margin-left:auto;white-space:nowrap}
+.kbd-hint{color:var(--fg3);font-size:.72rem;font-family:var(--mono)}
+.kbd{background:var(--bg3);padding:.1rem .4rem;border-radius:3px;font-size:.7rem;color:var(--fg2)}
+
+/* Timeline */
+.timeline{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem 0 1.5rem;position:relative}
+.timeline::before{content:'';position:absolute;left:calc(1.5rem + 20px);top:0;bottom:0;width:3px;background:var(--bg4);border-radius:2px}
+
+/* Phase Card */
+.phase{position:relative;margin-bottom:1.25rem;padding-left:50px}
+.phase-dot{position:absolute;left:10px;top:18px;width:24px;height:24px;border-radius:50%;border:3px solid var(--bg4);background:var(--bg2);z-index:2;transition:border-color .3s,background .3s}
+.phase.expanded .phase-dot{border-color:var(--accent);background:var(--accent)}
+
+.phase-header{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1rem 1.25rem;cursor:pointer;display:flex;align-items:center;gap:1rem;transition:border-color .2s,background .15s;user-select:none}
+.phase-header:hover{border-color:var(--fg3);background:var(--bg3)}
+.phase.expanded .phase-header{border-color:var(--accent);border-bottom-left-radius:0;border-bottom-right-radius:0}
+
+.phase-number{font-family:var(--mono);font-weight:700;font-size:1.1rem;min-width:28px;color:var(--fg2)}
+.phase.expanded .phase-number{color:var(--accent)}
+.phase-title{font-weight:600;font-size:1rem;flex:1}
+.phase-meta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.phase-stat{font-family:var(--mono);font-size:.8rem;color:var(--fg2)}
+.phase-stat strong{color:var(--fg)}
+
+.pill{display:inline-block;font-size:.72rem;font-weight:600;padding:.2rem .65rem;border-radius:20px;white-space:nowrap}
+.pill-completo{background:rgba(63,185,80,.15);color:var(--green)}
+.pill-parcial{background:rgba(210,153,34,.15);color:var(--yellow)}
+.pill-template{background:rgba(137,87,229,.15);color:var(--purple)}
+.pill-pendente{background:rgba(248,81,73,.1);color:var(--red)}
+
+.phase-progress{width:100px;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.phase-progress-fill{height:100%;border-radius:3px;transition:width .5s ease}
+
+.phase-chevron{color:var(--fg3);font-size:1.1rem;transition:transform .3s}
+.phase.expanded .phase-chevron{transform:rotate(180deg);color:var(--accent)}
+
+/* Phase Body */
+.phase-body{display:none;background:var(--bg2);border:1px solid var(--accent);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1.25rem}
+.phase.expanded .phase-body{display:block;animation:slideDown .3s ease}
+
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.phase-desc{color:var(--fg2);font-size:.88rem;margin-bottom:1rem;line-height:1.6}
+.phase-deps{font-size:.8rem;color:var(--fg3);margin-bottom:1rem}
+.phase-deps a{color:var(--accent);cursor:pointer;text-decoration:none}
+.phase-deps a:hover{text-decoration:underline}
+
+/* Entity Grid */
+.entity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-bottom:1rem}
+.entity-mini{background:var(--bg3);border:1px solid var(--bg4);border-radius:6px;padding:.75rem;transition:border-color .2s,transform .15s;position:relative}
+.entity-mini:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.entity-mini.dim{opacity:.35}
+.entity-name{font-family:var(--mono);font-weight:600;font-size:.82rem;letter-spacing:.02em;margin-bottom:.35rem}
+.entity-stats{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.entity-records{font-family:var(--mono);font-size:.78rem;color:var(--fg2)}
+.entity-records.has-data{color:var(--fg)}
+
+/* Category Badge */
+.cat-badge{display:inline-block;font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:3px;letter-spacing:.03em}
+.cat-A{background:rgba(88,166,255,.15);color:var(--accent)}
+.cat-B{background:rgba(63,185,80,.15);color:var(--green)}
+.cat-C{background:rgba(210,153,34,.15);color:var(--yellow)}
+.cat-D{background:rgba(219,109,40,.15);color:var(--orange)}
+.cat-E{background:rgba(137,87,229,.15);color:var(--purple)}
+
+.entity-who{font-size:.72rem;color:var(--fg3)}
+
+/* Entity Pill status */
+.entity-pill{font-size:.65rem;font-weight:600;padding:.1rem .4rem;border-radius:10px}
+.entity-pill.completo{background:rgba(63,185,80,.12);color:var(--green)}
+.entity-pill.parcial{background:rgba(210,153,34,.12);color:var(--yellow)}
+.entity-pill.sem_dados{background:rgba(139,148,158,.1);color:var(--fg3)}
+.entity-pill.template{background:rgba(137,87,229,.12);color:var(--purple)}
+
+/* Gaps Section */
+.phase-gaps{background:var(--bg);border:1px solid var(--bg4);border-radius:6px;padding:.75rem 1rem;margin-top:.5rem}
+.phase-gaps-title{font-size:.78rem;font-weight:600;color:var(--yellow);margin-bottom:.4rem}
+.phase-gaps ul{list-style:none;padding:0}
+.phase-gaps li{font-size:.82rem;color:var(--fg2);padding:.2rem 0;padding-left:1.2rem;position:relative}
+.phase-gaps li::before{content:'';position:absolute;left:0;top:.55rem;width:8px;height:8px;border-radius:50%;background:var(--yellow);opacity:.5}
+
+/* Lifecycle SVG (Fase 5) */
+.lifecycle-section{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--bg4)}
+.lifecycle-title{font-size:.88rem;font-weight:600;margin-bottom:.75rem;color:var(--fg)}
+.lifecycle-wrap{overflow-x:auto;padding:.5rem 0}
+
+/* Tooltip */
+.tooltip{position:fixed;background:var(--bg);border:1px solid var(--bg4);border-radius:6px;padding:.6rem .8rem;font-size:.8rem;color:var(--fg2);max-width:300px;pointer-events:none;z-index:200;box-shadow:var(--shadow);opacity:0;transition:opacity .15s}
+.tooltip.visible{opacity:1}
+.tooltip .tt-title{color:var(--fg);font-weight:600;display:block;margin-bottom:.2rem}
+.tooltip .tt-csv{font-family:var(--mono);font-size:.75rem;color:var(--accent)}
+
+/* Footer */
+.footer{max-width:1100px;margin:3rem auto 0;padding:1.5rem;text-align:center;color:var(--fg3);font-size:.78rem;border-top:1px solid var(--bg3)}
+.footer span{color:var(--fg2)}
+
+/* Responsive */
+@media(max-width:700px){
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .entity-grid{grid-template-columns:1fr}
+  .phase-meta{display:none}
+  .header h1{font-size:1.1rem}
+  .timeline::before{left:calc(1.5rem + 14px)}
+  .phase{padding-left:40px}
+  .phase-dot{left:4px;width:20px;height:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>SOAL <span>Process Flow</span> Pipeline</h1>
+    <span class="header-badge">Pipeline V0 — 2026-03-09</span>
+  </div>
+</div>
+
+<div class="summary" id="summary"></div>
+
+<div class="filters">
+  <input class="filter-input" id="search" type="text" placeholder="Buscar fase ou entidade...">
+  <select class="filter-input" id="filterStatus">
+    <option value="">Todos os status</option>
+    <option value="completo">Completo</option>
+    <option value="parcial">Parcial</option>
+    <option value="template">Template</option>
+    <option value="pendente">Pendente</option>
+  </select>
+  <select class="filter-input" id="filterCat">
+    <option value="">Todas categorias</option>
+    <option value="A">A — Seed</option>
+    <option value="B">B — CSV Import</option>
+    <option value="C">C — Form</option>
+    <option value="D">D — API</option>
+    <option value="E">E — Auto</option>
+  </select>
+  <span class="filter-count" id="filterCount"></span>
+  <span class="kbd-hint"><span class="kbd">0</span>-<span class="kbd">7</span> toggle · <span class="kbd">A</span> all · <span class="kbd">C</span> collapse · <span class="kbd">Esc</span> reset · <span class="kbd">/</span> search</span>
+</div>
+
+<div class="timeline" id="timeline"></div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="footer">
+  <span>DeepWork AI Flows</span> · SOAL Process Flow Pipeline · 66 tabelas · 8 fases
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ── DATA ──────────────────────────────────────────────────
+var PHASES = [
+  {
+    id:0, name:"Seeds (Raízes)", status:"completo", color:"#8957e5",
+    deps:[], progress:100,
+    description:"Entidades raiz que não dependem de nada. Culturas alimentam TALHAO_SAFRA. Produto_Insumo alimenta COMPRA_INSUMO, APLICACAO_INSUMO, ESTOQUE.",
+    entities:[
+      {name:"CULTURAS",records:126,status:"completo",csv:"fase_0/01_culturas.csv",cat:"A",who:"João",desc:"126 culturas em 8 grupos (grãos, oleaginosa, cobertura, forrageira, pastagem, florestal, fibra, outros)"},
+      {name:"PRODUTO_INSUMO",records:18894,status:"completo",csv:"fase_0/03_produto_insumo_agriwin.csv + castrolanda.csv",cat:"A",who:"João",desc:"AgriWin (catálogo histórico) + Castrolanda (395 com preços)"}
+    ],
+    gaps:[]
+  },
+  {
+    id:1, name:"Sistema e Plataforma", status:"completo", color:"#4a90d9",
+    deps:[0], progress:100,
+    description:"Organization é o tenant. Tudo carrega organization_id. Users são os operadores do sistema.",
+    entities:[
+      {name:"ORGANIZATIONS",records:1,status:"completo",csv:"fase_1_sistema/01_organizations.csv",cat:"A",who:"João",desc:"1 organização (SOAL)"},
+      {name:"USERS",records:8,status:"completo",csv:"fase_1_sistema/02_users.csv",cat:"A",who:"João",desc:"8 usuários (Claudio, Tiago, Valentina, Alessandro, Josmar, Rodrigo, João, +1)"}
+    ],
+    gaps:[]
+  },
+  {
+    id:2, name:"Território", status:"completo", color:"#7bc67e",
+    deps:[0,1], progress:100,
+    description:"Território é a base para tudo. TALHÃO + SAFRA + CULTURA = TALHAO_SAFRA (entidade central). Fazendas agrupam talhões. UBG/Silos recebem grãos.",
+    entities:[
+      {name:"SAFRAS",records:9,status:"completo",csv:"fase_2/01_safras.csv",cat:"A",who:"João",desc:"9 safras (17/18 a 26/27)"},
+      {name:"FAZENDAS",records:9,status:"completo",csv:"fase_2/02_fazendas.csv",cat:"B",who:"Rodrigo",desc:"9 fazendas, 4.127 ha total"},
+      {name:"TALHÕES",records:71,status:"completo",csv:"fase_2/03_talhoes.csv",cat:"B",who:"Rodrigo",desc:"71 talhões em 9 fazendas"},
+      {name:"MATRÍCULAS",records:88,status:"completo",csv:"fase_2/04_matriculas.csv",cat:"B",who:"Rodrigo",desc:"59 SOAL + 29 CK, 4.127 ha"},
+      {name:"PARCEIROS",records:2201,status:"completo",csv:"fase_2/06_parceiros_agriwin.csv",cat:"B",who:"Rodrigo",desc:"AgriWin — fornecedores, clientes, transportadores, cooperativa"},
+      {name:"UBG",records:1,status:"completo",csv:"fase_2_territorial/01_ubg.csv",cat:"A",who:"João",desc:"1 unidade beneficiamento grãos, 45 t/h recepção, 30 t/h secagem"},
+      {name:"SILOS",records:8,status:"completo",csv:"fase_2_territorial/02_silos_ubg.csv",cat:"A",who:"João",desc:"6 conv metálicos + 2 pulmão, 10.760t capacidade"},
+      {name:"TANQUES_COMB",records:5,status:"completo",csv:"fase_3/06_fuel_tanks.csv",cat:"B",who:"Rodrigo",desc:"5 tanques de combustível"}
+    ],
+    gaps:[
+      "GeoJSON talhões — KML/KMZ do CAR disponível, conversão pendente"
+    ]
+  },
+  {
+    id:3, name:"Cadastros Operacionais", status:"completo", color:"#5cc8db",
+    deps:[1,2], progress:100,
+    description:"Máquinas + Operadores são necessários para OPERACAO_CAMPO. Colaboradores + Folha são o backbone RH. Tags Vestro fazem match automático nos abastecimentos.",
+    entities:[
+      {name:"MÁQUINAS",records:183,status:"completo",csv:"fase_3/04_maquinas.csv + 04_implementos.csv",cat:"B",who:"Rodrigo",desc:"57 máquinas (52 ativo) + 126 implementos (103 ativo)"},
+      {name:"OPERADORES",records:15,status:"completo",csv:"fase_3/05_operadores.csv",cat:"A",who:"João",desc:"15 operadores curados (cruzamento colaboradores × vestro)"},
+      {name:"COLABORADORES",records:82,status:"completo",csv:"fase_3/07_colaboradores.csv",cat:"B",who:"Rodrigo",desc:"82 colaboradores (Jul/2017 a Fev/2026)"},
+      {name:"FOLHA_PAGAMENTO",records:3122,status:"completo",csv:"fase_3/08_folha_pagamento.csv",cat:"B",who:"Rodrigo",desc:"3.122 registros, 5 eras de layout, 118 abas"},
+      {name:"TAGS_VESTRO",records:47,status:"completo",csv:"fase_3/05_tags_maquinas_vestro.csv",cat:"B",who:"Rodrigo",desc:"47 tags RFID + 30 motoristas Vestro"}
+    ],
+    gaps:[
+      "Horímetro inicial das máquinas — leitura Dia 01 com Tiago"
+    ]
+  },
+  {
+    id:4, name:"Financeiro Base", status:"completo", color:"#e8a84d",
+    deps:[0,2], progress:100,
+    description:"Maior volume de dados históricos. Castrolanda é a cooperativa central (fornece insumos + compra grãos). FSI é o RH/financeiro. Alimentam dashboards e custeio de safra.",
+    entities:[
+      {name:"CASTROLANDA_EXTRATO",records:8211,status:"completo",csv:"fase_4/07_castrolanda_extrato.csv",cat:"B",who:"Rodrigo",desc:"9 contas, fev/2020 → fev/2026"},
+      {name:"CASTROLANDA_CC",records:2891,status:"completo",csv:"fase_4/09_castrolanda_cc_completo.csv",cat:"B",who:"Rodrigo",desc:"6 anos, fev/2020 → jan/2026"},
+      {name:"CAPITAL_CASTROLANDA",records:95,status:"completo",csv:"fase_4/12_castrolanda_capital_html.csv",cat:"B",who:"Rodrigo",desc:"Retenções + capitalizações"},
+      {name:"FINANC_CASTROLANDA",records:220,status:"completo",csv:"fase_4/11_castrolanda_financiamentos.csv",cat:"B",who:"Rodrigo",desc:"22 contratos (9 ativos)"},
+      {name:"VENDAS_GRAO",records:170,status:"completo",csv:"fase_4/13_castrolanda_vendas.csv",cat:"B",who:"Rodrigo",desc:"13 safras, R$99.3M bruto"},
+      {name:"CARGA_A_CARGA",records:1309,status:"completo",csv:"fase_4/14_castrolanda_carga_a_carga.csv",cat:"B",who:"Rodrigo",desc:"7 culturas, 6 safras, 42.4k ton"},
+      {name:"COMPRA_INSUMO",records:6331,status:"completo",csv:"fase_4/11_compra_insumo_castrolanda.csv",cat:"B",who:"Rodrigo",desc:"16 culturas, R$65.7M, Jan/2020 → Mar/2026"},
+      {name:"CUSTO_INSUMO",records:553,status:"completo",csv:"fase_6_operacoes/06_custo_insumos_castrolanda.csv",cat:"B",who:"Rodrigo",desc:"Soja 24/25 + feijão 25/26"},
+      {name:"FLUXO_CAIXA_FSI",records:10119,status:"completo",csv:"fase_4/15_fluxo_caixa_fsi.csv",cat:"B",who:"Rodrigo",desc:"Contas pagar/receber, 10 sheets (2017→2026)"},
+      {name:"CAIXA_ESCRITORIO_FSI",records:1185,status:"completo",csv:"fase_4/16_caixa_escritorio_fsi.csv",cat:"B",who:"Rodrigo",desc:"Caixa pequeno escritório, 2020→2026"},
+      {name:"KUGLER_X_FSI",records:1499,status:"completo",csv:"fase_4/17_kugler_x_fsi.csv",cat:"B",who:"Rodrigo",desc:"Inter-company ledger, 2015→2025"},
+      {name:"CONSORCIOS_FSI",records:20,status:"completo",csv:"fase_4/18_consorcios_fsi.csv",cat:"B",who:"Rodrigo",desc:"20 consórcios ativos"}
+    ],
+    gaps:[
+      "Carga-a-Carga 22/23 Soja Intacta IPRO — erro 500, re-baixar"
+    ]
+  },
+  {
+    id:5, name:"Planejamento da Safra", status:"completo", color:"#e8d44d",
+    deps:[0,2], progress:100,
+    description:"TALHAO_SAFRA é a ENTIDADE CENTRAL. 90% dos relatórios passam por ela. Quando Alessandro escolhe uma cultura para um talhão, o sistema auto-gera operações a partir do template.",
+    entities:[
+      {name:"TALHAO_SAFRA",records:1085,status:"completo",csv:"fase_5/03_talhao_safra.csv + plantio histórico",cat:"B",who:"Rodrigo",desc:"Entidade central — conecta Talhão + Safra + Cultura. 50 planejamento + 1.035 histórico."},
+      {name:"TEMPLATE_OPS",records:42,status:"completo",csv:"fase_5/02_template_operacoes_cultura.csv",cat:"A",who:"João",desc:"6 culturas com 9-12 operações sequenciadas (dessecação → colheita)"},
+      {name:"SAFRA_AÇÃO",records:9,status:"completo",csv:"fase_5/04_safra_acoes.csv",cat:"E",who:"Sistema",desc:"Calendário planejado (feed Gantt). Auto-geradas dos templates."},
+      {name:"OPERAÇÃO_CAMPO",records:7,status:"completo",csv:"fase_5/05_operacoes_campo.csv",cat:"C",who:"Tiago",desc:"Registro real da execução (máquina, operador, horímetro)"},
+      {name:"APLICAÇÃO_INSUMO",records:11,status:"completo",csv:"fase_5/06_aplicacao_insumo.csv",cat:"C",who:"Tiago",desc:"Insumos aplicados por operação de campo"}
+    ],
+    gaps:[
+      "TALHAO_SAFRA planejamento real — template, depende Alessandro",
+      "Centro de custo hierarquia — não gerada (seed João)",
+      "Análise de Solo — pendente coleta com Lucas/Alessandro",
+      "Recomendação Adubação — depende de Análise de Solo"
+    ],
+    lifecycle:true
+  },
+  {
+    id:6, name:"Operações Contínuas", status:"parcial", color:"#e8c94d",
+    deps:[2,3,5], progress:85,
+    description:"Fase 6 é o dia-a-dia. OPERACAO_CAMPO é o hub — conecta TALHAO_SAFRA + MÁQUINA + OPERADOR. TICKET_BALANÇA é o ponto de transferência Agricultura→UBG. Consumo AgriWin é a melhor fonte histórica.",
+    entities:[
+      {name:"TICKET_BALANÇA",records:891,status:"completo",csv:"fase_6/15_ticket_balancas.csv",cat:"C",who:"Josmar/Vanessa",desc:"Pesagem individual — placa, motorista, peso bruto/tara/líquido, umidade"},
+      {name:"PESAGEM_AGRÍCOLA",records:806,status:"completo",csv:"fase_6_operacoes/04_pesagens_agricola.csv",cat:"B",who:"Rodrigo",desc:"Perspectiva agrícola, consolidado por talhão"},
+      {name:"SAÍDA_GRÃO",records:542,status:"completo",csv:"fase_6_operacoes/08_saidas_producao.csv",cat:"B",who:"Rodrigo",desc:"Embarques de grão saindo da UBG — 4 culturas, 13 contratos"},
+      {name:"RECEBIMENTO_GRÃO",records:875,status:"completo",csv:"fase_6/16_recebimentos_grao.csv",cat:"B",who:"Rodrigo",desc:"Qualidade pré-secagem — umidade, PH, impureza"},
+      {name:"ABASTECIMENTOS",records:1200,status:"completo",csv:"fase_6/10_abastecimentos_vestro.csv",cat:"D",who:"Automação",desc:"185k L Diesel, Jan/2024 → Mar/2026 (ETL Vestro)"},
+      {name:"CONSUMO_AGRIWIN",records:21162,status:"completo",csv:"fase_6_operacoes/12_consumo_agriwin.csv",cat:"B",who:"Rodrigo",desc:"Staging Bronze — 9.482 ops, 8 safras, R$99.2M"},
+      {name:"CONTROLE_SECAGEM",records:5,status:"completo",csv:"(fase 5 lifecycle demo)",cat:"C",who:"Josmar",desc:"Controle de secagem com leituras periódicas"},
+      {name:"LEITURAS_SECAGEM",records:25,status:"completo",csv:"(fase 5 lifecycle demo)",cat:"C",who:"Josmar",desc:"Leituras de umidade/temperatura durante secagem"},
+      {name:"ALOCAÇÃO_SILO",records:8,status:"completo",csv:"(fase 5 lifecycle demo)",cat:"E",who:"Sistema",desc:"Movimentação entre silos"},
+      {name:"ESTOQUE_SILO",records:10,status:"completo",csv:"(fase 5 lifecycle demo)",cat:"E",who:"Sistema",desc:"Posição atual de grãos por silo"},
+      {name:"UBG_CAIXA",records:19325,status:"completo",csv:"fase_6/14_ubg_caixa.csv",cat:"B",who:"Rodrigo",desc:"Histórico financeiro UBG 2011→2026"},
+      {name:"FRETEIROS",records:116,status:"completo",csv:"fase_6_operacoes/07_freteiros.csv",cat:"B",who:"Rodrigo",desc:"2 motoristas, 2 safras"},
+      {name:"VENDAS_DIRETAS",records:73,status:"completo",csv:"fase_6_operacoes/05b_vendas_diretas.csv",cat:"B",who:"Rodrigo",desc:"Feijão + inverno 22/23→25/26"},
+      {name:"HISTÓRICO_MAQ",records:32516,status:"completo",csv:"(maquinário histórico)",cat:"B",who:"Rodrigo",desc:"11 xlsx, 101 abas, 1997→2026"},
+      {name:"PLANTIO_HISTÓRICO",records:145,status:"completo",csv:"fase_6_operacoes/12_plantio_historico.csv",cat:"B",who:"Rodrigo",desc:"6 safras, 10 culturas, 4 formatos"},
+      {name:"OP_CAMPO_COLHEITA",records:0,status:"template",csv:"fase_6_operacoes/01_operacoes_campo_colheita.csv",cat:"C",who:"Tiago",desc:"TEMPLATE — precisa dados reais do Tiago"},
+      {name:"OP_CAMPO_PLANTIO",records:0,status:"template",csv:"fase_6_operacoes/02_operacoes_campo_plantio.csv",cat:"C",who:"Tiago",desc:"TEMPLATE — precisa dados reais do Tiago"},
+      {name:"COLHEITA_DETALHE",records:0,status:"template",csv:"fase_6_operacoes/03_colheita_detalhe.csv",cat:"C",who:"Tiago",desc:"TEMPLATE — precisa dados reais do Tiago"}
+    ],
+    gaps:[
+      "Soja 25/26 — arquivo é cópia do 24/25, precisa arquivo real",
+      "Milho 25/26 — parcial, apenas SANTA RITA + SANTO ANDRE (35 tickets)",
+      "Análise de Solo — pendente Lucas/Alessandro",
+      "Contratos — pendente Valentina",
+      "Operações campo (colheita/plantio) — TEMPLATES, precisam dados do Tiago"
+    ]
+  },
+  {
+    id:7, name:"Auto-Calculado", status:"pendente", color:"#b8b8b8",
+    deps:[5,6], progress:0,
+    description:"Triggers no DDL — só funcionam quando Fase 6 estiver rodando em produção. 3 funções e ~57 triggers definidos.",
+    entities:[
+      {name:"MOVIMENTAÇÃO_INSUMO",records:0,status:"sem_dados",csv:"— (trigger)",cat:"E",who:"Sistema",desc:"Trigger: INSERT em COMPRA/APLICACAO_INSUMO"},
+      {name:"ESTOQUE_INSUMO",records:0,status:"sem_dados",csv:"— (trigger)",cat:"E",who:"Sistema",desc:"Trigger: custo médio ponderado em MOVIMENTACAO_INSUMO"},
+      {name:"CUSTO_OPERAÇÃO",records:0,status:"sem_dados",csv:"— (trigger)",cat:"E",who:"Sistema",desc:"Trigger: INSERT em OPERACAO_CAMPO"}
+    ],
+    gaps:[
+      "Triggers não executáveis até Fase 6 em produção"
+    ]
+  }
+];
+
+var LIFECYCLE_STATES = [
+  {state:"rascunho",color:"#484f58"},
+  {state:"em_revisão",color:"#d29922"},
+  {state:"aprovado",color:"#3fb950"},
+  {state:"preparando",color:"#58a6ff"},
+  {state:"plantado",color:"#58a6ff"},
+  {state:"em_desenv",color:"#58a6ff"},
+  {state:"colhendo",color:"#58a6ff"},
+  {state:"colhido",color:"#3fb950"},
+  {state:"cancelado",color:"#f85149"}
+];
+
+// ── HELPERS ───────────────────────────────────────────────
+function fmt(n){ return n>=1000 ? n.toLocaleString('pt-BR') : String(n); }
+function totalRecords(phase){ return phase.entities.reduce(function(s,e){ return s+e.records; },0); }
+function totalEntities(){ return PHASES.reduce(function(s,p){ return s+p.entities.length; },0); }
+function totalAllRecords(){ return PHASES.reduce(function(s,p){ return s+totalRecords(p); },0); }
+
+function completePct(){
+  var total=0, done=0;
+  PHASES.forEach(function(p){
+    p.entities.forEach(function(e){
+      total++;
+      if(e.status==='completo') done++;
+    });
+  });
+  return total ? Math.round(done/total*100) : 0;
+}
+
+function escHtml(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+// ── RENDER SUMMARY ───────────────────────────────────────
+function renderSummary(){
+  var el = document.getElementById('summary');
+  var pct = completePct();
+  var cards = [
+    {value:String(PHASES.length),label:"Fases"},
+    {value:String(totalEntities()),label:"Entidades"},
+    {value:fmt(totalAllRecords()),label:"Registros"},
+    {value:"30+",label:"ETLs ativos"},
+    {value:pct+"%",label:"Completude",pct:pct}
+  ];
+  while(el.firstChild) el.removeChild(el.firstChild);
+  cards.forEach(function(c){
+    var card = document.createElement('div');
+    card.className = 'card';
+    var val = document.createElement('div');
+    val.className = 'card-value';
+    val.textContent = c.value;
+    var lab = document.createElement('div');
+    lab.className = 'card-label';
+    lab.textContent = c.label;
+    card.appendChild(val);
+    card.appendChild(lab);
+    if(c.pct !== undefined){
+      var bar = document.createElement('div');
+      bar.className = 'card-bar';
+      var fill = document.createElement('div');
+      fill.className = 'card-bar-fill';
+      fill.style.width = c.pct+'%';
+      fill.style.background = c.pct>=80?'var(--green)':c.pct>=50?'var(--yellow)':'var(--red)';
+      bar.appendChild(fill);
+      card.appendChild(bar);
+    }
+    el.appendChild(card);
+  });
+}
+
+// ── RENDER LIFECYCLE SVG ─────────────────────────────────
+function buildLifecycleSVG(){
+  var mainStates = LIFECYCLE_STATES.slice(0,8);
+  var cancelled = LIFECYCLE_STATES[8];
+  var nodeW=110, nodeH=34, gapX=18, y=20, arrowY=y+nodeH/2;
+  var svgW = mainStates.length*(nodeW+gapX)+40;
+  var svgH = 140;
+
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns,'svg');
+  svg.setAttribute('width',String(svgW));
+  svg.setAttribute('height',String(svgH));
+  svg.setAttribute('viewBox','0 0 '+svgW+' '+svgH);
+
+  // Marker
+  var defs = document.createElementNS(ns,'defs');
+  var marker = document.createElementNS(ns,'marker');
+  marker.setAttribute('id','ah');
+  marker.setAttribute('markerWidth','8');
+  marker.setAttribute('markerHeight','6');
+  marker.setAttribute('refX','8');
+  marker.setAttribute('refY','3');
+  marker.setAttribute('orient','auto');
+  var mpath = document.createElementNS(ns,'path');
+  mpath.setAttribute('d','M0,0 L8,3 L0,6');
+  mpath.setAttribute('fill','#484f58');
+  marker.appendChild(mpath);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+
+  // Arrows between main states
+  for(var i=0;i<mainStates.length-1;i++){
+    var x1=20+i*(nodeW+gapX)+nodeW, x2=20+(i+1)*(nodeW+gapX);
+    var line = document.createElementNS(ns,'line');
+    line.setAttribute('x1',String(x1)); line.setAttribute('y1',String(arrowY));
+    line.setAttribute('x2',String(x2-2)); line.setAttribute('y2',String(arrowY));
+    line.setAttribute('stroke','#484f58'); line.setAttribute('stroke-width','2');
+    line.setAttribute('marker-end','url(#ah)');
+    svg.appendChild(line);
+  }
+
+  // Main state nodes
+  mainStates.forEach(function(s,i){
+    var x=20+i*(nodeW+gapX);
+    var rect = document.createElementNS(ns,'rect');
+    rect.setAttribute('x',String(x)); rect.setAttribute('y',String(y));
+    rect.setAttribute('width',String(nodeW)); rect.setAttribute('height',String(nodeH));
+    rect.setAttribute('rx','6'); rect.setAttribute('fill',s.color);
+    rect.setAttribute('opacity','.2'); rect.setAttribute('stroke',s.color);
+    rect.setAttribute('stroke-width','1.5');
+    svg.appendChild(rect);
+
+    var text = document.createElementNS(ns,'text');
+    text.setAttribute('x',String(x+nodeW/2)); text.setAttribute('y',String(y+nodeH/2+4));
+    text.setAttribute('text-anchor','middle'); text.setAttribute('fill','#e6edf3');
+    text.setAttribute('font-size','11'); text.setAttribute('font-family','SF Mono,monospace');
+    text.setAttribute('font-weight','600');
+    text.textContent = s.state;
+    svg.appendChild(text);
+  });
+
+  // Cancelled node
+  if(cancelled){
+    var cx=20+3*(nodeW+gapX), cy=y+nodeH+40;
+    var crect = document.createElementNS(ns,'rect');
+    crect.setAttribute('x',String(cx)); crect.setAttribute('y',String(cy));
+    crect.setAttribute('width',String(nodeW)); crect.setAttribute('height',String(nodeH));
+    crect.setAttribute('rx','6'); crect.setAttribute('fill',cancelled.color);
+    crect.setAttribute('opacity','.2'); crect.setAttribute('stroke',cancelled.color);
+    crect.setAttribute('stroke-width','1.5');
+    svg.appendChild(crect);
+
+    var ctext = document.createElementNS(ns,'text');
+    ctext.setAttribute('x',String(cx+nodeW/2)); ctext.setAttribute('y',String(cy+nodeH/2+4));
+    ctext.setAttribute('text-anchor','middle'); ctext.setAttribute('fill','#e6edf3');
+    ctext.setAttribute('font-size','11'); ctext.setAttribute('font-family','SF Mono,monospace');
+    ctext.setAttribute('font-weight','600');
+    ctext.textContent = 'cancelado';
+    svg.appendChild(ctext);
+
+    // Dashed arrow from "aprovado" to cancelled
+    var fromX=20+2*(nodeW+gapX)+nodeW/2;
+    var dline = document.createElementNS(ns,'line');
+    dline.setAttribute('x1',String(fromX)); dline.setAttribute('y1',String(y+nodeH));
+    dline.setAttribute('x2',String(cx+nodeW/2)); dline.setAttribute('y2',String(cy-2));
+    dline.setAttribute('stroke','#f85149'); dline.setAttribute('stroke-width','1.5');
+    dline.setAttribute('stroke-dasharray','4,3'); dline.setAttribute('marker-end','url(#ah)');
+    svg.appendChild(dline);
+
+    var lbl = document.createElementNS(ns,'text');
+    lbl.setAttribute('x',String(fromX-8)); lbl.setAttribute('y',String(y+nodeH+22));
+    lbl.setAttribute('fill','#f85149'); lbl.setAttribute('font-size','9');
+    lbl.setAttribute('font-family','SF Mono,monospace'); lbl.setAttribute('opacity','.7');
+    lbl.textContent = 'pré-plantado';
+    svg.appendChild(lbl);
+  }
+
+  return svg;
+}
+
+// ── RENDER PHASE ─────────────────────────────────────────
+function renderPhase(phase){
+  var rec = totalRecords(phase);
+  var div = document.createElement('div');
+  div.className = 'phase';
+  div.dataset.id = String(phase.id);
+  div.id = 'phase-'+phase.id;
+
+  // Dot
+  var dot = document.createElement('div');
+  dot.className = 'phase-dot';
+  dot.style.borderColor = phase.color;
+  div.appendChild(dot);
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'phase-header';
+  header.addEventListener('click', function(){ togglePhase(phase.id); });
+
+  var num = document.createElement('span');
+  num.className = 'phase-number';
+  num.textContent = String(phase.id);
+  header.appendChild(num);
+
+  var title = document.createElement('span');
+  title.className = 'phase-title';
+  title.textContent = phase.name;
+  header.appendChild(title);
+
+  var meta = document.createElement('div');
+  meta.className = 'phase-meta';
+
+  var statEnt = document.createElement('span');
+  statEnt.className = 'phase-stat';
+  var b1 = document.createElement('strong');
+  b1.textContent = String(phase.entities.length);
+  statEnt.appendChild(b1);
+  statEnt.appendChild(document.createTextNode(' entidades'));
+  meta.appendChild(statEnt);
+
+  var statRec = document.createElement('span');
+  statRec.className = 'phase-stat';
+  var b2 = document.createElement('strong');
+  b2.textContent = fmt(rec);
+  statRec.appendChild(b2);
+  statRec.appendChild(document.createTextNode(' reg'));
+  meta.appendChild(statRec);
+
+  var pill = document.createElement('span');
+  pill.className = 'pill pill-'+phase.status;
+  pill.textContent = phase.status.charAt(0).toUpperCase()+phase.status.slice(1);
+  meta.appendChild(pill);
+
+  var prog = document.createElement('div');
+  prog.className = 'phase-progress';
+  var progFill = document.createElement('div');
+  progFill.className = 'phase-progress-fill';
+  progFill.style.width = phase.progress+'%';
+  progFill.style.background = phase.color;
+  prog.appendChild(progFill);
+  meta.appendChild(prog);
+
+  header.appendChild(meta);
+
+  var chev = document.createElement('span');
+  chev.className = 'phase-chevron';
+  chev.textContent = '\u25BC';
+  header.appendChild(chev);
+
+  div.appendChild(header);
+
+  // Body
+  var body = document.createElement('div');
+  body.className = 'phase-body';
+
+  var desc = document.createElement('div');
+  desc.className = 'phase-desc';
+  desc.textContent = phase.description;
+  body.appendChild(desc);
+
+  // Dependencies
+  if(phase.deps.length){
+    var depsDiv = document.createElement('div');
+    depsDiv.className = 'phase-deps';
+    depsDiv.appendChild(document.createTextNode('Depende de: '));
+    phase.deps.forEach(function(d,i){
+      if(i>0) depsDiv.appendChild(document.createTextNode(', '));
+      var a = document.createElement('a');
+      a.textContent = 'Fase '+d;
+      a.addEventListener('click', function(ev){ ev.stopPropagation(); scrollToPhase(d); });
+      depsDiv.appendChild(a);
+    });
+    body.appendChild(depsDiv);
+  }
+
+  // Entity grid
+  var grid = document.createElement('div');
+  grid.className = 'entity-grid';
+
+  phase.entities.forEach(function(e){
+    var mini = document.createElement('div');
+    mini.className = 'entity-mini';
+    mini.dataset.cat = e.cat;
+    mini.dataset.name = e.name;
+    mini.dataset.csv = e.csv;
+    mini.dataset.desc = e.desc;
+    mini.dataset.who = e.who;
+
+    var eName = document.createElement('div');
+    eName.className = 'entity-name';
+    eName.textContent = e.name;
+    mini.appendChild(eName);
+
+    var stats = document.createElement('div');
+    stats.className = 'entity-stats';
+
+    var recs = document.createElement('span');
+    recs.className = 'entity-records' + (e.records>0 ? ' has-data' : '');
+    recs.textContent = fmt(e.records);
+    stats.appendChild(recs);
+
+    var catBadge = document.createElement('span');
+    catBadge.className = 'cat-badge cat-'+e.cat;
+    catBadge.textContent = e.cat;
+    stats.appendChild(catBadge);
+
+    var ePill = document.createElement('span');
+    ePill.className = 'entity-pill '+e.status;
+    ePill.textContent = e.status==='sem_dados'?'Sem dados':e.status==='template'?'Template':e.status.charAt(0).toUpperCase()+e.status.slice(1);
+    stats.appendChild(ePill);
+
+    mini.appendChild(stats);
+
+    var who = document.createElement('div');
+    who.className = 'entity-who';
+    who.textContent = e.who;
+    mini.appendChild(who);
+
+    grid.appendChild(mini);
+  });
+
+  body.appendChild(grid);
+
+  // Lifecycle (Fase 5)
+  if(phase.lifecycle){
+    var lcSection = document.createElement('div');
+    lcSection.className = 'lifecycle-section';
+    var lcTitle = document.createElement('div');
+    lcTitle.className = 'lifecycle-title';
+    lcTitle.textContent = 'Lifecycle TALHAO_SAFRA — 9 estados';
+    lcSection.appendChild(lcTitle);
+    var lcWrap = document.createElement('div');
+    lcWrap.className = 'lifecycle-wrap';
+    lcWrap.appendChild(buildLifecycleSVG());
+    lcSection.appendChild(lcWrap);
+    body.appendChild(lcSection);
+  }
+
+  // Gaps
+  if(phase.gaps.length){
+    var gapsDiv = document.createElement('div');
+    gapsDiv.className = 'phase-gaps';
+    var gTitle = document.createElement('div');
+    gTitle.className = 'phase-gaps-title';
+    gTitle.textContent = 'Pendências ('+phase.gaps.length+')';
+    gapsDiv.appendChild(gTitle);
+    var ul = document.createElement('ul');
+    phase.gaps.forEach(function(g){
+      var li = document.createElement('li');
+      li.textContent = g;
+      ul.appendChild(li);
+    });
+    gapsDiv.appendChild(ul);
+    body.appendChild(gapsDiv);
+  }
+
+  div.appendChild(body);
+  return div;
+}
+
+// ── RENDER TIMELINE ──────────────────────────────────────
+function renderTimeline(){
+  var el = document.getElementById('timeline');
+  while(el.firstChild) el.removeChild(el.firstChild);
+  PHASES.forEach(function(p){ el.appendChild(renderPhase(p)); });
+}
+
+// ── INTERACTIVITY ────────────────────────────────────────
+function togglePhase(id){
+  var el = document.getElementById('phase-'+id);
+  if(el) el.classList.toggle('expanded');
+}
+
+function scrollToPhase(id){
+  var el = document.getElementById('phase-'+id);
+  if(el){
+    el.classList.add('expanded');
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function expandAll(){
+  document.querySelectorAll('.phase').forEach(function(p){ p.classList.add('expanded'); });
+}
+
+function collapseAll(){
+  document.querySelectorAll('.phase').forEach(function(p){ p.classList.remove('expanded'); });
+}
+
+function resetFilters(){
+  document.getElementById('search').value='';
+  document.getElementById('filterStatus').value='';
+  document.getElementById('filterCat').value='';
+  applyFilters();
+}
+
+function applyFilters(){
+  var q = document.getElementById('search').value.toLowerCase().trim();
+  var statusFilter = document.getElementById('filterStatus').value;
+  var catFilter = document.getElementById('filterCat').value;
+  var visiblePhases=0, visibleEntities=0;
+
+  document.querySelectorAll('.phase').forEach(function(phaseEl){
+    var id = parseInt(phaseEl.dataset.id);
+    var phase = PHASES[id];
+    var phaseName = phase.name.toLowerCase();
+    var phaseMatch = !q || phaseName.indexOf(q)>=0;
+    var statusMatch = !statusFilter || phase.status===statusFilter;
+
+    var entityEls = phaseEl.querySelectorAll('.entity-mini');
+    var anyEntityMatch = false;
+    var entityCount = 0;
+
+    entityEls.forEach(function(eEl){
+      var eName = (eEl.dataset.name||'').toLowerCase();
+      var eCat = eEl.dataset.cat;
+      var nameMatch = !q || eName.indexOf(q)>=0 || phaseMatch;
+      var catMatch = !catFilter || eCat===catFilter;
+
+      if(catFilter && eCat!==catFilter){
+        eEl.classList.add('dim');
+      } else {
+        eEl.classList.remove('dim');
+      }
+
+      if((nameMatch || eName.indexOf(q)>=0) && (!catFilter || catMatch)){
+        anyEntityMatch=true;
+        entityCount++;
+        eEl.style.display='';
+        eEl.classList.remove('dim');
+      } else if(!q && !catFilter){
+        eEl.style.display='';
+        entityCount++;
+      } else if(catFilter && nameMatch){
+        eEl.style.display='';
+        entityCount++;
+      } else {
+        eEl.style.display='none';
+      }
+    });
+
+    var showPhase = (phaseMatch || anyEntityMatch) && statusMatch;
+    phaseEl.style.display = showPhase ? '' : 'none';
+
+    if(showPhase){
+      visiblePhases++;
+      visibleEntities += entityCount;
+    }
+
+    if(q && anyEntityMatch && showPhase){
+      phaseEl.classList.add('expanded');
+    }
+  });
+
+  document.getElementById('filterCount').textContent = visiblePhases+' fases \u00b7 '+visibleEntities+' entidades';
+}
+
+// Tooltip
+var tooltipEl = document.getElementById('tooltip');
+document.addEventListener('mouseover', function(ev){
+  var entity = ev.target.closest('.entity-mini');
+  if(entity){
+    while(tooltipEl.firstChild) tooltipEl.removeChild(tooltipEl.firstChild);
+    var ttTitle = document.createElement('span');
+    ttTitle.className = 'tt-title';
+    ttTitle.textContent = entity.dataset.name;
+    tooltipEl.appendChild(ttTitle);
+    tooltipEl.appendChild(document.createTextNode(entity.dataset.desc));
+    tooltipEl.appendChild(document.createElement('br'));
+    var ttCsv = document.createElement('span');
+    ttCsv.className = 'tt-csv';
+    ttCsv.textContent = entity.dataset.csv;
+    tooltipEl.appendChild(ttCsv);
+    tooltipEl.classList.add('visible');
+  }
+});
+document.addEventListener('mousemove', function(ev){
+  if(tooltipEl.classList.contains('visible')){
+    var x = ev.clientX+12, y = ev.clientY+12;
+    if(x+310>window.innerWidth) x=ev.clientX-310;
+    if(y+100>window.innerHeight) y=ev.clientY-110;
+    tooltipEl.style.left=x+'px';
+    tooltipEl.style.top=y+'px';
+  }
+});
+document.addEventListener('mouseout', function(ev){
+  if(ev.target.closest('.entity-mini')){
+    tooltipEl.classList.remove('visible');
+  }
+});
+
+// Search/filter events
+document.getElementById('search').addEventListener('input', applyFilters);
+document.getElementById('filterStatus').addEventListener('change', applyFilters);
+document.getElementById('filterCat').addEventListener('change', applyFilters);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(ev){
+  if(ev.target.tagName==='INPUT' || ev.target.tagName==='SELECT') return;
+  var key = ev.key;
+  if(key>='0' && key<='7'){ togglePhase(parseInt(key)); ev.preventDefault(); }
+  else if(key==='a' || key==='A'){ expandAll(); ev.preventDefault(); }
+  else if(key==='c' || key==='C'){ collapseAll(); ev.preventDefault(); }
+  else if(key==='Escape'){ resetFilters(); collapseAll(); ev.preventDefault(); }
+  else if(key==='/'){document.getElementById('search').focus(); ev.preventDefault();}
+});
+
+// ── INIT ─────────────────────────────────────────────────
+renderSummary();
+renderTimeline();
+applyFilters();
+
+})();
+</script>
+</body>
+</html>

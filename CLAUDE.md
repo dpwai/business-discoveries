@@ -21,9 +21,9 @@
 **Padrão de dados:** Medallion Architecture — Bronze (raw) → Silver (limpo) → Gold (analytics)
 **O ER diagram define o Bronze layer.** Silver e Gold são transformações, não entidades.
 **Infra:** Docker + Docker Compose
-**DDL status:** ✅ 66 tabelas, 45 ENUMs, 4 views, 6 funções, ~190 indexes, ~57 triggers — tudo consolidado em SQL único
+**DDL status:** ✅ 66 tabelas (-producao_ubg +consumo_agriwin), 45 ENUMs, 4 views, 6 funções, 190 indexes, 57 triggers — tudo consolidado em SQL único
 **Prisma schema:** ✅ 66 modelos, 45 enums, relações completas
-**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (78k linhas, ~56k registros + fase 5 lifecycle + UBG secagem/silos)
+**INSERT scripts:** ✅ Seeds (23k linhas, inclui RBAC) + Dados históricos (99k linhas, ~77k registros + 21k consumo_agriwin + fase 5 lifecycle + UBG secagem/silos)
 
 ---
 
@@ -179,9 +179,9 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 
 | Doc | Caminho | Conteúdo |
 |-----|---------|----------|
-| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 66 tabelas, ~3.048 linhas, pronto para `psql -f` |
-| **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 (23k linhas, inclui 395 insumos Castrolanda) |
-| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~56k registros de CSVs (78k linhas, inclui 12.823 FSI + 6.331 compras insumos + fase 5 lifecycle + UBG secagem/silos) |
+| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 66 tabelas, 3.031 linhas, pronto para `psql -f` |
+| **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 + RBAC (23k linhas, inclui 395 insumos Castrolanda + 5 roles + 32 permissions + user_roles) |
+| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~77k registros de CSVs (99k linhas, inclui 21k consumo_agriwin + 12.823 FSI + 6.331 compras insumos + fase 5 lifecycle + UBG secagem/silos) |
 | **Prisma Schema** | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos, 45 enums |
 | **GAP Analysis** | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
 | **DDL Playground** | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Dashboard interativo dark theme |
@@ -265,9 +265,9 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 
 | Arquivo | Métricas |
 |---------|----------|
-| `sql/00_DDL_COMPLETO_V0.sql` | 3.048 linhas, 66 tabelas, 45 ENUMs, 4 views, 6 funções, ~190 indexes, ~57 triggers |
-| `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 (inclui 395 insumos Castrolanda) |
-| `sql/02_INSERT_DADOS.sql` | 78k linhas — ~56k registros de 40+ tabelas (inclui 12.823 FSI + 6.331 compras + fase 5 lifecycle + UBG secagem/silos) |
+| `sql/00_DDL_COMPLETO_V0.sql` | 3.031 linhas, 66 tabelas (-producao_ubg +consumo_agriwin), 45 ENUMs, 4 views, 6 funções, 190 indexes, 57 triggers |
+| `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 + RBAC (inclui 395 insumos Castrolanda + 5 roles + 32 permissions + user_roles) |
+| `sql/02_INSERT_DADOS.sql` | 99k linhas — ~77k registros de 40+ tabelas (inclui 21k consumo_agriwin + 12.823 FSI + 6.331 compras + fase 5 lifecycle + UBG secagem/silos) |
 | `sql/generate_inserts.py` | Script gerador de INSERTs a partir dos CSVs |
 | `prisma/schema.prisma` | 66 modelos, 45 enums |
 | `GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
@@ -284,6 +284,8 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 - Trigger unificada: fn_atualizar_updated_at()
 - vendas_castrolanda merged em vendas_grao
 - 5 tabelas órfãs criadas: ubgs, tanques_combustivel, tags_vestro, talhao_mapping, ubg_caixa
+- producao_ubg REMOVIDA → substituída por ticket_balancas + recebimentos_grao (2026-03-09)
+- consumo_agriwin CRIADA → staging Bronze para 21k registros AgriWin (2026-03-09)
 
 **Próximo passo João:** `psql -f 00_DDL_COMPLETO_V0.sql` → `psql -f 01_INSERT_SEEDS.sql` → `psql -f 02_INSERT_DADOS.sql`
 
@@ -355,4 +357,4 @@ business-discoveries/
 
 ---
 
-*Última atualização: 2026-03-08 (sessão 8 — CSVs demo secagem/silos UBG + INSERTs seções 33-36) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
+*Última atualização: 2026-03-09 (sessão 9 — removido producao_ubg, criado consumo_agriwin staging +21k registros, RBAC seeds) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
