@@ -132,20 +132,27 @@
 
 ## FASE 5 -- Planejamento da Safra
 
-**Status: TEMPLATE PRONTO | DADOS PENDENTES**
+**Status: ✅ CADEIA FK COMPLETA — 5 CSVs processados por `generate_inserts.py`**
 
 | CSV | Registros | Tabela destino | Status |
 |-----|-----------|---------------|--------|
-| `fase_5/01_planejamento_safra.csv` | 0 (headers only) | talhao_safras | TEMPLATE |
-| `fase_5/02_template_operacoes_cultura.csv` | ~42 | (referencia para gerar operacoes) | COMPLETO |
+| `fase_5/01_planejamento_safra.csv` | 50 | talhao_safras | ❌ IGNORADO (redundante com 03) |
+| `fase_5/02_template_operacoes_cultura.csv` | 42 | template_cultura_operacoes | ✅ COMPLETO (seeds) |
+| `fase_5/03_talhao_safra.csv` | 50 | talhao_safras | ✅ COMPLETO (seção 26) |
+| `fase_5/04_safra_acoes.csv` | 9 | safra_acoes | ✅ COMPLETO (seção 27) |
+| `fase_5/05_operacoes_campo.csv` | 7 | operacoes_campo | ✅ COMPLETO (seção 28) |
+| `fase_5/06_aplicacao_insumo.csv` | 11 | aplicacao_insumo | ✅ COMPLETO (seção 29) |
+| ~~`fase_5/07_ticket_balanca.csv`~~ | ~~8~~ | ~~ticket_balancas~~ | ARQUIVADO — dados em fase_6/15_ticket_balancas.csv |
+| ~~`fase_5/08_recebimentos_grao.csv`~~ | ~~8~~ | ~~recebimentos_grao~~ | ARQUIVADO — dados em fase_6/16_recebimentos_grao.csv |
 
 **Observacoes:**
-- Template de planejamento: headers prontos (safra, fazenda, talhao, gleba, cultura, epoca, cultivar, area, meta_produtividade, origem_semente, data_plantio_prevista)
+- Cadeia FK resolvida via subqueries compostas (safra+talhao+cultura+epoca+gleba)
+- `03_talhao_safra.csv` inserido com `ON CONFLICT DO NOTHING` — dados fase 5 tem prioridade sobre plantio historico
+- `01_planejamento_safra.csv` IGNORADO — dados redundantes com 03 (que ja tem status_planejamento, aprovado_por, etc.)
 - Template de operacoes por cultura: 6 culturas com 9-12 operacoes sequenciadas (dessecacao -> plantio -> pulverizacoes -> colheita com dias_offset)
 - Process Flow documentado (6 etapas): Criar Safra -> Grid -> Alessandro v1 -> Review v2 -> Aprovacao Claudio -> Auto-gerar operacoes (usando `data_plantio_prevista` como ancora para calcular datas)
 - Campo `data_plantio_prevista` adicionado ao DDL — ancora para gerar calendario SAFRA_ACAO. Defaults por cultura em `CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md`
-- **TALHAO_SAFRA historico** ja existe derivado dos 883 tickets da fonte Agricola (Fase 6)
-- **GAP:** Planejamento safra 25/26 ou 26/27 nao preenchido ainda (depende Alessandro)
+- **TALHAO_SAFRA historico** ja existe derivado dos 883 tickets da fonte Agricola (Fase 6) + 152 plantio historico
 - **GAP:** ANALISE_SOLO -- pendente coleta com Lucas/Alessandro
 - **GAP:** RECOMENDACAO_ADUBACAO -- depende de ANALISE_SOLO
 - **GAP:** RECEITUARIO_AGRONOMICO -- baixa prioridade segundo Alessandro
@@ -162,11 +169,17 @@
 
 | CSV | Registros | Tabela destino | Status |
 |-----|-----------|---------------|--------|
-| `fase_6/09_producao_ubg.csv` | 883 | tickets/pesagens | OK |
+| ~~`fase_6/09_producao_ubg.csv`~~ | ~~883~~ | ~~producao_ubg~~ | ARQUIVADO em `_archive/` |
+| `fase_6/15_ticket_balancas.csv` | 883 | ticket_balancas (peso only) | OK |
+| `fase_6/16_recebimentos_grao.csv` | 875 | recebimentos_grao (qualidade) | OK |
 | `fase_6/10_abastecimentos_vestro.csv` | 1.202 | abastecimentos | MISSING_SRC |
 | `fase_6/11_manutencoes_historico.csv` | ? | manutencoes | MISSING_SRC |
 | `fase_6/12_abastecimentos_historico.csv` | ? | abastecimentos | MISSING_SRC |
 | `fase_6/14_ubg_caixa.csv` | 19.177 | ubg_caixa | OK |
+| (fase 5 lifecycle) | 5 | controles_secagem | OK |
+| (fase 5 lifecycle) | 25 | leituras_secagem | OK |
+| (fase 5 lifecycle) | 8 | alocacao_silo | OK |
+| (fase 5 lifecycle) | 10 | estoque_silo | OK |
 
 ### 6B -- Operacoes agricolas (MIX de OK + TEMPLATE)
 
@@ -190,6 +203,7 @@
 - Plantio historico: 145 registros, 6 safras, 10 culturas
 - Saidas producao: 542 embarques, 4 culturas, 13 contratos
 - UBG Caixa: 19.177 registros (2011-2026) -- historico financeiro completo da UBG
+- **UBG Lifecycle (fase 5):** 5 controles de secagem + 25 leituras + 8 alocacoes silo + 10 estoque silo -- cadeia completa TICKET_BALANCA -> RECEBIMENTO -> SECAGEM -> ESTOQUE
 - **MISSING_SRC:** 8 CSVs cujos fontes originais foram deletados. CSVs ja gerados, so nao da pra re-rodar ETL.
 - **GAP CRITICO:** Operacoes campo (colheita/plantio) + colheita_detalhe sao TEMPLATES. Precisam de dados do Tiago (maquina, operador, horimetro por operacao). Sem isso, nao tem custeio por operacao.
 - **GAP:** Dados faltantes -- Soja 25/26 (copia errada), Milho 25/26 (parcial)
@@ -208,7 +222,7 @@ Entidades auto-calculadas (nao tem CSV, sao triggers):
 - ESTOQUE_INSUMO -- gatilho: trigger em MOVIMENTACAO_INSUMO (custo medio ponderado)
 - APLICACAO_INSUMO -- gatilho: INSERT em OPERACAO_CAMPO
 - MOVIMENTACAO_SILO -- gatilho: INSERT em RECEBIMENTO_GRAO ou SAIDA_GRAO
-- ESTOQUE_SILO -- gatilho: trigger em MOVIMENTACAO_SILO
+- ESTOQUE_SILO -- gatilho: trigger em MOVIMENTACAO_SILO (10 registros seed ja inseridos via fase 5 lifecycle)
 - CUSTO_OPERACAO -- gatilho: trigger em OPERACAO_CAMPO
 
 **Observacoes:**
@@ -253,7 +267,7 @@ FASE 5 (Planejamento) <-- TEMPLATE, pendente Alessandro
   |-- Template operacoes (6 culturas) ----------> auto-gera OPERACAO_CAMPO
 
 FASE 6 (Operacoes) <-- MIX de historico + templates
-  |-- TICKET_BALANCA (883 hist) --> RECEBIMENTO -> SECAGEM -> ESTOQUE_SILO
+  |-- TICKET_BALANCA (883 hist) --> RECEBIMENTO (875) -> SECAGEM (5+25 leit) -> ESTOQUE_SILO (10)
   |-- OPERACAO_CAMPO (templates) -> DETALHE + APLICACAO_INSUMO
   |-- ABASTECIMENTOS (1.202) ----> custo combustivel por maquina
   |-- CONSUMO_AGRIWIN (21k) -----> referencia historica rica
@@ -289,12 +303,12 @@ FASE 7 (Auto) <-- triggers no DDL, ativados em producao
 
 | Metrica | Valor |
 |---------|-------|
-| CSVs em IMPORTS/ | 50 |
-| CSVs com dados (OK + MISSING_SRC) | 42 |
+| CSVs em IMPORTS/ | 62 |
+| CSVs com dados (OK + MISSING_SRC + DEMO) | 54 |
 | CSVs template (sem dados) | 4 |
 | CSVs removidos historicamente | 4 |
 | Total registros em Seeds (01_INSERT) | ~23k linhas |
-| Total registros em Dados (02_INSERT) | ~56k registros |
+| Total registros em Dados (02_INSERT) | ~56k registros + fase 5 lifecycle + 48 UBG demo (5 secagem + 25 leituras + 8 alocação + 10 estoque) — 78k linhas SQL |
 | Tabelas no DDL | 66 |
 | ENUMs | 45 |
 | ETL scripts ativos | 30+ |
@@ -304,4 +318,4 @@ FASE 7 (Auto) <-- triggers no DDL, ativados em producao
 
 ---
 
-*Gerado: 2026-03-06 | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
+*Gerado: 2026-03-08 | Mantido por: Rodrigo Kugler & DeepWork AI Flows*

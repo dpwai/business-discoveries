@@ -7,7 +7,7 @@
 
 | Arquivo | Caminho | Conteúdo |
 |---------|---------|----------|
-| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | ~2.928 linhas, 66 tabelas, 45 ENUMs, 4 views, 3 funções |
+| DDL Completo V0 | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | ~3.048 linhas, 66 tabelas, 45 ENUMs, 4 views, 6 funções |
 | Prisma Schema | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos + 45 enums |
 | GAP Analysis | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz entidade × DDL × CSV × Prisma |
 | DDL Playground | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Status visual interativo |

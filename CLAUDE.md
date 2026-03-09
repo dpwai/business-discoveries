@@ -21,9 +21,9 @@
 **Padrão de dados:** Medallion Architecture — Bronze (raw) → Silver (limpo) → Gold (analytics)
 **O ER diagram define o Bronze layer.** Silver e Gold são transformações, não entidades.
 **Infra:** Docker + Docker Compose
-**DDL status:** ✅ 66 tabelas, 45 ENUMs, 4 views, 3 funções, ~187 indexes, ~57 triggers — tudo consolidado em SQL único
+**DDL status:** ✅ 66 tabelas, 45 ENUMs, 4 views, 6 funções, ~190 indexes, ~57 triggers — tudo consolidado em SQL único
 **Prisma schema:** ✅ 66 modelos, 45 enums, relações completas
-**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (63k linhas, ~56k registros)
+**INSERT scripts:** ✅ Seeds (23k linhas) + Dados históricos (78k linhas, ~56k registros + fase 5 lifecycle + UBG secagem/silos)
 
 ---
 
@@ -179,9 +179,9 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 
 | Doc | Caminho | Conteúdo |
 |-----|---------|----------|
-| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 66 tabelas, ~2.900 linhas, pronto para `psql -f` |
+| **DDL Completo V0** | `09_Projetos/01_SOAL/DDL/sql/00_DDL_COMPLETO_V0.sql` | 66 tabelas, ~3.048 linhas, pronto para `psql -f` |
 | **INSERT Seeds** | `09_Projetos/01_SOAL/DDL/sql/01_INSERT_SEEDS.sql` | Seeds fase 0-2 (23k linhas, inclui 395 insumos Castrolanda) |
-| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~56k registros de CSVs (63k linhas, inclui 12.823 FSI + 6.331 compras insumos) |
+| **INSERT Dados** | `09_Projetos/01_SOAL/DDL/sql/02_INSERT_DADOS.sql` | ~56k registros de CSVs (78k linhas, inclui 12.823 FSI + 6.331 compras insumos + fase 5 lifecycle + UBG secagem/silos) |
 | **Prisma Schema** | `09_Projetos/01_SOAL/DDL/prisma/schema.prisma` | 66 modelos, 45 enums |
 | **GAP Analysis** | `09_Projetos/01_SOAL/DDL/GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
 | **DDL Playground** | `09_Projetos/01_SOAL/DDL/soal-ddl-playground.html` | Dashboard interativo dark theme |
@@ -198,6 +198,7 @@ Ordem: Fase 0 (raízes) → Fase 1 (sistema) → Fase 2 (território) → Fase 3
 | Planejamento Safra | `09_Projetos/01_SOAL/PLANEJAMENTO_SAFRA_PROCESS_FLOW.md` | Process flow 6 etapas, DDL changes, templates seed 6 culturas |
 | Calendario Agricola | `09_Projetos/01_SOAL/CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md` | Janelas plantio/colheita por cultura, sequencias rotacao, defaults `data_plantio_prevista` |
 | Revisao Fases | `09_Projetos/01_SOAL/PROCESS_FLOW_REVISAO_FASES.md` | Revisao cronologica Fase 0-7, gaps consolidados, numeros |
+| Lifecycle TALHAO_SAFRA | `09_Projetos/01_SOAL/DIAGRAMA_ER_SOAL/32_LIFECYCLE_TALHAO_SAFRA.md` | State machine 9 estados, specs por etapa, formularios, hub de custeio, queries, dashboard wireframes |
 
 ---
 
@@ -215,8 +216,8 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 | `fase_2_territorial/` | UBG, silos | 2 | ✅ (parcial — pendente Josmar) |
 | `fase_3/` | Máquinas (57), implementos (126) — com status ativo/vendido, operadores, tags Vestro, colaboradores, folha | 8 | ✅ |
 | `fase_4/` | Castrolanda (extrato, C/C, capital, financiamentos, vendas, carga-a-carga, compra insumos) + FSI (fluxo caixa, caixa escritorio, kugler x FSI, consorcios) | 11 | ✅ |
-| `fase_5/` | Planejamento safra (templates + grid) | 2 | ✅ (templates CSV prontos, dados preenchidos na safra) |
-| `fase_6/` | Produção UBG, abastecimentos Vestro, caixa UBG | 3 | ✅ |
+| `fase_5/` | Lifecycle TALHAO_SAFRA: planejamento (01), templates (02), talhao_safra (03), safra_acoes (04), operacoes_campo (05), aplicacao_insumo (06) | 6 | ✅ |
+| `fase_6/` | Ticket balança (15), recebimento grão (16), controles secagem (17), leituras secagem (18), alocações silo (19), estoques silo (20), abastecimentos Vestro, caixa UBG + legados em `_archive/` | 10 | ✅ |
 | `fase_6_operacoes/` | Colheita, plantio, pesagens, vendas, custo insumos, freteiros, saídas, consumo AgriWin, plantio histórico | 11 | ✅ |
 
 ### FONTE UNIFICADA — Pasta Agrícola
@@ -226,8 +227,9 @@ Todos em: `09_Projetos/01_SOAL/DATA/`
 
 | Entidade destino | CSV em IMPORTS | Registros |
 |-----------------|----------------|-----------|
-| TICKET_BALANCA | `fase_6/09_producao_ubg.csv` | 883 tickets |
-| PRODUCAO_UBG | `fase_6/09_producao_ubg.csv` | (mesmo CSV) |
+| TICKET_BALANCA | `fase_6/15_ticket_balancas.csv` | 883 tickets (peso only) |
+| RECEBIMENTO_GRAO | `fase_6/16_recebimentos_grao.csv` | 875 registros (qualidade pre-secagem) |
+| PRODUCAO_UBG | `fase_6/09_producao_ubg.csv` (arquivado em `_archive/`) | 883 (legado) |
 | PESAGEM_AGRICOLA | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 pesagens |
 | TALHAO_SAFRA (hist) | Derivado | Evidência de cultivo por talhão |
 | SAIDA_GRAO | `fase_6_operacoes/08_saidas_producao.csv` | 542 embarques |
@@ -263,9 +265,9 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 
 | Arquivo | Métricas |
 |---------|----------|
-| `sql/00_DDL_COMPLETO_V0.sql` | 2.928 linhas, 66 tabelas, 45 ENUMs, 4 views, 3 funções, ~187 indexes, ~57 triggers |
+| `sql/00_DDL_COMPLETO_V0.sql` | 3.048 linhas, 66 tabelas, 45 ENUMs, 4 views, 6 funções, ~190 indexes, ~57 triggers |
 | `sql/01_INSERT_SEEDS.sql` | 23k linhas — seeds fase 0-2 (inclui 395 insumos Castrolanda) |
-| `sql/02_INSERT_DADOS.sql` | 63k linhas — ~56k registros de 40 tabelas (inclui 12.823 FSI + 6.331 compras insumos) |
+| `sql/02_INSERT_DADOS.sql` | 78k linhas — ~56k registros de 40+ tabelas (inclui 12.823 FSI + 6.331 compras + fase 5 lifecycle + UBG secagem/silos) |
 | `sql/generate_inserts.py` | Script gerador de INSERTs a partir dos CSVs |
 | `prisma/schema.prisma` | 66 modelos, 45 enums |
 | `GAP_ANALYSIS.md` | Matriz 63+ entidades x DDL x CSV x Prisma |
@@ -274,7 +276,7 @@ ETLs REMOVIDOS (obsoletos): `etl_producao_ubg.py`, `etl_ticket_balanca.py`, `etl
 | `soal-secagem-playground.html` | Simulador mobile controle de secagem (I.N. 029/2011) |
 | `soal-alocacao-playground.html` | Simulador alocacao de graos nos silos |
 
-**Fontes consolidadas:** 9 DDL docs (16, 25a, 25b, 26, 27, 28, 29, 30, 31)
+**Fontes consolidadas:** 10 DDL docs (16, 25a, 25b, 26, 27, 28, 29, 30, 31, 32)
 
 **Conflitos resolvidos:**
 - trabalhadores_rurais → colaboradores (Doc 27 vence)
@@ -353,4 +355,4 @@ business-discoveries/
 
 ---
 
-*Última atualização: 2026-03-06 (sessão 5 — +FSI financeiro ETL) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*
+*Última atualização: 2026-03-08 (sessão 8 — CSVs demo secagem/silos UBG + INSERTs seções 33-36) | Mantido por: Rodrigo Kugler & DeepWork AI Flows*

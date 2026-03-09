@@ -1244,6 +1244,7 @@ CREATE TABLE operacoes_campo (
     combustivel_litros    DECIMAL(10,2),
     custo_operacao        DECIMAL(12,2),
 
+    safra_acao_id         UUID,                                     -- FK adicionada Doc 32: vincula execucao real ao plano
     implemento_codigo     VARCHAR(50),
     observacoes           TEXT,
     geojson_trajeto       JSONB,
@@ -1263,6 +1264,7 @@ CREATE INDEX idx_operacoes_campo_maquina      ON operacoes_campo(maquina_id);
 CREATE INDEX idx_operacoes_campo_tipo         ON operacoes_campo(tipo);
 CREATE INDEX idx_operacoes_campo_data         ON operacoes_campo(data_inicio);
 CREATE INDEX idx_operacoes_campo_fazenda      ON operacoes_campo(fazenda_id);
+CREATE INDEX idx_operacoes_campo_safra_acao  ON operacoes_campo(safra_acao_id) WHERE safra_acao_id IS NOT NULL;
 
 CREATE TRIGGER trg_operacoes_campo_updated
     BEFORE UPDATE ON operacoes_campo
@@ -1270,6 +1272,7 @@ CREATE TRIGGER trg_operacoes_campo_updated
 
 COMMENT ON COLUMN operacoes_campo.fazenda_id IS 'DENORM: 3 hops via talhao_safra→talhoes→fazendas. Mantido para performance em filtros por fazenda.';
 COMMENT ON COLUMN operacoes_campo.implemento_codigo IS 'Referencia textual ao implemento usado. Nao FK — implementos nao tem cadastro formal V0.';
+COMMENT ON COLUMN operacoes_campo.safra_acao_id IS 'FK para safra_acoes — vincula a execucao real (OPERACAO_CAMPO) ao plano (SAFRA_ACAO). Doc 32.';
 
 
 -- ─── 6.1b ALTER APLICACAO_INSUMO → FK para operacoes_campo ───
@@ -1419,17 +1422,6 @@ CREATE TABLE ticket_balancas (
     peso_tara_kg          DECIMAL(12,2),
     peso_liquido_kg       DECIMAL(12,2),
 
-    umidade_pct           DECIMAL(5,2),
-    ph                    DECIMAL(5,2),
-    impureza_g            DECIMAL(8,2),
-    ardidos_g             DECIMAL(8,2),
-    avariado_g            DECIMAL(8,2),
-    verdes_g              DECIMAL(8,2),
-    quebrado_g            DECIMAL(8,2),
-
-    desconto_kg           DECIMAL(12,2),
-    peso_final_kg         DECIMAL(12,2),
-
     placa_veiculo         VARCHAR(10),
     motorista             VARCHAR(100),
     destino               VARCHAR(100),
@@ -1444,8 +1436,7 @@ CREATE TABLE ticket_balancas (
     updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT chk_ticket_peso_bruto CHECK (peso_bruto_kg IS NULL OR peso_bruto_kg > 0),
-    CONSTRAINT chk_ticket_peso_liquido CHECK (peso_liquido_kg IS NULL OR peso_liquido_kg >= 0),
-    CONSTRAINT chk_ticket_umidade CHECK (umidade_pct IS NULL OR (umidade_pct >= 0 AND umidade_pct <= 100))
+    CONSTRAINT chk_ticket_peso_liquido CHECK (peso_liquido_kg IS NULL OR peso_liquido_kg >= 0)
 );
 
 CREATE INDEX idx_ticket_balanca_safra       ON ticket_balancas(safra_id);
@@ -1647,31 +1638,42 @@ CREATE TABLE recebimentos_grao (
     silo_destino_id       UUID REFERENCES silos(silo_id),
 
     classificacao_grao    VARCHAR(50),
-    umidade_final_pct     DECIMAL(5,2),
-    ph_final              DECIMAL(5,2),
-    impureza_final_pct    DECIMAL(5,2),
 
+    -- Qualidade pre-secagem (amostra 200g na moega — Josmar)
+    umidade_pct           DECIMAL(5,2),
+    ph                    DECIMAL(5,2),
+    impureza_g            DECIMAL(8,2),
+    ardidos_g             DECIMAL(8,2),
+    avariado_g            DECIMAL(8,2),
+    verdes_g              DECIMAL(8,2),
+    quebrado_g            DECIMAL(8,2),
+
+    -- Descontos granulares
     desconto_umidade_kg   DECIMAL(12,2),
     desconto_impureza_kg  DECIMAL(12,2),
     desconto_outros_kg    DECIMAL(12,2),
+    desconto_total_kg     DECIMAL(12,2),
     peso_recebido_kg      DECIMAL(12,2),
 
     observacoes           TEXT,
 
     status                VARCHAR(20) DEFAULT 'active',
     created_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_recebimento_umidade CHECK (umidade_pct IS NULL OR (umidade_pct >= 0 AND umidade_pct <= 100))
 );
 
-CREATE INDEX idx_recebimento_ticket ON recebimentos_grao(ticket_balanca_id);
-CREATE INDEX idx_recebimento_safra  ON recebimentos_grao(safra_id);
-CREATE INDEX idx_recebimento_silo   ON recebimentos_grao(silo_destino_id);
+CREATE INDEX idx_recebimento_ticket  ON recebimentos_grao(ticket_balanca_id);
+CREATE INDEX idx_recebimento_safra   ON recebimentos_grao(safra_id);
+CREATE INDEX idx_recebimento_silo    ON recebimentos_grao(silo_destino_id);
+CREATE INDEX idx_recebimento_cultura ON recebimentos_grao(cultura_id);
 
 CREATE TRIGGER trg_recebimento_grao_updated
     BEFORE UPDATE ON recebimentos_grao
     FOR EACH ROW EXECUTE FUNCTION fn_atualizar_updated_at();
 
-COMMENT ON TABLE recebimentos_grao IS 'Recebimento formal pos-classificacao. Derivado de TICKET_BALANCA. Dados pendentes Josmar.';
+COMMENT ON TABLE recebimentos_grao IS 'Classificacao pre-secagem na moega (Josmar). Qualidade do grao antes de entrar no secador.';
 
 
 -- ─── 7.6 CONTROLES_SECAGEM ───────────────────────────────────
@@ -1680,6 +1682,8 @@ COMMENT ON TABLE recebimentos_grao IS 'Recebimento formal pos-classificacao. Der
 CREATE TABLE controles_secagem (
     controle_secagem_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id       UUID NOT NULL REFERENCES organizations(organization_id),
+
+    recebimento_grao_id   UUID REFERENCES recebimentos_grao(recebimento_grao_id),
 
     safra_id              UUID REFERENCES safras(safra_id),
     cultura_id            UUID REFERENCES culturas(cultura_id),
@@ -1728,9 +1732,10 @@ CREATE TABLE controles_secagem (
     )
 );
 
-CREATE INDEX idx_secagem_safra  ON controles_secagem(safra_id);
-CREATE INDEX idx_secagem_silo   ON controles_secagem(silo_id);
-CREATE INDEX idx_secagem_data   ON controles_secagem(data_inicio);
+CREATE INDEX idx_secagem_recebimento ON controles_secagem(recebimento_grao_id);
+CREATE INDEX idx_secagem_safra       ON controles_secagem(safra_id);
+CREATE INDEX idx_secagem_silo        ON controles_secagem(silo_id);
+CREATE INDEX idx_secagem_data        ON controles_secagem(data_inicio);
 
 CREATE TRIGGER trg_controle_secagem_updated
     BEFORE UPDATE ON controles_secagem
@@ -2628,6 +2633,11 @@ CREATE TRIGGER trg_safra_acoes_updated_at
 
 COMMENT ON TABLE safra_acoes IS 'Acoes planejadas e executadas por talhao-safra. Geradas automaticamente a partir de template_cultura_operacoes quando plano e aprovado. Alimenta calendario Gantt (SafraCalendar.tsx no dpwai-app).';
 
+-- ─── 11b.4 FK operacoes_campo → safra_acoes (Doc 32) ─────────────
+ALTER TABLE operacoes_campo
+    ADD CONSTRAINT fk_operacao_safra_acao
+    FOREIGN KEY (safra_acao_id) REFERENCES safra_acoes(safra_acao_id);
+
 
 -- ╔═══════════════════════════════════════════════════════════════╗
 -- ║  SEÇÃO 12: VIEWS + FUNÇÕES DE NEGÓCIO (Doc 16)               ║
@@ -2911,6 +2921,115 @@ HAVING SUM(CASE WHEN a.silo_destino_id = s.silo_id THEN a.quantidade_kg ELSE 0 E
 COMMENT ON VIEW vw_estoque_silo_atual IS 'Estoque virtual derivado do ledger alocacoes_silo. Real-time = sum(entradas) - sum(saidas) por silo/safra/cultura. Usar estoques_silo para snapshots de reconciliacao.';
 
 
+-- ─── 12.8 Funcao: Gerar Safra Acoes (Doc 32) ──────────────────────
+CREATE OR REPLACE FUNCTION fn_gerar_safra_acoes(p_talhao_safra_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+    v_cultura_id UUID;
+    v_safra_id UUID;
+    v_org_id UUID;
+    v_data_ancora DATE;
+    v_area NUMERIC(10,2);
+    v_count INTEGER := 0;
+BEGIN
+    SELECT ts.cultura_id, ts.safra_id, ts.organization_id,
+           COALESCE(ts.data_plantio_prevista, ts.data_plantio),
+           ts.area_plantada_ha
+    INTO v_cultura_id, v_safra_id, v_org_id, v_data_ancora, v_area
+    FROM talhao_safras ts
+    WHERE ts.talhao_safra_id = p_talhao_safra_id;
+
+    IF v_cultura_id IS NULL THEN
+        RAISE EXCEPTION 'talhao_safra_id % nao encontrado', p_talhao_safra_id;
+    END IF;
+
+    IF v_data_ancora IS NULL THEN
+        RAISE EXCEPTION 'talhao_safra_id % nao tem data_plantio_prevista nem data_plantio', p_talhao_safra_id;
+    END IF;
+
+    INSERT INTO safra_acoes (
+        organization_id, talhao_safra_id, safra_id,
+        tipo, titulo, data_inicio, data_fim,
+        status, area_ha, template_id, gerado_automaticamente
+    )
+    SELECT
+        v_org_id,
+        p_talhao_safra_id,
+        v_safra_id,
+        t.tipo_operacao::TEXT,
+        t.nome_operacao,
+        v_data_ancora + t.dias_offset_inicio,
+        v_data_ancora + t.dias_offset_inicio + t.duracao_dias - 1,
+        'planejada',
+        v_area,
+        t.template_id,
+        TRUE
+    FROM template_cultura_operacoes t
+    WHERE t.cultura_id = v_cultura_id
+      AND t.organization_id = v_org_id
+      AND t.status = 'active'
+    ORDER BY t.sequencia;
+
+    GET DIAGNOSTICS v_count = ROW_COUNT;
+    RETURN v_count;
+END;
+$$ LANGUAGE plpgsql;
+
+COMMENT ON FUNCTION fn_gerar_safra_acoes(UUID) IS
+    'Gera safra_acoes automaticamente a partir dos templates da cultura do talhao_safra. Retorna quantidade de acoes geradas. Doc 32.';
+
+
+-- ─── 12.9 Funcao: Fechar Colheita (Doc 32) ───────────────────────
+CREATE OR REPLACE FUNCTION fn_fechar_colheita(p_talhao_safra_id UUID)
+RETURNS TABLE(
+    total_tickets INTEGER,
+    peso_total_kg NUMERIC,
+    produtividade_sc_ha NUMERIC,
+    data_primeira_pesagem DATE,
+    data_ultima_pesagem DATE
+) AS $$
+DECLARE
+    v_area NUMERIC(10,2);
+    v_total_tickets INTEGER;
+    v_peso_total NUMERIC;
+    v_produtividade NUMERIC;
+    v_primeira DATE;
+    v_ultima DATE;
+BEGIN
+    SELECT ts.area_plantada_ha INTO v_area
+    FROM talhao_safras ts
+    WHERE ts.talhao_safra_id = p_talhao_safra_id;
+
+    IF v_area IS NULL OR v_area = 0 THEN
+        RAISE EXCEPTION 'talhao_safra_id % nao encontrado ou area = 0', p_talhao_safra_id;
+    END IF;
+
+    SELECT
+        COUNT(tb.ticket_balanca_id),
+        COALESCE(SUM(tb.peso_final_kg), 0),
+        MIN(tb.data_pesagem),
+        MAX(tb.data_pesagem)
+    INTO v_total_tickets, v_peso_total, v_primeira, v_ultima
+    FROM ticket_balancas tb
+    WHERE tb.talhao_safra_id = p_talhao_safra_id;
+
+    v_produtividade := ROUND(v_peso_total / 60.0 / v_area, 2);
+
+    UPDATE talhao_safras
+    SET
+        status_planejamento = 'colhido',
+        data_colheita = v_ultima,
+        produtividade_sc_ha = v_produtividade
+    WHERE talhao_safra_id = p_talhao_safra_id;
+
+    RETURN QUERY SELECT v_total_tickets, v_peso_total, v_produtividade, v_primeira, v_ultima;
+END;
+$$ LANGUAGE plpgsql;
+
+COMMENT ON FUNCTION fn_fechar_colheita(UUID) IS
+    'Fecha o ciclo de colheita: agrega tickets de balanca, calcula produtividade (sc/ha), atualiza status para colhido. Doc 32.';
+
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- FIM DO DDL COMPLETO V0
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -2919,11 +3038,11 @@ COMMENT ON VIEW vw_estoque_silo_atual IS 'Estoque virtual derivado do ledger alo
 --   66 tabelas (9 sistema + 10 territorial + 8 operacional + 6 insumos +
 --               6 operacoes campo + 9 UBG + 7 financeiro coop + 4 financeiro FSI +
 --               2 frete/vendas + 1 historico + 2 auxiliares + 3 planejamento safra = 67 objetos + 4 views)
---   187 indices
+--   ~188 indices
 --   57 triggers
---   3 funcoes de negocio
+--   5 funcoes de negocio (+fn_gerar_safra_acoes, +fn_fechar_colheita — Doc 32)
 --   4 views
 --
--- Gerado: 2026-03-06 — DeepWork AI Flows
+-- Gerado: 2026-03-08 — DeepWork AI Flows
 -- PostgreSQL 15+ | Projeto SOAL — Serra da Onça Agropecuária
 -- ═══════════════════════════════════════════════════════════════════════════════

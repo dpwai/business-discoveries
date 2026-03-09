@@ -153,17 +153,22 @@ Acoes geradas automaticamente a partir dos templates. FK para `talhao_safras`, `
 
 ---
 
-## CSV Templates (fase_5/)
+## CSV Templates (fase_5/) — 7 arquivos, lifecycle completo
 
-### `01_planejamento_safra.csv`
+| # | Arquivo | Entidade | Headers | Registros exemplo |
+|---|---------|----------|---------|-------------------|
+| 01 | `01_planejamento_safra.csv` | Input Alessandro (pre-aprovacao) | `safra,fazenda,talhao,gleba,cultura,epoca,cultivar,area_plantada_ha,meta_produtividade_sc_ha,origem_semente,data_plantio_prevista,observacoes` | 50 (safra 25/26) |
+| 02 | `02_template_operacoes_cultura.csv` | TEMPLATE_CULTURA_OPERACAO (seed) | `cultura,tipo_operacao,nome_operacao,fase,dias_offset_inicio,duracao_dias,sequencia,obrigatoria` | 42 (6 culturas) |
+| 03 | `03_talhao_safra.csv` | TALHAO_SAFRA (pos-aprovacao) | `safra,fazenda,talhao,cultura,epoca,gleba,area_plantada_ha,cultivar,origem_semente,status_planejamento,meta_produtividade_sc_ha,data_plantio_prevista,data_plantio,data_colheita,produtividade_sc_ha,atribuido_por,aprovado_por,data_aprovacao,observacoes` | 50 (safra 25/26) |
+| 04 | `04_safra_acoes.csv` | SAFRA_ACAO (auto-gerado) | `safra,fazenda,talhao,cultura,epoca,tipo,titulo,data_inicio,data_fim,status,responsavel,custo_estimado,custo_real,area_ha,template_cultura,gerado_automaticamente,observacoes` | 9 (ciclo soja talhao 40) |
+| 05 | `05_operacoes_campo.csv` | OPERACAO_CAMPO (execucao real) | `safra,fazenda,talhao,cultura,epoca,tipo,status,data_inicio,data_fim,maquina_codigo,operador_nome,area_trabalhada_ha,horimetro_inicio,horimetro_fim,combustivel_litros,custo_operacao,implemento_codigo,safra_acao_titulo,observacoes` | 7 (talhao 40) |
+| 06 | `06_aplicacao_insumo.csv` | APLICACAO_INSUMO (insumos aplicados) | `safra,fazenda,talhao,cultura,epoca,produto_insumo_nome,contexto,data_aplicacao,dose_por_ha,area_aplicada_ha,quantidade_total,unidade,custo_unitario,custo_total,metodo_aplicacao,operacao_tipo,observacoes` | 11 (talhao 40) |
+| ~~07~~ | ~~`07_ticket_balanca.csv`~~ | ~~TICKET_BALANCA~~ | ARQUIVADO — dados em `fase_6/15_ticket_balancas.csv` | ~~8~~ |
+| ~~08~~ | ~~`08_recebimentos_grao.csv`~~ | ~~RECEBIMENTO_GRAO~~ | ARQUIVADO — dados em `fase_6/16_recebimentos_grao.csv` | ~~8~~ |
 
-Headers: `safra,fazenda,talhao,gleba,cultura,epoca,cultivar,area_plantada_ha,meta_produtividade_sc_ha,origem_semente,data_plantio_prevista,observacoes`
-
-### `02_template_operacoes_cultura.csv`
-
-Headers: `cultura,tipo_operacao,nome_operacao,fase,dias_offset_inicio,duracao_dias,sequencia,obrigatoria`
-
-Seed data incluido: soja (9 ops), milho (7 ops), feijao (10 ops), trigo (7 ops), cevada (6 ops), aveia_preta (3 ops) = 42 templates.
+**Relacao entre CSVs:** 01 (planejamento) → aprovacao Claudio → 03 (talhao_safra nasce) → 04 (safra_acoes auto-geradas) → 05 (operacoes reais) + 06 (insumos). Ticket balanca e recebimento grao agora apenas em fase_6.
+**Talhao referencia:** Lajeado talhao 40, soja GH 2459 I2X, 139.16 ha — usado nos CSVs 04-06 para mostrar fluxo completo.
+**INSERTs:** ✅ CSVs 03-06 processados por `generate_inserts.py` (seções 26-29). CSV 01 IGNORADO (redundante com 03). FKs resolvidas via subqueries compostas (safra+talhao+cultura+epoca). Ticket/recebimento agora na seção 17/17b (fase 6).
 
 ---
 

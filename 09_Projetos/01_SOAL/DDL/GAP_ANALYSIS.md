@@ -41,7 +41,7 @@
 | TALHOES | 26 | ✅ | — | ✅ | `fase_2/03_talhoes.csv` | 71 | ✅ | completo |
 | SAFRAS | 26 | ✅ | status_safra, epoca_safra | ✅ | `fase_2/01_safras.csv` | 9 | ✅ | completo |
 | CULTURAS | 26 | ✅ | grupo_cultura | ✅ | `fase_0/01_culturas.csv` | 126 | ✅ | completo |
-| TALHAO_SAFRA | 26 | ✅ | epoca_safra, status_talhao_safra | ✅ | `fase_6/09_producao_ubg.csv` (colheita: 883) + `fase_6_operacoes/12_plantio_historico.csv` (plantio: 152, 6 safras) | 1035 | ✅ | completo. Campos planejamento: data_plantio_prevista, status_planejamento, meta_produtividade_sc_ha, atribuido_por, aprovado_por, data_aprovacao |
+| TALHAO_SAFRA | 26+32 | ✅ | epoca_safra, status_talhao_safra | ✅ | `fase_5/03_talhao_safra.csv` (50, planejamento 25/26) + `fase_6_operacoes/12_plantio_historico.csv` (152) | 202 | ✅ | completo. Fase 5 com ON CONFLICT DO NOTHING (prioridade). Campos planejamento: data_plantio_prevista, status_planejamento, meta_produtividade_sc_ha, atribuido_por, aprovado_por, data_aprovacao |
 | SILOS | 26 | ✅ | tipo_silo | ✅ | `fase_2_territorial/02_silos_ubg.csv` | 8 | ✅ | completo |
 | PARCEIRO_COMERCIAL | 26 | ✅ | tipo_parceiro | ✅ | `fase_2/06_parceiros_agriwin.csv` | 2.201 | ✅ | completo |
 | MATRICULAS | 25b | ✅ | — | ❌ | `fase_2/04_matriculas.csv` | 88 | ❌ | completo |
@@ -70,14 +70,14 @@
 | COMPRA_INSUMO | 16 | ✅ | fonte_compra, status_compra | ✅ | `fase_4/11_compra_insumo_castrolanda.csv` | 6.331 | ❌ | completo |
 | ESTOQUE_INSUMO | 16 | ✅ | status_estoque | ✅ | — | 0 | ❌ | sem_dados |
 | MOVIMENTACAO_INSUMO | 16 | ✅ | tipo_movimentacao_insumo | — | — | 0 | ❌ | sem_dados |
-| APLICACAO_INSUMO | 16 | ✅ | metodo_aplicacao, contexto_aplicacao | ✅ | `fase_6_operacoes/12_consumo_agriwin.csv` (raw, 9.482 ops explodidas) | 21.162 | ❌ | parcial |
+| APLICACAO_INSUMO | 16+32 | ✅ | metodo_aplicacao, contexto_aplicacao | ✅ | `fase_5/06_aplicacao_insumo.csv` (11, com FK) + `fase_6_operacoes/12_consumo_agriwin.csv` (raw, 9.482 ops) | 21.173 | ❌ | parcial. Fase 5 INSERTs com operacao_campo_id + talhao_safra_id resolvidos |
 | RECEITUARIO_AGRONOMICO | 16 | ✅ | — | ✅ | — | 0 | ❌ | sem_dados |
 
 ### SEÇÃO 4 — AGRÍCOLA: OPERAÇÕES DE CAMPO (Doc 25a)
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| OPERACAO_CAMPO | 25a | ✅ | tipo_operacao_campo, status_operacao_campo | ✅ | `fase_6_operacoes/12_consumo_agriwin.csv` (9.482 ops AgriWin) + `01+02_operacoes.csv` | 9.513 | ❌ | parcial |
+| OPERACAO_CAMPO | 25a+32 | ✅ | tipo_operacao_campo, status_operacao_campo | ✅ | `fase_5/05_operacoes_campo.csv` (7, com FK completo) + `fase_6_operacoes/12_consumo_agriwin.csv` (9.482 ops AgriWin) + `01+02_operacoes.csv` | 9.520 | ❌ | parcial. Fase 5 INSERTs com talhao_safra_id + safra_acao_id resolvidos |
 | PLANTIO_DETALHE | 25a | ✅ | — | ❌ | `fase_6_operacoes/12_plantio_historico.csv` (cultivar, origem, tratamento) | 152 | ❌ | parcial |
 | COLHEITA_DETALHE | 25a | ✅ | — | ❌ | `fase_6_operacoes/03_colheita_detalhe.csv` | 1 | ❌ | sem_dados |
 | PULVERIZACAO_DETALHE | 25a | ✅ | — | ❌ | — | 0 | ❌ | sem_dados |
@@ -88,15 +88,15 @@
 
 | Entidade | DDL Doc | CREATE TABLE | ENUMs | Triggers | CSV | Records | Prisma | Status |
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
-| TICKET_BALANCA | 28 | ✅ | tipo_ticket_balanca, status_ticket | ✅ | `fase_6/09_producao_ubg.csv` | 883 | ❌ | completo |
-| PRODUCAO_UBG | 28 | ✅ | — | ✅ | `fase_6/09_producao_ubg.csv` | 883 | ❌ | completo |
-| PESAGEM_AGRICOLA | 28 | ✅ | — | ✅ | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 | ❌ | completo |
-| SAIDA_GRAO | 28 | ✅ | tipo_saida_grao | ✅ | `fase_6_operacoes/08_saidas_producao.csv` | 542 | ❌ | completo |
-| RECEBIMENTO_GRAO | 28 | ✅ | — | ✅ | — | 0 | ❌ | sem_dados |
-| CONTROLE_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | — | 0 | ✅ | sem_dados |
-| LEITURA_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | — | 0 | ✅ | sem_dados |
-| ESTOQUE_SILO | 28 | ✅ | status_estoque_silo | ✅ | — | 0 | ❌ | sem_dados |
-| ALOCACAO_SILO | 28 | ✅ | tipo_alocacao_silo | ✅ | — | 0 | ✅ | sem_dados |
+| TICKET_BALANCA | 28+32 | ✅ | tipo_ticket_balanca, status_ticket | ✅ | `fase_6/15_ticket_balancas.csv` (883) | 883 | ✅ | completo. PESO ONLY — campos qualidade em RECEBIMENTO_GRAO |
+| PRODUCAO_UBG | 28 | ✅ | — | ✅ | `fase_6/_archive/09_producao_ubg.csv` (arquivado) | 883 | ✅ | completo. Tabela legada — dados reais agora em ticket_balancas + recebimentos_grao |
+| PESAGEM_AGRICOLA | 28 | ✅ | — | ✅ | `fase_6_operacoes/04_pesagens_agricola.csv` | 806 | ✅ | completo |
+| SAIDA_GRAO | 28 | ✅ | tipo_saida_grao | ✅ | `fase_6_operacoes/08_saidas_producao.csv` | 542 | ✅ | completo |
+| RECEBIMENTO_GRAO | 28 | ✅ | — | ✅ | `fase_6/16_recebimentos_grao.csv` (875) | 875 | ✅ | completo. Classificacao pre-secagem (Josmar). FK subquery por ticket match |
+| CONTROLE_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | `fase_6/17_controles_secagem.csv` | 5 | ✅ | ⚠️ DEMO — dados fictícios. Substituir por dados reais Josmar/Vanessa. FK recebimento_grao_id (nullable) |
+| LEITURA_SECAGEM | 28 | ✅ | tipo_secagem | ✅ | `fase_6/18_leituras_secagem.csv` | 25 | ✅ | ⚠️ DEMO — dados fictícios. Substituir por dados reais |
+| ESTOQUE_SILO | 28 | ✅ | status_estoque_silo | ✅ | `fase_6/20_estoques_silo.csv` | 10 | ❌ | ⚠️ DEMO — dados fictícios. Substituir por dados reais |
+| ALOCACAO_SILO | 28 | ✅ | tipo_alocacao_silo | ✅ | `fase_6/19_alocacoes_silo.csv` | 8 | ✅ | ⚠️ DEMO — dados fictícios. Substituir por dados reais |
 
 ### SEÇÃO 6 — FINANCEIRO / COOPERATIVA (Doc 29)
 
@@ -142,7 +142,7 @@
 |----------|---------|-------------|-------|----------|-----|---------|--------|--------|
 | PLANO_SAFRA_SNAPSHOT | Plan | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
 | TEMPLATE_CULTURA_OPERACOES | Plan | ✅ | tipo_operacao_campo | ✅ | `fase_5/02_template_operacoes_cultura.csv` | 42 | ✅ | sem_dados |
-| SAFRA_ACOES | Plan | ✅ | — | ✅ | — | 0 | ✅ | sem_dados |
+| SAFRA_ACOES | Plan+32 | ✅ | — | ✅ | `fase_5/04_safra_acoes.csv` | 9 | ✅ | completo. INSERTs com talhao_safra_id + template_id resolvidos |
 
 > **Nota:** Modulo de planejamento pre-safra (Mai-Jun). Templates auto-geram operacoes no calendario Gantt. `talhao_safras` ganhou 5 novos campos: `status_planejamento` (ENUM `status_talhao_safra`), `meta_produtividade_sc_ha`, `atribuido_por`, `aprovado_por`, `data_aprovacao`.
 

@@ -1454,6 +1454,7 @@ model OperacaoCampo {
   horimetroFim      Decimal?            @map("horimetro_fim") @db.Decimal(12, 2)
   combustivelLitros Decimal?            @map("combustivel_litros") @db.Decimal(10, 2)
   custoOperacao     Decimal?            @map("custo_operacao") @db.Decimal(12, 2)
+  safraAcaoId       String?             @map("safra_acao_id") @db.Uuid
   implementoCodigo  String?             @map("implemento_codigo") @db.VarChar(50)
   observacoes       String?
   geojsonTrajeto    Json?               @map("geojson_trajeto") @db.JsonB
@@ -1465,6 +1466,7 @@ model OperacaoCampo {
   maquina                   Maquina?                    @relation(fields: [maquinaId], references: [id])
   operador                  Operador?                   @relation(fields: [operadorId], references: [id])
   fazenda                   Fazenda?                    @relation(fields: [fazendaId], references: [id])
+  safraAcao                 SafraAcao?                  @relation(fields: [safraAcaoId], references: [id])
   // Detalhes 1:0..1
   plantioDetalhe            PlantioDetalhe?
   colheitaDetalhe           ColheitaDetalhe?
@@ -1482,6 +1484,7 @@ model OperacaoCampo {
   @@index([tipo])
   @@index([dataInicio])
   @@index([fazendaId])
+  @@index([safraAcaoId])
   @@map("operacoes_campo")
 }
 
@@ -1606,15 +1609,6 @@ model TicketBalanca {
   pesoBrutoKg    Decimal?          @map("peso_bruto_kg") @db.Decimal(12, 2)
   pesoTaraKg     Decimal?          @map("peso_tara_kg") @db.Decimal(12, 2)
   pesoLiquidoKg  Decimal?          @map("peso_liquido_kg") @db.Decimal(12, 2)
-  umidadePct     Decimal?          @map("umidade_pct") @db.Decimal(5, 2)
-  ph             Decimal?          @db.Decimal(5, 2)
-  impurezaG      Decimal?          @map("impureza_g") @db.Decimal(8, 2)
-  ardidosG       Decimal?          @map("ardidos_g") @db.Decimal(8, 2)
-  avariadoG      Decimal?          @map("avariado_g") @db.Decimal(8, 2)
-  verdesG        Decimal?          @map("verdes_g") @db.Decimal(8, 2)
-  quebradoG      Decimal?          @map("quebrado_g") @db.Decimal(8, 2)
-  descontoKg     Decimal?          @map("desconto_kg") @db.Decimal(12, 2)
-  pesoFinalKg    Decimal?          @map("peso_final_kg") @db.Decimal(12, 2)
   placaVeiculo   String?           @map("placa_veiculo") @db.VarChar(10)
   motorista      String?           @db.VarChar(100)
   destino        String?           @db.VarChar(100)
@@ -1785,6 +1779,7 @@ model SaidaGrao {
 }
 
 /// Recebimento formal pos-classificacao, derivado de TICKET_BALANCA
+/// Classificacao pre-secagem na moega (Josmar). Qualidade do grao antes de entrar no secador.
 model RecebimentoGrao {
   id                 String   @id @default(dbgenerated("gen_random_uuid()")) @map("recebimento_grao_id") @db.Uuid
   organizationId     String   @map("organization_id") @db.Uuid
@@ -1793,28 +1788,37 @@ model RecebimentoGrao {
   culturaId          String?  @map("cultura_id") @db.Uuid
   siloDestinoId      String?  @map("silo_destino_id") @db.Uuid
   classificacaoGrao  String?  @map("classificacao_grao") @db.VarChar(50)
-  umidadeFinalPct    Decimal? @map("umidade_final_pct") @db.Decimal(5, 2)
-  phFinal            Decimal? @map("ph_final") @db.Decimal(5, 2)
-  impurezaFinalPct   Decimal? @map("impureza_final_pct") @db.Decimal(5, 2)
+  // Qualidade pre-secagem (amostra 200g na moega)
+  umidadePct         Decimal? @map("umidade_pct") @db.Decimal(5, 2)
+  ph                 Decimal? @db.Decimal(5, 2)
+  impurezaG          Decimal? @map("impureza_g") @db.Decimal(8, 2)
+  ardidosG           Decimal? @map("ardidos_g") @db.Decimal(8, 2)
+  avariadoG          Decimal? @map("avariado_g") @db.Decimal(8, 2)
+  verdesG            Decimal? @map("verdes_g") @db.Decimal(8, 2)
+  quebradoG          Decimal? @map("quebrado_g") @db.Decimal(8, 2)
+  // Descontos
   descontoUmidadeKg  Decimal? @map("desconto_umidade_kg") @db.Decimal(12, 2)
   descontoImpurezaKg Decimal? @map("desconto_impureza_kg") @db.Decimal(12, 2)
   descontoOutrosKg   Decimal? @map("desconto_outros_kg") @db.Decimal(12, 2)
+  descontoTotalKg    Decimal? @map("desconto_total_kg") @db.Decimal(12, 2)
   pesoRecebidoKg     Decimal? @map("peso_recebido_kg") @db.Decimal(12, 2)
   observacoes        String?
   status             String   @default("active") @db.VarChar(20)
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  organization  Organization  @relation(fields: [organizationId], references: [id])
-  ticketBalanca TicketBalanca @relation(fields: [ticketBalancaId], references: [id])
-  safra         Safra?        @relation(fields: [safraId], references: [id])
-  cultura       Cultura?      @relation(fields: [culturaId], references: [id])
-  siloDestino   Silo?         @relation(fields: [siloDestinoId], references: [id])
+  organization     Organization     @relation(fields: [organizationId], references: [id])
+  ticketBalanca    TicketBalanca     @relation(fields: [ticketBalancaId], references: [id])
+  safra            Safra?           @relation(fields: [safraId], references: [id])
+  cultura          Cultura?         @relation(fields: [culturaId], references: [id])
+  siloDestino      Silo?            @relation(fields: [siloDestinoId], references: [id])
+  controlesSecagem ControleSecagem[]
 
   @@index([organizationId])
   @@index([ticketBalancaId])
   @@index([safraId])
   @@index([siloDestinoId])
+  @@index([culturaId])
   @@map("recebimentos_grao")
 }
 
@@ -1822,6 +1826,7 @@ model RecebimentoGrao {
 model ControleSecagem {
   id                            String    @id @default(dbgenerated("gen_random_uuid()")) @map("controle_secagem_id") @db.Uuid
   organizationId                String    @map("organization_id") @db.Uuid
+  recebimentoGraoId             String?   @map("recebimento_grao_id") @db.Uuid
   safraId                       String?   @map("safra_id") @db.Uuid
   culturaId                     String?   @map("cultura_id") @db.Uuid
   siloId                        String?   @map("silo_id") @db.Uuid
@@ -1854,6 +1859,7 @@ model ControleSecagem {
   updatedAt                     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   organization    Organization      @relation(fields: [organizationId], references: [id])
+  recebimentoGrao RecebimentoGrao?  @relation(fields: [recebimentoGraoId], references: [id])
   safra           Safra?            @relation(fields: [safraId], references: [id])
   cultura         Cultura?          @relation(fields: [culturaId], references: [id])
   silo            Silo?             @relation(fields: [siloId], references: [id])
@@ -1861,6 +1867,7 @@ model ControleSecagem {
   alocacoesSilo   AlocacaoSilo[]
 
   @@index([organizationId])
+  @@index([recebimentoGraoId])
   @@index([safraId])
   @@index([siloId])
   @@index([dataInicio])
@@ -2563,11 +2570,12 @@ model SafraAcao {
   createdAt              DateTime                @default(now()) @map("created_at") @db.Timestamptz
   updatedAt              DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  organization Organization            @relation(fields: [organizationId], references: [id])
-  talhaoSafra  TalhaoSafra             @relation(fields: [talhaoSafraId], references: [id])
-  safra        Safra                   @relation(fields: [safraId], references: [id])
-  responsavel  User?                   @relation(fields: [responsavelId], references: [id])
-  template     TemplateCulturaOperacao? @relation(fields: [templateId], references: [id])
+  organization   Organization            @relation(fields: [organizationId], references: [id])
+  talhaoSafra    TalhaoSafra             @relation(fields: [talhaoSafraId], references: [id])
+  safra          Safra                   @relation(fields: [safraId], references: [id])
+  responsavel    User?                   @relation(fields: [responsavelId], references: [id])
+  template       TemplateCulturaOperacao? @relation(fields: [templateId], references: [id])
+  operacoesCampo OperacaoCampo[]
 
   @@index([organizationId])
   @@index([talhaoSafraId])
