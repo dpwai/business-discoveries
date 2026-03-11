@@ -304,27 +304,27 @@ Reference visual assets:
 
 | Asset | Path | Usage |
 |-------|------|-------|
-| Data Silo Concept | `09_Projetos/02_SOAL/images/data_silo_concept.png` | Data architecture section |
-| 4 Dimensions Master Plan | `09_Projetos/02_SOAL/images/master_plan_4_dimensions.png` | Methodology explanation |
+| Data Silo Concept | `09_Projetos/01_SOAL/images/data_silo_concept.png` | Data architecture section |
+| 4 Dimensions Master Plan | `09_Projetos/01_SOAL/images/master_plan_4_dimensions.png` | Methodology explanation |
 | Technical Integration | `03_Identidade_Visual/site-assets/metodologia/diagrama-integracao-tecnica.png` | Solution architecture |
 
 ### Dashboard and Interface Mockups
 
 | Asset | Path | Usage |
 |-------|------|-------|
-| Dashboard Mockup | `09_Projetos/02_SOAL/images/soal_dashboard_mockup.png` | Deliverable visualization |
+| Dashboard Mockup | `09_Projetos/01_SOAL/images/soal_dashboard_mockup.png` | Deliverable visualization |
 | Dashboard in Use | `03_Identidade_Visual/site-assets/metodologia/foto-dashboard-em-uso.png` | Real-world application |
-| Operator POV App | `09_Projetos/02_SOAL/images/operator_pov_app.png` | Field interface design |
-| Tablet Dashboard | `09_Projetos/02_SOAL/images/tablet_dashboard_truck.png` | Mobile/field scenarios |
-| Input Card UI | `09_Projetos/02_SOAL/images/ui_input_card_mockup.png` | Data entry interface |
+| Operator POV App | `09_Projetos/01_SOAL/images/operator_pov_app.png` | Field interface design |
+| Tablet Dashboard | `09_Projetos/01_SOAL/images/tablet_dashboard_truck.png` | Mobile/field scenarios |
+| Input Card UI | `09_Projetos/01_SOAL/images/ui_input_card_mockup.png` | Data entry interface |
 
 ### Discovery Process Images
 
 | Asset | Path | Usage |
 |-------|------|-------|
 | Discovery Meeting | `03_Identidade_Visual/site-assets/metodologia/foto-descoberta-reuniao.png` | Process documentation |
-| Connected Hub | `09_Projetos/02_SOAL/images/connected_farm_hub.png` | Integration concept |
-| AI Agent MCP | `09_Projetos/02_SOAL/images/ai_farm_agent_mcp.png` | Advanced capabilities |
+| Connected Hub | `09_Projetos/01_SOAL/images/connected_farm_hub.png` | Integration concept |
+| AI Agent MCP | `09_Projetos/01_SOAL/images/ai_farm_agent_mcp.png` | Advanced capabilities |
 
 ---
 

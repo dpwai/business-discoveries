@@ -408,7 +408,7 @@ As seguintes entidades **não** fazem parte do plano atual:
 |-------|--------------------------|
 | nome | Nome como o Tiago chama a máquina |
 | tipo | TRATOR / COLHEITADEIRA / CAMINHAO / PULVERIZADOR / DRONE / IMPLEMENTO / VEICULO |
-| marca / modelo | Nos documentos da máquina |
+| marca / modelo | Marca extraída automaticamente do nome pelo ETL (95% máquinas, 82% implementos). Validar com Tiago os itens sem marca. |
 | placa | Veículos com placa |
 | numero_serie | Número de série (importante para telemetria futura JD) |
 | ano_fabricacao | Documento ou nota fiscal |
@@ -629,10 +629,13 @@ As seguintes entidades **não** fazem parte do plano atual:
 | talhao_id | → TALHOES (qual talhão?) |
 | safra_id | → SAFRAS (qual safra?) |
 | cultura_id | → CULTURAS (soja? milho?) |
+| epoca | safra / safrinha / terceira_safra |
 | area_plantada_ha | Pode ser < area do talhão (se plantado parcialmente) |
-| data_plantio_prevista | Planejamento inicial de Alessandro |
-| data_colheita_prevista | Planejamento inicial de Alessandro |
-| produtividade_esperada_sc_ha | Estimativa de Alessandro baseada em histórico |
+| cultivar | Variedade especifica (ex: BMX 56IX58) |
+| gleba | Sub-area do talhão (ex: HERMATRIA dentro de CAPINZAL) |
+| origem_semente | Fonte: Castrolanda / Fazenda / FSI / outro |
+| data_plantio_prevista | Estimativa de plantio — ancora para gerar calendario SAFRA_ACAO. Sistema sugere default regional (ver CALENDARIO_AGRICOLA_CAMPOS_GERAIS.md), Alessandro ajusta |
+| meta_produtividade_sc_ha | Estimativa de Alessandro baseada em histórico |
 
 > **Nota crítica:** Um talhão pode ter **dois registros TALHAO_SAFRA** na mesma safra se for dividido entre duas culturas (ex: 50ha soja + 30ha milho). Isso é normal — confirmar com Alessandro se acontece na SOAL.
 

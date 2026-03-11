@@ -351,7 +351,7 @@ Re-exportar Insumos do AgriWin (xlsx)
 
 | O que                        | Registros | Status                |
 | ---------------------------- | --------- | --------------------- |
-| 9 culturas mapeadas          | 9         | ✅                    |
+| 126 culturas mapeadas        | 126       | ✅                    |
 | 12 fazendas/propriedades     | 12        | ✅                    |
 | 74 talhões                  | 74        | ✅                    |
 | 170 mapeamentos nome talhão | 170       | ✅                    |

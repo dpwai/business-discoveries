@@ -52,7 +52,7 @@ Os dados reais do ETL mostram apenas `CLT` e `INFORMAL`. Valores atualizados:
 -- =============================================
 -- COLABORADORES — Funcionarios de todas as areas
 -- Substitui trabalhadores_rurais (Doc 26 §5.5)
--- Fonte: DATA/RH/colaboradores_soal_clean.csv (88 registros)
+-- Fonte: DATA/RH/colaboradores_soal_clean.csv (82 registros)
 -- =============================================
 
 -- Se trabalhadores_rurais existir no banco, migrar dados antes de dropar:
@@ -99,7 +99,7 @@ CREATE TRIGGER trg_colaboradores_updated_at
 
 COMMENT ON TABLE colaboradores IS
     'Funcionarios de todas as areas (agricola, UBG, administrativo, pecuaria). '
-    'Substitui trabalhadores_rurais do Doc 26. Fonte: ETL folha_pagamento.py (88 registros).';
+    'Substitui trabalhadores_rurais do Doc 26. Fonte: ETL folha_pagamento.py (82 registros).';
 COMMENT ON COLUMN colaboradores.cpf IS
     'CPF formatado 000.000.000-00. Nullable para informais historicos sem documento.';
 COMMENT ON COLUMN colaboradores.setor IS
@@ -217,7 +217,7 @@ Todas as FKs passam no check Dijkstra.
 | Tabelas alteradas | 1 (`operadores` — ADD COLUMN) |
 | Indexes | 7 |
 | Triggers | 2 |
-| Registros colaboradores | 88 (32 ativos, 56 desligados) |
+| Registros colaboradores | 82 (32 ativos, 50 desligados) |
 | Registros folha | 3.122 (Jul/2017 → Fev/2026) |
 
 ---

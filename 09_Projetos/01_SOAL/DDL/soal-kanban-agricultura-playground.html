@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL Kanban Agricultura</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --fg:#e6edf3;--fg2:#8b949e;--fg3:#484f58;
+  --accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;--purple:#8957e5;--cyan:#39d2c0;
+  --radius:8px;--shadow:0 2px 8px rgba(0,0,0,.4);
+  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Fira Code',monospace;
+  --st-rascunho:#484f58;--st-em-revisao:#d29922;--st-aprovado:#58a6ff;
+  --st-preparando:#db6d28;--st-plantado:#3fb950;--st-em-desenvolvimento:#39d2c0;
+  --st-colhendo:#8957e5;--st-colhido:#2ea043;--st-cancelado:#f85149;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 20% 30%, rgba(88,166,255,.06) 0%, transparent 50%),
+    radial-gradient(circle, var(--bg4) 1px, transparent 1px),
+    var(--bg);
+  background-size: 100%, 20px 20px, 100%;
+  color:var(--fg);font-family:var(--font);line-height:1.5;min-height:100vh;padding:0 0 3rem
+}
+
+/* Header */
+.header{background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);border-bottom:1px solid var(--bg4);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.header h1 span{color:var(--accent)}
+.header-badge{background:var(--bg3);color:var(--fg2);font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-family:var(--mono)}
+
+/* Summary Cards */
+.summary{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1.1rem;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.card-value{font-size:1.6rem;font-weight:700;font-family:var(--mono);line-height:1.1}
+.card-label{font-size:.72rem;color:var(--fg2);margin-top:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.card-bar{height:4px;border-radius:2px;margin-top:.6rem;background:var(--bg4);overflow:hidden}
+.card-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* Filters */
+.filters{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.filter-input{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.9rem;padding:.6rem 1rem;outline:none;transition:border-color .2s;font-family:var(--font)}
+.filter-input:focus{border-color:var(--accent)}
+.filter-input::placeholder{color:var(--fg3)}
+input.filter-input{flex:1;min-width:200px}
+select.filter-input{cursor:pointer;min-width:130px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.25rem}
+.filter-count{color:var(--fg2);font-size:.8rem;font-family:var(--mono);margin-left:auto;white-space:nowrap}
+.kbd-hint{color:var(--fg3);font-size:.72rem;font-family:var(--mono)}
+.kbd{background:var(--bg3);padding:.1rem .4rem;border-radius:3px;font-size:.7rem;color:var(--fg2)}
+
+/* Kanban Board */
+.kanban{max-width:1100px;margin:1rem auto;padding:0 1.5rem}
+.kanban-column{margin-bottom:1rem;border-radius:var(--radius);overflow:hidden}
+.column-header{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:.85rem 1.15rem;cursor:pointer;display:flex;align-items:center;gap:.75rem;transition:border-color .2s,background .15s;user-select:none}
+.column-header:hover{border-color:var(--fg3);background:var(--bg3)}
+.kanban-column.expanded .column-header{border-color:var(--accent);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.column-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.column-name{font-weight:700;font-size:1rem;flex:1;letter-spacing:-.01em}
+.column-count{font-family:var(--mono);font-size:.85rem;font-weight:500;color:var(--fg2);background:var(--bg3);padding:.15rem .55rem;border-radius:12px}
+.column-area{font-family:var(--mono);font-size:.75rem;color:var(--fg3)}
+.column-chevron{color:var(--fg3);font-size:.9rem;transition:transform .3s}
+.kanban-column.expanded .column-chevron{transform:rotate(180deg);color:var(--accent)}
+
+.column-body{display:none;background:var(--bg2);border:1px solid var(--accent);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1rem}
+.kanban-column.expanded .column-body{display:block}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+
+/* Kanban Card */
+.kanban-card{background:var(--bg3);border:1px solid var(--bg4);border-left:4px solid var(--accent);border-radius:6px;padding:.85rem;cursor:pointer;transition:border-color .2s,transform .15s,opacity .3s;position:relative;animation:cardFadeIn .35s ease both}
+.kanban-card:hover{border-color:var(--fg3);transform:translateY(-2px)}
+.kanban-card.hidden{display:none}
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card-fazenda{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--fg3);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-talhao{font-size:1.05rem;font-weight:700;margin-bottom:.35rem;letter-spacing:-.01em}
+.card-cultura-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.45rem;flex-wrap:wrap}
+.card-cultura{font-size:.78rem;font-weight:600;color:var(--fg)}
+.card-cultivar{font-size:.7rem;color:var(--fg2);font-family:var(--mono);font-weight:300}
+.card-epoca{font-size:.6rem;font-weight:600;padding:.1rem .4rem;border-radius:10px;background:rgba(88,166,255,.12);color:var(--accent)}
+.card-metrics{display:flex;gap:.75rem;margin-bottom:.45rem;font-family:var(--mono);font-size:.78rem;font-weight:500;color:var(--fg2)}
+.card-metrics strong{color:var(--fg);font-weight:700}
+.card-progress{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-bottom:.35rem}
+.card-progress-fill{height:100%;border-radius:2px;transition:width .5s ease}
+.card-bottom{display:flex;justify-content:space-between;align-items:center}
+.card-cost{font-size:.68rem;font-family:var(--mono);font-weight:500;color:var(--fg3)}
+.card-produtividade{font-size:.82rem;font-family:var(--mono);font-weight:700;color:var(--green)}
+
+/* Detail Panel */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;justify-content:flex-end}
+.detail-overlay.open{display:flex}
+.detail-panel{width:400px;max-width:90vw;background:var(--bg2);border-left:1px solid var(--bg4);height:100%;overflow-y:auto;animation:slideIn .3s ease;padding:0}
+@keyframes slideIn{from{transform:translateX(400px)}to{transform:translateX(0)}}
+
+.detail-header{padding:1.25rem;border-bottom:1px solid var(--bg4);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.detail-header h2{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+.detail-header .sub{font-size:.75rem;color:var(--fg2);margin-top:.2rem}
+.detail-close{background:none;border:none;color:var(--fg2);cursor:pointer;font-size:1.4rem;padding:.2rem .5rem;border-radius:4px;line-height:1}
+.detail-close:hover{background:var(--bg3);color:var(--fg)}
+
+.detail-body{padding:1.25rem}
+.detail-section{margin-bottom:1.25rem}
+.detail-section-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg3);font-weight:600;margin-bottom:.6rem;border-bottom:1px solid var(--bg4);padding-bottom:.35rem}
+.detail-row{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem}
+.detail-row .dk{color:var(--fg2)}
+.detail-row .dv{color:var(--fg);font-weight:600;font-family:var(--mono);text-align:right;max-width:55%}
+
+.checklist{list-style:none}
+.checklist li{font-size:.82rem;padding:.3rem 0;display:flex;align-items:center;gap:.5rem}
+.checklist li .check{width:18px;height:18px;border-radius:4px;border:2px solid var(--bg4);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+.checklist li.done .check{background:var(--green);border-color:var(--green);color:#fff}
+.checklist li.missing .check{border-color:var(--fg3)}
+.checklist li.missing{color:var(--fg3)}
+
+.detail-actions{display:flex;gap:.5rem;margin-top:1rem}
+.btn-advance{flex:1;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:.7rem 1rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+.btn-advance:hover{opacity:.85}
+.btn-advance:disabled{opacity:.35;cursor:not-allowed}
+.btn-cancel-card{background:var(--bg3);color:var(--fg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:.7rem 1rem;font-size:.85rem;cursor:pointer;font-family:var(--font)}
+.btn-cancel-card:hover{border-color:var(--red);color:var(--red)}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);padding:.6rem 1.25rem;font-size:.85rem;font-weight:600;z-index:300;opacity:0;transition:transform .3s ease,opacity .3s ease;pointer-events:none;white-space:nowrap;font-family:var(--font)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Footer */
+.footer{max-width:1100px;margin:3rem auto 0;padding:1.5rem;text-align:center;color:var(--fg3);font-size:.78rem;border-top:1px solid var(--bg3)}
+.footer span{color:var(--fg2)}
+
+/* Responsive */
+@media(max-width:900px){
+  .summary{grid-template-columns:repeat(3,1fr)}
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .detail-panel{width:100%;max-width:100%}
+}
+@media(max-width:600px){
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .cards-grid{grid-template-columns:1fr}
+  .header h1{font-size:1.1rem}
+  .kbd-hint{display:none}
+  .column-area{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>SOAL <span>Kanban Agricultura</span></h1>
+    <span class="header-badge">Safra 25/26</span>
+  </div>
+</div>
+
+<div class="summary" id="summary"></div>
+
+<div class="filters">
+  <input class="filter-input" id="search" type="text" placeholder="Buscar talhao, fazenda, cultura...">
+  <select class="filter-input" id="filterFazenda">
+    <option value="">Todas fazendas</option>
+  </select>
+  <select class="filter-input" id="filterCultura">
+    <option value="">Todas culturas</option>
+  </select>
+  <select class="filter-input" id="filterStatus">
+    <option value="">Todos estados</option>
+  </select>
+  <span class="filter-count" id="filterCount"></span>
+  <span class="kbd-hint"><span class="kbd">1</span>-<span class="kbd">9</span> toggle <span class="kbd">Esc</span> reset <span class="kbd">/</span> search</span>
+</div>
+
+<div class="kanban" id="kanban"></div>
+
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="footer">
+  <span>DeepWork AI Flows</span> &middot; SOAL Kanban Agricultura &middot; Lifecycle TALHAO_SAFRA &middot; 9 estados
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ── STATES ──
+var STATES = [
+  {id:'rascunho',label:'Rascunho',color:'var(--st-rascunho)',
+   required:['talhao','cultura','cultivar','area_plantada_ha','data_plantio_prevista'],
+   requiredLabels:['Talhao','Cultura','Cultivar','Area','Data Plantio Prevista'],collapsed:true},
+  {id:'em_revisao',label:'Em Revisao',color:'var(--st-em-revisao)',
+   required:['atribuido_por'],requiredLabels:['Atribuido por'],collapsed:true},
+  {id:'aprovado',label:'Aprovado',color:'var(--st-aprovado)',
+   required:['aprovado_por','data_aprovacao'],requiredLabels:['Aprovado por','Data Aprovacao'],collapsed:false},
+  {id:'preparando',label:'Preparando',color:'var(--st-preparando)',
+   required:['safra_acao_inicio'],requiredLabels:['Safra Acao Iniciada'],collapsed:false},
+  {id:'plantado',label:'Plantado',color:'var(--st-plantado)',
+   required:['data_plantio','maquina','operador'],requiredLabels:['Data Plantio','Maquina','Operador'],collapsed:false},
+  {id:'em_desenvolvimento',label:'Em Desenvolvimento',color:'var(--st-em-desenvolvimento)',
+   required:['operacao_manejo'],requiredLabels:['Operacao Manejo'],collapsed:false},
+  {id:'colhendo',label:'Colhendo',color:'var(--st-colhendo)',
+   required:['ticket_balanca'],requiredLabels:['Ticket Balanca'],collapsed:false},
+  {id:'colhido',label:'Colhido',color:'var(--st-colhido)',
+   required:['produtividade_sc_ha','data_colheita'],requiredLabels:['Produtividade','Data Colheita'],collapsed:true},
+  {id:'cancelado',label:'Cancelado',color:'var(--st-cancelado)',
+   required:['motivo'],requiredLabels:['Motivo'],collapsed:true}
+];
+
+var STATE_MAP = {};
+STATES.forEach(function(s,i){ STATE_MAP[s.id] = i; });
+
+// ── REAL DATA from CSV ──
+var REAL_CARDS = [
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'HERMATRIA',cultura:'soja',epoca:'safra',area:21.49,cultivar:'AS 3595 I2X',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-08',data_colheita:'2026-02-15',produtividade:58.3,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'URUGUAI',cultura:'soja',epoca:'safra',area:17.42,cultivar:'AS 3595 I2X',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-09',data_colheita:'2026-02-18',produtividade:61.2,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'BANACK',cultura:'soja',epoca:'safra',area:40.44,cultivar:'AS 3595 I2X',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-07',data_colheita:'2026-02-12',produtividade:57.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'SEDE',cultura:'soja',epoca:'safra',area:40.0,cultivar:'AS 3595 I2X',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-10',data_colheita:'2026-02-20',produtividade:60.1,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'SEDE',cultura:'soja',epoca:'safra',area:18.76,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-10',data_colheita:'2026-02-20',produtividade:59.5,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'CAPELA',cultura:'soja',epoca:'safra',area:9.86,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-08',data_plantio:'2025-10-12',data_colheita:'2026-02-22',produtividade:62.0,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'FRENTE',cultura:'soja',epoca:'safra',area:13.94,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-08',data_plantio:'2025-10-11',data_colheita:'2026-02-18',produtividade:56.7,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'JABUTICABEIRA',cultura:'soja',epoca:'safra',area:18.58,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-08',data_plantio:'2025-10-13',data_colheita:'2026-02-25',produtividade:63.4,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'BASTIAO',cultura:'soja',epoca:'safra',area:11.92,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-08',data_plantio:'2025-10-12',data_colheita:'2026-02-21',produtividade:58.9,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'VEINHA',cultura:'soja',epoca:'safra',area:15.56,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-08',data_plantio:'2025-10-14',data_colheita:'2026-02-23',produtividade:60.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'FORNO',cultura:'soja',epoca:'safra',area:40.95,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-08',data_colheita:'2026-02-14',produtividade:57.2,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'GRAMADINHO',cultura:'soja',epoca:'safra',area:30.84,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-09',data_colheita:'2026-02-16',produtividade:59.1,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'FAZENDINHA',cultura:'soja',epoca:'safra',area:15.98,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-11',data_colheita:'2026-02-19',produtividade:61.5,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'90',cultura:'soja',epoca:'safra',area:85.0,cultivar:'BMX 56IX58 (TITANIUM)',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-03',data_colheita:'2026-02-10',produtividade:62.7,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'10 E 20',cultura:'soja',epoca:'safra',area:95.72,cultivar:'GH 2459 I2X',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-04',data_colheita:'2026-02-12',produtividade:60.3,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'50/60/70',cultura:'soja',epoca:'safra',area:25.23,cultivar:'GH 2459 I2X',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-05',data_colheita:'2026-02-14',produtividade:59.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'40',cultura:'soja',epoca:'safra',area:139.16,cultivar:'GH 2459 I2X',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-01',data_colheita:'2026-02-07',produtividade:61.5,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO SEDE',cultura:'soja',epoca:'safra',area:31.19,cultivar:'GH 2459 I2X',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-06',data_colheita:'2026-02-15',produtividade:57.4,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO ARION',cultura:'soja',epoca:'safra',area:31.47,cultivar:'GH 2459 I2X',origem:'CASTROLANDA',status:'colhido',meta:58,data_plantio_prevista:'2025-10-01',data_plantio:'2025-10-06',data_colheita:'2026-02-16',produtividade:58.9,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO 2',cultura:'soja',epoca:'safra',area:39.62,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-08',data_colheita:'2026-02-18',produtividade:56.3,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO 1',cultura:'soja',epoca:'safra',area:60.89,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-07',data_colheita:'2026-02-15',produtividade:58.1,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO TEOFILO',cultura:'soja',epoca:'safra',area:32.0,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-09',data_colheita:'2026-02-20',produtividade:55.7,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO NENE',cultura:'soja',epoca:'safra',area:55.0,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:55,data_plantio_prevista:'2025-10-05',data_plantio:'2025-10-08',data_colheita:'2026-02-17',produtividade:57.9,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'PIALADO',cultura:'soja',epoca:'safra',area:30.94,cultivar:'BMX 56IX58 (TITANIUM)',origem:'AGROMUSA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-12',data_colheita:'2026-02-25',produtividade:59.3,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'LILO',cultura:'soja',epoca:'safra',area:9.31,cultivar:'BMX 53IX55 (IMUNE)',origem:'CASTROLANDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-14',data_colheita:'2026-02-28',produtividade:60.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'NARITA',cultura:'soja',epoca:'safra',area:48.19,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-13',data_colheita:'2026-02-26',produtividade:58.5,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'TANAKA',cultura:'soja',epoca:'safra',area:59.12,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-12',data_colheita:'2026-02-24',produtividade:57.1,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'FURA BUCHO',cultura:'soja',epoca:'safra',area:29.51,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-15',data_colheita:'2026-03-01',produtividade:61.2,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'PINUS',cultura:'soja',epoca:'safra',area:37.74,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-17',data_colheita:'2026-03-02',produtividade:55.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'SERRA',cultura:'soja',epoca:'safra',area:16.0,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-18',data_colheita:'2026-03-03',produtividade:56.4,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'MANGUEIRA',cultura:'soja',epoca:'safra',area:16.58,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-17',data_colheita:'2026-03-02',produtividade:54.9,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'SEU PEDRO',cultura:'soja',epoca:'safra',area:10.93,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-19',data_colheita:'2026-03-04',produtividade:57.3,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'IAPO',cultura:'soja',epoca:'safra',area:33.63,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-16',data_colheita:'2026-03-01',produtividade:55.2,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'SEDE',cultura:'soja',epoca:'safra',area:33.0,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-18',data_colheita:'2026-03-03',produtividade:56.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'TANQUE',cultura:'soja',epoca:'safra',area:55.12,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-16',data_colheita:'2026-03-01',produtividade:53.7,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'IRNO',cultura:'soja',epoca:'safra',area:104.0,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-16',data_colheita:'2026-02-28',produtividade:55.0,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'LAGOA',cultura:'soja',epoca:'safra',area:23.82,cultivar:'DM 56I59',origem:'FAZENDA',status:'colhido',meta:54,data_plantio_prevista:'2025-10-15',data_plantio:'2025-10-19',data_colheita:'2026-03-05',produtividade:57.6,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'CAQUI',cultura:'soja',epoca:'safra',area:26.43,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-12',data_colheita:'2026-02-25',produtividade:59.1,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'KUGIMA',cultura:'soja',epoca:'safra',area:80.33,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-11',data_colheita:'2026-02-22',produtividade:58.4,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'BONIM',cultura:'soja',epoca:'safra',area:23.0,cultivar:'BRS 1054 IPRO',origem:'CASTROLANDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-13',data_colheita:'2026-02-26',produtividade:60.5,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'BONIM',cultura:'soja',epoca:'safra',area:14.0,cultivar:'BMX 53IX55 (IMUNE)',origem:'CASTROLANDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-13',data_colheita:'2026-02-26',produtividade:59.8,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'RIVA',cultura:'soja',epoca:'safra',area:10.91,cultivar:'BMX 53IX55 (IMUNE)',origem:'CASTROLANDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-14',data_colheita:'2026-02-27',produtividade:61.0,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'JAIME',cultura:'soja',epoca:'safra',area:13.8,cultivar:'DM 54IX57',origem:'FAZENDA',status:'colhido',meta:56,data_plantio_prevista:'2025-10-10',data_plantio:'2025-10-15',data_colheita:'2026-02-28',produtividade:57.6,atribuido_por:'Alessandro',aprovado_por:'Claudio',data_aprovacao:'2025-06-15'},
+  // ── MOCK CARDS: Safrinha 25/26 em andamento ──
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'40',cultura:'trigo',epoca:'safrinha',area:139.16,cultivar:'TBIO SONIC',origem:'CASTROLANDA',status:'rascunho',meta:45,data_plantio_prevista:'2026-04-15',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'90',cultura:'trigo',epoca:'safrinha',area:85.0,cultivar:'TBIO SONIC',origem:'CASTROLANDA',status:'rascunho',meta:45,data_plantio_prevista:'2026-04-18',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'IRNO',cultura:'aveia',epoca:'safrinha',area:104.0,cultivar:'URS OLADA',origem:'FAZENDA',status:'rascunho',meta:null,data_plantio_prevista:'2026-04-10',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'FORNO',cultura:'cevada',epoca:'safrinha',area:40.95,cultivar:'BRS CAUÊ',origem:'CASTROLANDA',status:'rascunho',meta:50,data_plantio_prevista:'2026-04-20',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'GRAMADINHO',cultura:'aveia',epoca:'safrinha',area:30.84,cultivar:'URS POENTE',origem:'FAZENDA',status:'rascunho',meta:null,data_plantio_prevista:'2026-04-12',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'10 E 20',cultura:'trigo',epoca:'safrinha',area:95.72,cultivar:'TBIO AUDAZ',origem:'CASTROLANDA',status:'em_revisao',meta:48,data_plantio_prevista:'2026-04-15',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'TANQUE',cultura:'cevada',epoca:'safrinha',area:55.12,cultivar:'BRS CAUÊ',origem:'CASTROLANDA',status:'em_revisao',meta:52,data_plantio_prevista:'2026-04-22',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'NARITA',cultura:'trigo',epoca:'safrinha',area:48.19,cultivar:'TBIO AUDAZ',origem:'CASTROLANDA',status:'em_revisao',meta:46,data_plantio_prevista:'2026-04-18',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO 1',cultura:'milho',epoca:'safrinha',area:60.89,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:120,data_plantio_prevista:'2026-02-20',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO 2',cultura:'milho',epoca:'safrinha',area:39.62,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:120,data_plantio_prevista:'2026-02-22',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO NENE',cultura:'milho',epoca:'safrinha',area:55.0,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:115,data_plantio_prevista:'2026-02-18',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'KUGIMA',cultura:'milho',epoca:'safrinha',area:80.33,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:118,data_plantio_prevista:'2026-02-15',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'SEDE',cultura:'milho',epoca:'safrinha',area:33.0,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:110,data_plantio_prevista:'2026-02-25',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'BANACK',cultura:'milho',epoca:'safrinha',area:40.44,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:115,data_plantio_prevista:'2026-02-16',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'TANAKA',cultura:'milho',epoca:'safrinha',area:59.12,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:112,data_plantio_prevista:'2026-02-20',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'50/60/70',cultura:'milho',epoca:'safrinha',area:25.23,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'aprovado',meta:110,data_plantio_prevista:'2026-02-22',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO TEOFILO',cultura:'milho',epoca:'safrinha',area:32.0,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'preparando',meta:110,data_plantio_prevista:'2026-02-25',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-18'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO ARION',cultura:'milho',epoca:'safrinha',area:31.47,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'preparando',meta:115,data_plantio_prevista:'2026-02-22',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-15'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'HERMATRIA',cultura:'milho',epoca:'safrinha',area:21.49,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'preparando',meta:112,data_plantio_prevista:'2026-02-20',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-12'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'PINUS',cultura:'milho',epoca:'safrinha',area:37.74,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'preparando',meta:108,data_plantio_prevista:'2026-02-28',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-20'},
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'LAGOA',cultura:'milho',epoca:'safrinha',area:23.82,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'preparando',meta:105,data_plantio_prevista:'2026-03-01',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-22'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'VEINHA',cultura:'milho',epoca:'safrinha',area:15.56,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'preparando',meta:110,data_plantio_prevista:'2026-02-24',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-16'},
+  {safra:'25/26',fazenda:'FAZ. CAPINZAL',talhao:'BASTIAO',cultura:'milho',epoca:'safrinha',area:11.92,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'preparando',meta:108,data_plantio_prevista:'2026-02-26',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-18'},
+  {safra:'25/26',fazenda:'FAZ. LAJEADO',talhao:'ARRENDAMENTO SEDE',cultura:'milho',epoca:'safrinha',area:31.19,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'plantado',meta:112,data_plantio_prevista:'2026-02-18',data_plantio:'2026-02-20',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-10',maquina:'John Deere 8320',operador:'Marcos'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'CAQUI',cultura:'milho',epoca:'safrinha',area:26.43,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'plantado',meta:115,data_plantio_prevista:'2026-02-16',data_plantio:'2026-02-18',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-08',maquina:'Case IH 7250',operador:'Joao'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'PIALADO',cultura:'milho',epoca:'safrinha',area:30.94,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'plantado',meta:110,data_plantio_prevista:'2026-02-20',data_plantio:'2026-02-22',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-14',maquina:'John Deere 8320',operador:'Marcos'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'BONIM',cultura:'milho',epoca:'safrinha',area:37.0,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'plantado',meta:112,data_plantio_prevista:'2026-02-18',data_plantio:'2026-02-19',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-10',maquina:'Case IH 7250',operador:'Joao'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'JAIME',cultura:'milho',epoca:'safrinha',area:13.8,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'plantado',meta:108,data_plantio_prevista:'2026-02-22',data_plantio:'2026-02-24',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-15',maquina:'John Deere 8320',operador:'Marcos'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'FURA BUCHO',cultura:'milho',epoca:'safrinha',area:29.51,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'em_desenvolvimento',meta:110,data_plantio_prevista:'2026-02-15',data_plantio:'2026-02-16',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-06',maquina:'Case IH 7250',operador:'Joao',operacao_manejo:'Pulverizacao herbicida pos-emergente'},
+  {safra:'25/26',fazenda:'FAZ. SAO FRANCISCO',talhao:'LILO',cultura:'milho',epoca:'safrinha',area:9.31,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'em_desenvolvimento',meta:105,data_plantio_prevista:'2026-02-12',data_plantio:'2026-02-14',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-04',maquina:'John Deere 8320',operador:'Marcos',operacao_manejo:'Adubacao cobertura N'},
+  {safra:'25/26',fazenda:'FAZ. SANTO ANDRE',talhao:'RIVA',cultura:'milho',epoca:'safrinha',area:10.91,cultivar:'AG 9077 PRO3',origem:'CASTROLANDA',status:'em_desenvolvimento',meta:108,data_plantio_prevista:'2026-02-14',data_plantio:'2026-02-15',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',safra_acao_inicio:'2026-02-05',maquina:'Case IH 7250',operador:'Joao',operacao_manejo:'Pulverizacao fungicida'},
+  // cancelado
+  {safra:'25/26',fazenda:'FAZ. SANTANA',talhao:'MANGUEIRA',cultura:'milho',epoca:'safrinha',area:16.58,cultivar:'DKB 290 PRO3',origem:'CASTROLANDA',status:'cancelado',meta:100,data_plantio_prevista:'2026-03-05',aprovado_por:'Claudio',data_aprovacao:'2026-01-28',atribuido_por:'Alessandro',observacoes:'Talhao inundou apos chuvas de fevereiro. Area comprometida.'}
+];
+
+// Assign IDs
+var allCards = [];
+REAL_CARDS.forEach(function(c,i){
+  c.id = i;
+  allCards.push(c);
+});
+
+// ── HELPERS ──
+function fmt(n){ return typeof n==='number' ? n.toLocaleString('pt-BR',{maximumFractionDigits:1}) : String(n||''); }
+function fmtDate(d){ if(!d)return '\u2014'; var p=d.split('-'); return p[2]+'/'+p[1]; }
+
+function getCompletionPct(card){
+  var state = STATES[STATE_MAP[card.status]];
+  if(!state) return 0;
+  var total = state.required.length;
+  if(total===0) return 100;
+  var filled = 0;
+  state.required.forEach(function(f){
+    if(card[f] !== undefined && card[f] !== null && card[f] !== '') filled++;
+  });
+  return Math.round(filled/total*100);
+}
+
+function getRandomCost(status){
+  var base = {rascunho:0,em_revisao:0,aprovado:0,preparando:850,plantado:2400,em_desenvolvimento:4200,colhendo:5800,colhido:6500,cancelado:1200};
+  var b = base[status]||0;
+  return b ? b + Math.floor(Math.random()*800) : 0;
+}
+
+// ── RENDER SUMMARY ──
+function renderSummary(){
+  var el = document.getElementById('summary');
+  var totalArea = 0, totalProd = 0, prodCount = 0, gramArea = 0;
+  allCards.forEach(function(c){
+    totalArea += c.area || 0;
+    if(c.produtividade){totalProd += c.produtividade; prodCount++;}
+    if(['milho','trigo','aveia','cevada','milheto'].indexOf(c.cultura)>=0) gramArea += c.area||0;
+  });
+  var avgProd = prodCount ? (totalProd/prodCount).toFixed(1) : '\u2014';
+  var gramPct = totalArea ? Math.round(gramArea/totalArea*100) : 0;
+
+  var cards = [
+    {value:String(allCards.length),label:'Cards Total'},
+    {value:fmt(totalArea)+' ha',label:'Area Total'},
+    {value:gramPct+'%',label:'Gramineas',pct:gramPct,target:25},
+    {value:avgProd,label:'Prod Media sc/ha'},
+    {value:String(new Set(allCards.map(function(c){return c.fazenda})).size),label:'Fazendas'}
+  ];
+  while(el.firstChild) el.removeChild(el.firstChild);
+  cards.forEach(function(c){
+    var card = document.createElement('div');card.className='card';
+    var val = document.createElement('div');val.className='card-value';val.textContent=c.value;card.appendChild(val);
+    var lab = document.createElement('div');lab.className='card-label';lab.textContent=c.label;card.appendChild(lab);
+    if(c.pct !== undefined){
+      var bar=document.createElement('div');bar.className='card-bar';
+      var fill=document.createElement('div');fill.className='card-bar-fill';
+      fill.style.width=Math.min(c.pct*100/(c.target||100),100)+'%';
+      fill.style.background=c.pct>=c.target?'var(--green)':'var(--yellow)';
+      bar.appendChild(fill);card.appendChild(bar);
+    }
+    el.appendChild(card);
+  });
+}
+
+// ── POPULATE FILTERS ──
+function populateFilters(){
+  var fazendas = [], culturas = [];
+  allCards.forEach(function(c){
+    if(c.fazenda && fazendas.indexOf(c.fazenda)<0) fazendas.push(c.fazenda);
+    if(c.cultura && culturas.indexOf(c.cultura)<0) culturas.push(c.cultura);
+  });
+  fazendas.sort(); culturas.sort();
+  var fFaz = document.getElementById('filterFazenda');
+  fazendas.forEach(function(f){ var o=document.createElement('option');o.value=f;o.textContent=f;fFaz.appendChild(o); });
+  var fCul = document.getElementById('filterCultura');
+  culturas.forEach(function(c){ var o=document.createElement('option');o.value=c;o.textContent=c.charAt(0).toUpperCase()+c.slice(1);fCul.appendChild(o); });
+  var fSt = document.getElementById('filterStatus');
+  STATES.forEach(function(s){ var o=document.createElement('option');o.value=s.id;o.textContent=s.label;fSt.appendChild(o); });
+}
+
+// ── RENDER KANBAN ──
+function renderKanban(){
+  var el = document.getElementById('kanban');
+  while(el.firstChild) el.removeChild(el.firstChild);
+
+  var q = document.getElementById('search').value.toLowerCase().trim();
+  var fFaz = document.getElementById('filterFazenda').value;
+  var fCul = document.getElementById('filterCultura').value;
+  var fSt = document.getElementById('filterStatus').value;
+  var totalVisible = 0;
+
+  STATES.forEach(function(state, stateIdx){
+    if(fSt && fSt !== state.id) return;
+
+    var stateCards = allCards.filter(function(c){ return c.status === state.id; });
+    var filteredCards = stateCards.filter(function(c){
+      if(fFaz && c.fazenda !== fFaz) return false;
+      if(fCul && c.cultura !== fCul) return false;
+      if(q){
+        var hay = (c.talhao+' '+c.fazenda+' '+c.cultura+' '+c.cultivar).toLowerCase();
+        if(hay.indexOf(q)<0) return false;
+      }
+      return true;
+    });
+
+    if(fSt || fFaz || fCul || q){
+      if(filteredCards.length === 0) return;
+    }
+
+    totalVisible += filteredCards.length;
+    var totalArea = filteredCards.reduce(function(s,c){return s+(c.area||0);},0);
+
+    var col = document.createElement('div');
+    col.className = 'kanban-column';
+    col.id = 'col-'+stateIdx;
+    if(!state.collapsed || fSt || fFaz || fCul || q) col.classList.add('expanded');
+
+    var header = document.createElement('div');
+    header.className = 'column-header';
+    header.addEventListener('click', function(){ col.classList.toggle('expanded'); });
+
+    var dot = document.createElement('div');
+    dot.className = 'column-dot';
+    dot.style.background = state.color;
+    header.appendChild(dot);
+
+    var name = document.createElement('div');
+    name.className = 'column-name';
+    name.textContent = state.label;
+    header.appendChild(name);
+
+    var count = document.createElement('span');
+    count.className = 'column-count';
+    count.textContent = filteredCards.length;
+    header.appendChild(count);
+
+    var area = document.createElement('span');
+    area.className = 'column-area';
+    area.textContent = fmt(totalArea)+' ha';
+    header.appendChild(area);
+
+    var chev = document.createElement('span');
+    chev.className = 'column-chevron';
+    chev.textContent = '\u25BC';
+    header.appendChild(chev);
+
+    col.appendChild(header);
+
+    var body = document.createElement('div');
+    body.className = 'column-body';
+    var grid = document.createElement('div');
+    grid.className = 'cards-grid';
+
+    filteredCards.forEach(function(card, ci){
+      var cardEl = renderCard(card, state);
+      cardEl.style.animationDelay = (ci*40)+'ms';
+      grid.appendChild(cardEl);
+    });
+
+    body.appendChild(grid);
+    col.appendChild(body);
+    el.appendChild(col);
+  });
+
+  document.getElementById('filterCount').textContent = totalVisible + ' cards';
+}
+
+function renderCard(card, state){
+  var el = document.createElement('div');
+  el.className = 'kanban-card';
+  el.style.borderLeftColor = state.color;
+  el.addEventListener('click', function(ev){ ev.stopPropagation(); openDetail(card.id); });
+
+  var faz = document.createElement('div');faz.className='card-fazenda';faz.textContent=card.fazenda||'';
+  el.appendChild(faz);
+
+  var tal = document.createElement('div');tal.className='card-talhao';tal.textContent=card.talhao||'(sem talhao)';
+  el.appendChild(tal);
+
+  var culRow = document.createElement('div');culRow.className='card-cultura-row';
+  var cul = document.createElement('span');cul.className='card-cultura';cul.textContent=(card.cultura||'').charAt(0).toUpperCase()+(card.cultura||'').slice(1);
+  culRow.appendChild(cul);
+  if(card.cultivar){
+    var cv = document.createElement('span');cv.className='card-cultivar';cv.textContent=card.cultivar;culRow.appendChild(cv);
+  }
+  var ep = document.createElement('span');ep.className='card-epoca';ep.textContent=card.epoca||'safra';
+  culRow.appendChild(ep);
+  el.appendChild(culRow);
+
+  var met = document.createElement('div');met.className='card-metrics';
+  var areaSpan = document.createElement('span');
+  var areaStrong = document.createElement('strong');areaStrong.textContent=fmt(card.area);
+  areaSpan.appendChild(areaStrong);areaSpan.appendChild(document.createTextNode(' ha'));
+  met.appendChild(areaSpan);
+  if(card.data_plantio_prevista){
+    var dtSpan = document.createElement('span');dtSpan.textContent=fmtDate(card.data_plantio_prevista);met.appendChild(dtSpan);
+  }
+  el.appendChild(met);
+
+  var pct = getCompletionPct(card);
+  var prog = document.createElement('div');prog.className='card-progress';
+  var progFill = document.createElement('div');progFill.className='card-progress-fill';
+  progFill.style.width=pct+'%';
+  progFill.style.background = pct>=100?'var(--green)':pct>=50?'var(--yellow)':'var(--red)';
+  prog.appendChild(progFill);
+  el.appendChild(prog);
+
+  var bottom = document.createElement('div');bottom.className='card-bottom';
+  var cost = document.createElement('span');cost.className='card-cost';
+  var costVal = card._cost || (card._cost = getRandomCost(card.status));
+  cost.textContent = costVal ? 'R$ '+fmt(costVal)+'/ha' : '';
+  bottom.appendChild(cost);
+
+  if(card.produtividade && (card.status==='colhendo'||card.status==='colhido')){
+    var prod = document.createElement('span');prod.className='card-produtividade';
+    prod.textContent=fmt(card.produtividade)+' sc/ha';
+    bottom.appendChild(prod);
+  }
+  el.appendChild(bottom);
+
+  return el;
+}
+
+// ── DETAIL PANEL ──
+function openDetail(cardId){
+  var card = allCards[cardId];
+  if(!card) return;
+  var state = STATES[STATE_MAP[card.status]];
+  var overlay = document.getElementById('detailOverlay');
+  var panel = document.getElementById('detailPanel');
+  while(panel.firstChild) panel.removeChild(panel.firstChild);
+
+  // Header
+  var hdr = document.createElement('div');hdr.className='detail-header';
+  var hdrLeft = document.createElement('div');
+  var h2 = document.createElement('h2');h2.textContent=card.talhao||'(sem talhao)';hdrLeft.appendChild(h2);
+  var sub = document.createElement('div');sub.className='sub';sub.textContent=(card.fazenda||'')+' \u00b7 '+(card.cultura||'')+' \u00b7 '+(card.epoca||'safra');
+  hdrLeft.appendChild(sub);
+  hdr.appendChild(hdrLeft);
+  var closeBtn = document.createElement('button');closeBtn.className='detail-close';closeBtn.textContent='\u00d7';
+  closeBtn.addEventListener('click',closeDetail);
+  hdr.appendChild(closeBtn);
+  panel.appendChild(hdr);
+
+  var body = document.createElement('div');body.className='detail-body';
+
+  // Status badge
+  var stBadge = document.createElement('div');
+  stBadge.style.cssText='display:inline-block;padding:.3rem .75rem;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:1rem;color:#fff;background:'+state.color;
+  stBadge.textContent=state.label;
+  body.appendChild(stBadge);
+
+  // Info section
+  addSection(body,'Informacoes',[
+    ['Safra',card.safra],['Fazenda',card.fazenda],['Talhao',card.talhao],
+    ['Cultura',(card.cultura||'').charAt(0).toUpperCase()+(card.cultura||'').slice(1)],
+    ['Cultivar',card.cultivar],['Epoca',card.epoca],['Area',fmt(card.area)+' ha'],
+    ['Origem Semente',card.origem],['Meta',card.meta?fmt(card.meta)+' sc/ha':'\u2014']
+  ]);
+
+  // Dates
+  addSection(body,'Datas',[
+    ['Plantio Previsto',fmtDate(card.data_plantio_prevista)],
+    ['Plantio Real',fmtDate(card.data_plantio)],
+    ['Colheita',fmtDate(card.data_colheita)],
+    ['Aprovacao',fmtDate(card.data_aprovacao)]
+  ]);
+
+  // Checklist
+  var checkSec = document.createElement('div');checkSec.className='detail-section';
+  var checkTitle = document.createElement('div');checkTitle.className='detail-section-title';checkTitle.textContent='Checklist do Estado';
+  checkSec.appendChild(checkTitle);
+  var ul = document.createElement('ul');ul.className='checklist';
+  state.required.forEach(function(f,i){
+    var li = document.createElement('li');
+    var has = card[f]!==undefined&&card[f]!==null&&card[f]!=='';
+    li.className = has?'done':'missing';
+    var check = document.createElement('span');check.className='check';check.textContent=has?'\u2713':'';
+    li.appendChild(check);
+    li.appendChild(document.createTextNode(state.requiredLabels[i]+(has?' \u2014 '+String(card[f]):'')));
+    ul.appendChild(li);
+  });
+  checkSec.appendChild(ul);
+  body.appendChild(checkSec);
+
+  // Result
+  if(card.produtividade){
+    addSection(body,'Resultado',[
+      ['Produtividade',fmt(card.produtividade)+' sc/ha'],
+      ['Meta',card.meta?fmt(card.meta)+' sc/ha':'\u2014'],
+      ['Desvio',card.meta?((card.produtividade-card.meta>0?'+':'')+fmt(card.produtividade-card.meta)+' sc/ha'):'\u2014']
+    ]);
+  }
+
+  // Obs
+  if(card.observacoes){
+    var obsSec = document.createElement('div');obsSec.className='detail-section';
+    var obsTitle = document.createElement('div');obsTitle.className='detail-section-title';obsTitle.textContent='Observacoes';
+    obsSec.appendChild(obsTitle);
+    var obsP = document.createElement('div');obsP.style.cssText='font-size:.85rem;color:var(--fg2)';obsP.textContent=card.observacoes;
+    obsSec.appendChild(obsP);
+    body.appendChild(obsSec);
+  }
+
+  // Actions
+  var actions = document.createElement('div');actions.className='detail-actions';
+  var stIdx = STATE_MAP[card.status];
+  var canAdvance = stIdx < 7 && card.status!=='cancelado';
+  if(canAdvance){
+    var nextState = STATES[stIdx+1];
+    var advBtn = document.createElement('button');advBtn.className='btn-advance';
+    advBtn.textContent='Avancar \u2192 '+nextState.label;
+    advBtn.addEventListener('click',function(){ advanceCard(card.id); });
+    actions.appendChild(advBtn);
+  }
+  if(stIdx<4 && card.status!=='cancelado'){
+    var canBtn = document.createElement('button');canBtn.className='btn-cancel-card';
+    canBtn.textContent='Cancelar';
+    canBtn.addEventListener('click',function(){ cancelCard(card.id); });
+    actions.appendChild(canBtn);
+  }
+  body.appendChild(actions);
+  panel.appendChild(body);
+
+  overlay.classList.add('open');
+  overlay.addEventListener('click',function(ev){ if(ev.target===overlay) closeDetail(); });
+}
+
+function addSection(parent,title,rows){
+  var sec = document.createElement('div');sec.className='detail-section';
+  var t = document.createElement('div');t.className='detail-section-title';t.textContent=title;sec.appendChild(t);
+  rows.forEach(function(r){
+    var row = document.createElement('div');row.className='detail-row';
+    var dk = document.createElement('span');dk.className='dk';dk.textContent=r[0];row.appendChild(dk);
+    var dv = document.createElement('span');dv.className='dv';dv.textContent=r[1]||'\u2014';row.appendChild(dv);
+    sec.appendChild(row);
+  });
+  parent.appendChild(sec);
+}
+
+function closeDetail(){
+  document.getElementById('detailOverlay').classList.remove('open');
+}
+
+// ── ADVANCE / CANCEL ──
+function advanceCard(cardId){
+  var card = allCards[cardId];
+  var stIdx = STATE_MAP[card.status];
+  if(stIdx>=7||card.status==='cancelado') return;
+  var nextState = STATES[stIdx+1];
+  card.status = nextState.id;
+  showToast(card.talhao+' \u2192 '+nextState.label);
+  closeDetail();
+  renderKanban();
+  renderSummary();
+}
+
+function cancelCard(cardId){
+  var card = allCards[cardId];
+  card.status = 'cancelado';
+  card.observacoes = card.observacoes || 'Cancelado manualmente';
+  showToast(card.talhao+' cancelado');
+  closeDetail();
+  renderKanban();
+  renderSummary();
+}
+
+// ── TOAST ──
+var toastTimer;
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); },2500);
+}
+
+// ── FILTERS ──
+function applyFilters(){ renderKanban(); }
+
+document.getElementById('search').addEventListener('input', applyFilters);
+document.getElementById('filterFazenda').addEventListener('change', applyFilters);
+document.getElementById('filterCultura').addEventListener('change', applyFilters);
+document.getElementById('filterStatus').addEventListener('change', applyFilters);
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', function(ev){
+  if(ev.target.tagName==='INPUT'||ev.target.tagName==='SELECT') return;
+  var key = ev.key;
+  if(key>='1'&&key<='9'){
+    var idx = parseInt(key)-1;
+    var col = document.getElementById('col-'+idx);
+    if(col){ col.classList.toggle('expanded'); ev.preventDefault(); }
+  }
+  else if(key==='Escape'){
+    if(document.getElementById('detailOverlay').classList.contains('open')){
+      closeDetail();
+    } else {
+      document.getElementById('search').value='';
+      document.getElementById('filterFazenda').value='';
+      document.getElementById('filterCultura').value='';
+      document.getElementById('filterStatus').value='';
+      renderKanban();
+    }
+    ev.preventDefault();
+  }
+  else if(key==='/'){document.getElementById('search').focus();ev.preventDefault();}
+});
+
+// ── INIT ──
+populateFilters();
+renderSummary();
+renderKanban();
+
+})();
+</script>
+</body>
+</html>

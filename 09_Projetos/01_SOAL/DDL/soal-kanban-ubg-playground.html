@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL Kanban UBG</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e2422;--bg2:#262c2a;--bg3:#313836;--bg4:#424a47;
+  --fg:#d4dbd6;--fg2:#8a9a8c;--fg3:#5c6b5e;
+  --accent:#4caf7c;--accent2:#3d9468;--accent-dim:rgba(76,175,124,.15);
+  --green:#4caf7c;--yellow:#d4a63c;--red:#e05a50;--orange:#d47a3a;--blue:#5a9fd4;--purple:#8957e5;
+  --radius:10px;--shadow:0 2px 8px rgba(0,0,0,.35);
+  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono','Fira Code',monospace;
+  --st-ticket:#5a9fd4;--st-amostra:#d4a63c;--st-secagem:#e05a50;--st-alocacao:#4caf7c;--st-saida:#d47a3a;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 80% 20%, rgba(76,175,124,.06) 0%, transparent 50%),
+    radial-gradient(circle, var(--bg4) 1px, transparent 1px),
+    var(--bg);
+  background-size:100%,20px 20px,100%;
+  color:var(--fg);font-family:var(--font);line-height:1.5;min-height:100vh;padding:0 0 3rem
+}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1e2422 0%,#262c2a 100%);border-bottom:1px solid var(--bg4);padding:1.25rem 2rem .5rem;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.header h1 span{color:var(--accent)}
+.header-badge{background:var(--bg3);color:var(--fg2);font-size:.75rem;padding:.25rem .75rem;border-radius:20px;font-family:var(--mono)}
+
+/* Tab Navigation */
+.tab-nav{max-width:1100px;margin:0 auto;padding:.5rem 0 0;display:flex;gap:0}
+.tab-btn{background:none;border:none;color:var(--fg3);font-family:var(--font);font-size:.9rem;font-weight:600;padding:.65rem 1.5rem;cursor:pointer;position:relative;transition:color .2s;border-bottom:2px solid transparent}
+.tab-btn:hover{color:var(--fg2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn .tab-count{font-family:var(--mono);font-size:.72rem;font-weight:500;background:var(--bg3);padding:.1rem .4rem;border-radius:8px;margin-left:.4rem}
+.tab-btn.active .tab-count{background:var(--accent-dim);color:var(--accent)}
+
+/* Tab Content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Summary Cards */
+.summary{max-width:1100px;margin:1.5rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem}
+.card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1rem;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.card-value{font-size:1.5rem;font-weight:700;font-family:var(--mono);line-height:1.1}
+.card-label{font-size:.7rem;color:var(--fg2);margin-top:.3rem;text-transform:uppercase;letter-spacing:.04em}
+
+/* Filters */
+.filters{max-width:1100px;margin:1rem auto;padding:0 1.5rem;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.filter-input{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.9rem;padding:.6rem 1rem;outline:none;transition:border-color .2s;font-family:var(--font)}
+.filter-input:focus{border-color:var(--accent)}
+.filter-input::placeholder{color:var(--fg3)}
+input.filter-input{flex:1;min-width:180px}
+select.filter-input{cursor:pointer;min-width:120px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath fill='%238a9a8c' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.25rem}
+.filter-count{color:var(--fg2);font-size:.8rem;font-family:var(--mono);margin-left:auto;white-space:nowrap}
+.kbd-hint{color:var(--fg3);font-size:.72rem;font-family:var(--mono)}
+.kbd{background:var(--bg3);padding:.1rem .4rem;border-radius:3px;font-size:.7rem;color:var(--fg2)}
+
+/* Kanban Board */
+.kanban{max-width:1100px;margin:1rem auto;padding:0 1.5rem}
+.kanban-column{margin-bottom:1rem;border-radius:var(--radius);overflow:hidden}
+.column-header{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:.85rem 1.15rem;cursor:pointer;display:flex;align-items:center;gap:.75rem;transition:border-color .2s,background .15s;user-select:none}
+.column-header:hover{border-color:var(--fg3);background:var(--bg3)}
+.kanban-column.expanded .column-header{border-color:var(--accent);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.column-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.column-name{font-weight:700;font-size:1rem;flex:1}
+.column-resp{font-size:.7rem;color:var(--fg3);font-family:var(--mono)}
+.column-count{font-family:var(--mono);font-size:.85rem;font-weight:500;color:var(--fg2);background:var(--bg3);padding:.15rem .55rem;border-radius:12px}
+.column-chevron{color:var(--fg3);font-size:.9rem;transition:transform .3s}
+.kanban-column.expanded .column-chevron{transform:rotate(180deg);color:var(--accent)}
+.column-body{display:none;background:var(--bg2);border:1px solid var(--accent);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:1rem}
+.kanban-column.expanded .column-body{display:block}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+
+/* Post-moega separator */
+.moega-separator{max-width:1100px;margin:.5rem auto;padding:0 1.5rem}
+.moega-bar{background:var(--bg2);border:1px dashed var(--yellow);border-radius:var(--radius);padding:.6rem 1rem;text-align:center;font-size:.78rem;color:var(--yellow);font-weight:600}
+
+/* Ticket Card */
+.ticket-card{background:var(--bg3);border:1px solid var(--bg4);border-left:4px solid var(--blue);border-radius:6px;padding:.85rem;cursor:pointer;transition:border-color .2s,transform .15s,opacity .3s;position:relative;animation:cardFadeIn .35s ease both}
+.ticket-card:hover{border-color:var(--fg3);transform:translateY(-2px)}
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ticket-placa{font-size:1.3rem;font-weight:700;font-family:var(--mono);letter-spacing:.05em;margin-bottom:.3rem}
+.ticket-motorista{font-size:.75rem;color:var(--fg2);margin-bottom:.35rem}
+.ticket-origin{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;flex-wrap:wrap}
+.ticket-talhao{font-size:.78rem;font-weight:600}
+.ticket-cultura-badge{font-size:.65rem;font-weight:600;padding:.1rem .45rem;border-radius:10px;background:rgba(76,175,124,.12);color:var(--accent)}
+.ticket-semente-badge{font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:10px;border:1px dashed #f778ba;color:#f778ba;display:inline-flex;align-items:center;gap:.2rem}
+.from-agriculture-badge{font-size:.58rem;font-weight:600;padding:.1rem .4rem;border-radius:10px;background:rgba(88,166,255,.12);color:#58a6ff}
+.ticket-peso-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;margin-bottom:.35rem;font-family:var(--mono);font-size:.72rem;text-align:center}
+.ticket-peso-grid .label{font-size:.55rem;color:var(--fg3);text-transform:uppercase;font-weight:600}
+.ticket-peso-grid .value{font-weight:700;font-size:.85rem}
+.ticket-quality{font-size:.7rem;color:var(--fg2);font-family:var(--mono);margin-bottom:.2rem}
+.ticket-lote{font-size:.72rem;font-weight:600;color:var(--accent);font-family:var(--mono)}
+.ticket-silo-dest{font-size:.72rem;font-family:var(--mono);color:var(--fg2)}
+
+/* ═══════════════════════════════════════════════════════════
+   SILOS TAB — Realistic Silo Visualization
+   ═══════════════════════════════════════════════════════════ */
+.silos-page{max-width:1100px;margin:0 auto;padding:1.5rem}
+.silos-page-title{font-size:1.1rem;font-weight:700;margin-bottom:.3rem}
+.silos-page-sub{font-size:.78rem;color:var(--fg2);margin-bottom:1.5rem}
+
+.silos-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:2rem}
+.silo-stat{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:.85rem;text-align:center}
+.silo-stat .sv{font-size:1.4rem;font-weight:700;font-family:var(--mono)}
+.silo-stat .sl{font-size:.65rem;color:var(--fg2);text-transform:uppercase;letter-spacing:.04em;margin-top:.2rem}
+
+.silo-yard{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem 1rem;margin-bottom:2rem}
+.silo-unit{display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s}
+.silo-unit:hover{transform:translateY(-3px)}
+
+/* SVG Silo */
+.silo-svg{width:100%;max-width:140px;height:auto}
+.silo-svg .body-outer{fill:url(#metalGrad);stroke:#555;stroke-width:1}
+.silo-svg .body-inner{fill:var(--bg);opacity:.85}
+.silo-svg .roof{fill:url(#roofGrad);stroke:#555;stroke-width:1}
+.silo-svg .ring{stroke:#666;stroke-width:.8;fill:none}
+.silo-svg .base{fill:#444;stroke:#555;stroke-width:1}
+.silo-svg .leg{fill:#3a3a3a;stroke:#555;stroke-width:.6}
+.silo-svg .grain-fill{transition:height .8s ease,y .8s ease}
+.silo-svg .vent{fill:#555;stroke:#666;stroke-width:.5}
+
+.silo-label{text-align:center;margin-top:.5rem}
+.silo-label-name{font-size:1rem;font-weight:700;letter-spacing:.02em}
+.silo-label-type{font-size:.6rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.04em;margin-top:.1rem}
+.silo-label-pct{font-size:1.3rem;font-weight:700;font-family:var(--mono);margin-top:.25rem}
+.silo-label-tons{font-size:.72rem;color:var(--fg2);font-family:var(--mono)}
+.silo-label-cultura{display:inline-block;font-size:.68rem;font-weight:600;padding:.15rem .5rem;border-radius:10px;margin-top:.35rem}
+
+/* Pulmao silo variant (flat top) */
+.silo-svg .flat-roof{fill:url(#roofGrad);stroke:#555;stroke-width:1}
+
+/* Silo detail card */
+.silo-detail-card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1.25rem;margin-top:1.5rem;display:none}
+.silo-detail-card.open{display:block;animation:cardFadeIn .3s ease}
+.silo-detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.silo-detail-header h3{font-size:1.1rem;font-weight:700}
+.silo-detail-close{background:none;border:none;color:var(--fg2);cursor:pointer;font-size:1.2rem;padding:.2rem .5rem;border-radius:4px}
+.silo-detail-close:hover{background:var(--bg3);color:var(--fg)}
+.silo-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem}
+.silo-detail-row{display:flex;justify-content:space-between;padding:.3rem 0;font-size:.82rem}
+.silo-detail-row .dk{color:var(--fg2)}
+.silo-detail-row .dv{color:var(--fg);font-weight:600;font-family:var(--mono)}
+
+/* Detail Panel */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;justify-content:flex-end}
+.detail-overlay.open{display:flex}
+.detail-panel{width:420px;max-width:92vw;background:var(--bg2);border-left:1px solid var(--bg4);height:100%;overflow-y:auto;animation:slideIn .3s ease;padding:0}
+@keyframes slideIn{from{transform:translateX(420px)}to{transform:translateX(0)}}
+.detail-header{padding:1.25rem;border-bottom:1px solid var(--bg4);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.detail-header h2{font-size:1.15rem;font-weight:700;font-family:var(--mono);letter-spacing:.03em}
+.detail-header .sub{font-size:.75rem;color:var(--fg2);margin-top:.2rem;font-family:var(--font)}
+.detail-close{background:none;border:none;color:var(--fg2);cursor:pointer;font-size:1.4rem;padding:.2rem .5rem;border-radius:4px;line-height:1}
+.detail-close:hover{background:var(--bg3);color:var(--fg)}
+.detail-body{padding:1.25rem}
+.detail-section{margin-bottom:1.25rem}
+.detail-section-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg3);font-weight:600;margin-bottom:.6rem;border-bottom:1px solid var(--bg4);padding-bottom:.35rem}
+.detail-row{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.85rem}
+.detail-row .dk{color:var(--fg2)}
+.detail-row .dv{color:var(--fg);font-weight:600;font-family:var(--mono);text-align:right;max-width:55%}
+.detail-actions{display:flex;gap:.5rem;margin-top:1rem}
+.btn-advance{flex:1;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:.7rem 1rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+.btn-advance:hover{opacity:.85}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);padding:.6rem 1.25rem;font-size:.85rem;font-weight:600;z-index:300;opacity:0;transition:transform .3s ease,opacity .3s ease;pointer-events:none;white-space:nowrap;font-family:var(--font)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Footer */
+.footer{max-width:1100px;margin:3rem auto 0;padding:1.5rem;text-align:center;color:var(--fg3);font-size:.78rem;border-top:1px solid var(--bg3)}
+.footer span{color:var(--fg2)}
+
+/* Responsive */
+@media(max-width:900px){
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .detail-panel{width:100%;max-width:100%}
+  .silo-yard{grid-template-columns:repeat(4,1fr);gap:1rem .5rem}
+}
+@media(max-width:600px){
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .cards-grid{grid-template-columns:1fr}
+  .header h1{font-size:1.1rem}
+  .kbd-hint{display:none}
+  .ticket-placa{font-size:1.5rem}
+  .ticket-peso-grid .value{font-size:1rem}
+  .silo-yard{grid-template-columns:repeat(2,1fr);gap:1.5rem 1rem}
+  .silo-svg{max-width:120px}
+  .silo-detail-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>SOAL <span>Kanban UBG</span></h1>
+    <span class="header-badge">Safra 25/26</span>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="kanban">Kanban<span class="tab-count" id="kanbanCount">12</span></button>
+    <button class="tab-btn" data-tab="silos">Silos<span class="tab-count">8</span></button>
+  </div>
+</div>
+
+<!-- ═══ KANBAN TAB ═══ -->
+<div class="tab-content active" id="tab-kanban">
+  <div class="summary" id="summary"></div>
+  <div class="filters">
+    <input class="filter-input" id="search" type="text" placeholder="Buscar placa, motorista, cultura...">
+    <select class="filter-input" id="filterCultura">
+      <option value="">Todas culturas</option>
+      <option value="soja">Soja</option>
+      <option value="milho">Milho</option>
+      <option value="trigo">Trigo</option>
+      <option value="feijao">Feijao</option>
+      <option value="cevada">Cevada</option>
+    </select>
+    <select class="filter-input" id="filterTipo">
+      <option value="">Todos tipos</option>
+      <option value="commodity">Commodity</option>
+      <option value="semente">Semente</option>
+    </select>
+    <span class="filter-count" id="filterCount"></span>
+    <span class="kbd-hint"><span class="kbd">1</span>-<span class="kbd">5</span> toggle <span class="kbd">Esc</span> reset <span class="kbd">/</span> search</span>
+  </div>
+  <div class="kanban" id="kanban"></div>
+</div>
+
+<!-- ═══ SILOS TAB ═══ -->
+<div class="tab-content" id="tab-silos">
+  <div class="silos-page">
+    <div class="silos-page-title">Patio de Silos UBG</div>
+    <div class="silos-page-sub">Capacidade total: 10.760 toneladas &middot; 6 convencionais + 2 pulmao &middot; Leomar Molin (CREA 29.420/D)</div>
+
+    <div class="silos-summary" id="silosSummary"></div>
+
+    <!-- SVG Gradient Definitions (shared) -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <linearGradient id="metalGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#4a4f4d"/>
+          <stop offset="18%" stop-color="#6b7270"/>
+          <stop offset="35%" stop-color="#858d8a"/>
+          <stop offset="50%" stop-color="#9aa19e"/>
+          <stop offset="65%" stop-color="#858d8a"/>
+          <stop offset="82%" stop-color="#6b7270"/>
+          <stop offset="100%" stop-color="#4a4f4d"/>
+        </linearGradient>
+        <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7a8280"/>
+          <stop offset="100%" stop-color="#555b59"/>
+        </linearGradient>
+        <linearGradient id="grainSoja" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c4a95a"/>
+          <stop offset="100%" stop-color="#a08840"/>
+        </linearGradient>
+        <linearGradient id="grainMilho" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#d4a63c"/>
+          <stop offset="100%" stop-color="#b8912e"/>
+        </linearGradient>
+        <linearGradient id="grainTrigo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c9b87a"/>
+          <stop offset="100%" stop-color="#a99960"/>
+        </linearGradient>
+        <linearGradient id="grainFeijao" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8b5e3c"/>
+          <stop offset="100%" stop-color="#6d4930"/>
+        </linearGradient>
+        <linearGradient id="grainCevada" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#b5a66a"/>
+          <stop offset="100%" stop-color="#978a50"/>
+        </linearGradient>
+        <linearGradient id="grainSemente" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c4a95a"/>
+          <stop offset="50%" stop-color="#a08840"/>
+          <stop offset="100%" stop-color="#c4a95a"/>
+        </linearGradient>
+        <linearGradient id="grainEmpty" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a3f3d"/>
+          <stop offset="100%" stop-color="#2e3331"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div class="silo-yard" id="siloYard"></div>
+    <div class="silo-detail-card" id="siloDetail"></div>
+  </div>
+</div>
+
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="footer">
+  <span>DeepWork AI Flows</span> &middot; SOAL Kanban UBG &middot; Fluxo Pos-Colheita &middot; 5 etapas + Patio de Silos
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// ── UBG STAGES ──
+var UBG_STAGES = [
+  {id:'ticket_balanca',label:'Ticket Balanca',color:'var(--st-ticket)',responsavel:'Vanessa',
+   required:['placa','peso_bruto','tara','peso_liquido']},
+  {id:'amostragem',label:'Amostragem',color:'var(--st-amostra)',responsavel:'Josmar',
+   required:['umidade','impureza']},
+  {id:'secagem',label:'Secagem',color:'var(--st-secagem)',responsavel:'Josmar',
+   required:['leituras']},
+  {id:'alocacao_silo',label:'Alocacao Silo',color:'var(--st-alocacao)',responsavel:'Josmar',
+   required:['silo_destino','quantidade_kg']},
+  {id:'saida_grao',label:'Saida Grao',color:'var(--st-saida)',responsavel:'Vanessa',
+   required:['destino','contrato','transportadora','peso_embarque']}
+];
+var STAGE_MAP = {};
+UBG_STAGES.forEach(function(s,i){ STAGE_MAP[s.id] = i; });
+
+// ── SILOS ──
+var SILOS = [
+  {id:'S1',nome:'Silo 1',tipo:'Metalico Convencional',capacidade_ton:1800,ocupacao_pct:72,cultura:'Soja',estoque_ton:1296,umidade_media:13.0,temp_media:24,termometria:true,shape:'conv'},
+  {id:'S2',nome:'Silo 2',tipo:'Metalico Convencional',capacidade_ton:1800,ocupacao_pct:58,cultura:'Soja',estoque_ton:1044,umidade_media:13.2,temp_media:25,termometria:true,shape:'conv'},
+  {id:'S3',nome:'Silo 3',tipo:'Metalico Convencional',capacidade_ton:1500,ocupacao_pct:85,cultura:'Milho',estoque_ton:1275,umidade_media:13.5,temp_media:26,termometria:true,shape:'conv'},
+  {id:'S4',nome:'Silo 4',tipo:'Metalico Convencional',capacidade_ton:1500,ocupacao_pct:40,cultura:'Milho',estoque_ton:600,umidade_media:13.1,temp_media:23,termometria:true,shape:'conv'},
+  {id:'S5',nome:'Silo 5',tipo:'Metalico Convencional',capacidade_ton:1500,ocupacao_pct:25,cultura:'Trigo',estoque_ton:375,umidade_media:12.8,temp_media:22,termometria:true,shape:'conv'},
+  {id:'S6',nome:'Silo 6',tipo:'Metalico Convencional',capacidade_ton:1500,ocupacao_pct:15,cultura:'Feijao',estoque_ton:225,umidade_media:13.0,temp_media:24,termometria:true,shape:'conv'},
+  {id:'SP',nome:'Pulmao',tipo:'Pulmao Plano',capacidade_ton:700,ocupacao_pct:90,cultura:'Soja Semente',estoque_ton:630,umidade_media:12.5,temp_media:22,termometria:false,shape:'flat'},
+  {id:'SE',nome:'Elevado',tipo:'Pulmao Elevado Conico',capacidade_ton:460,ocupacao_pct:35,cultura:'Cevada',estoque_ton:161,umidade_media:12.9,temp_media:23,termometria:false,shape:'elevated'}
+];
+
+var GRAIN_COLORS = {
+  'Soja':'grainSoja','Milho':'grainMilho','Trigo':'grainTrigo',
+  'Feijao':'grainFeijao','Cevada':'grainCevada','Soja Semente':'grainSemente'
+};
+var CULTURA_BADGE_COLORS = {
+  'Soja':'rgba(196,169,90,.2);color:#c4a95a','Milho':'rgba(212,166,60,.2);color:#d4a63c',
+  'Trigo':'rgba(201,184,122,.2);color:#c9b87a','Feijao':'rgba(139,94,60,.2);color:#8b5e3c',
+  'Cevada':'rgba(181,166,106,.2);color:#b5a66a','Soja Semente':'rgba(247,120,186,.15);color:#f778ba'
+};
+
+// ── MOCK TICKETS ──
+var PLACAS=['ABC-1D23','DEF-4G56','GHI-7H89','JKL-0I12','MNO-3J45','PQR-6K78','STU-9L01','VWX-2M34','YZA-5N67','BCD-8O90',
+  'EFG-1P23','HIJ-4Q56','KLM-7R89','NOP-0S12','QRS-3T45','TUV-6U78','WXY-9V01','ZAB-2W34','CDE-5X67','FGH-8Y90'];
+var MOTORISTAS=['Jose da Silva','Antonio Pereira','Carlos Santos','Pedro Oliveira','Marcos Souza','Rafael Lima','Lucas Mendes','Bruno Costa','Fabio Alves','Diego Rocha',
+  'Renato Dias','Paulo Ferreira','Jorge Martins','Ricardo Gomes','Eduardo Ribeiro'];
+var TALHOES_ORIGEM=['BANACK','HERMATRIA','URUGUAI','SEDE','CAPELA','FRENTE','FORNO','90','40','10 E 20','PIALADO','NARITA','TANAKA','KUGIMA','IRNO'];
+var FAZENDAS_ORIGEM=['Capinzal','Lajeado','Sao Francisco','Santo Andre','Santana'];
+
+function randomFrom(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function randomBetween(a,b){return Math.round((a+Math.random()*(b-a))*10)/10;}
+
+var allTickets=[];var ticketId=0;
+function makeTicket(stage,cultura,tipo,opts){
+  opts=opts||{};
+  var bruto=randomBetween(18000,32000);var tara=randomBetween(8000,12000);var liquido=bruto-tara;
+  var t={id:ticketId++,status:stage,placa:PLACAS[ticketId%PLACAS.length],motorista:MOTORISTAS[ticketId%MOTORISTAS.length],
+    talhao:randomFrom(TALHOES_ORIGEM),fazenda:randomFrom(FAZENDAS_ORIGEM),cultura:cultura,tipo:tipo,
+    peso_bruto:bruto,tara:tara,peso_liquido:liquido,
+    umidade:opts.umidade||null,impureza:opts.impureza||null,leituras:opts.leituras||null,
+    silo_destino:opts.silo_destino||null,quantidade_kg:opts.quantidade_kg||null,
+    destino:opts.destino||null,contrato:opts.contrato||null,transportadora:opts.transportadora||null,peso_embarque:opts.peso_embarque||null,
+    from_agricultura:opts.from_agricultura!==undefined?opts.from_agricultura:true,
+    data:'2026-03-11',hora:String(7+Math.floor(Math.random()*10)).padStart(2,'0')+':'+String(Math.floor(Math.random()*4)*15).padStart(2,'0')};
+  if(['secagem','alocacao_silo','saida_grao'].indexOf(stage)>=0)
+    t._lote=cultura.charAt(0).toUpperCase()+cultura.slice(1)+' '+(t.silo_destino||'S'+Math.ceil(Math.random()*6));
+  return t;
+}
+
+allTickets.push(makeTicket('ticket_balanca','soja','commodity',{from_agricultura:true}));
+allTickets.push(makeTicket('ticket_balanca','soja','commodity',{from_agricultura:true}));
+allTickets.push(makeTicket('ticket_balanca','milho','commodity',{from_agricultura:true}));
+allTickets.push(makeTicket('ticket_balanca','soja','semente',{from_agricultura:true}));
+allTickets.push(makeTicket('amostragem','soja','commodity',{umidade:17.2,impureza:1.8,from_agricultura:true}));
+allTickets.push(makeTicket('amostragem','milho','commodity',{umidade:22.5,impureza:2.1,from_agricultura:true}));
+allTickets.push(makeTicket('amostragem','soja','semente',{umidade:15.8,impureza:0.8,from_agricultura:true}));
+allTickets.push(makeTicket('secagem','soja','commodity',{umidade:17.0,impureza:1.5,leituras:5,silo_destino:'S1',from_agricultura:false}));
+allTickets.push(makeTicket('secagem','milho','commodity',{umidade:21.0,impureza:2.0,leituras:3,silo_destino:'S3',from_agricultura:false}));
+allTickets.push(makeTicket('alocacao_silo','soja','commodity',{umidade:13.0,impureza:1.2,leituras:8,silo_destino:'S2',quantidade_kg:19500,from_agricultura:false}));
+allTickets.push(makeTicket('saida_grao','soja','commodity',{umidade:13.0,impureza:1.0,leituras:8,silo_destino:'S1',quantidade_kg:28000,destino:'Castrolanda',contrato:'CT-2526-001',transportadora:'Transp. Parana',peso_embarque:27800,from_agricultura:false}));
+allTickets.push(makeTicket('saida_grao','trigo','commodity',{umidade:12.5,impureza:0.9,leituras:6,silo_destino:'S5',quantidade_kg:24000,destino:'Castrolanda',contrato:'CT-2526-007',transportadora:'Transp. Sul',peso_embarque:23900,from_agricultura:false}));
+
+// ── HELPERS ──
+function fmt(n){return typeof n==='number'?Math.round(n).toLocaleString('pt-BR'):String(n||'');}
+
+// ══════════════════════════════════════
+// TAB NAVIGATION
+// ══════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ══════════════════════════════════════
+// KANBAN TAB
+// ══════════════════════════════════════
+function renderSummary(){
+  var el=document.getElementById('summary');
+  var activeTickets=allTickets.filter(function(t){return t.status!=='concluido';});
+  var totalPeso=activeTickets.reduce(function(s,t){return s+(t.peso_liquido||0);},0);
+  var culturas={};activeTickets.forEach(function(t){culturas[t.cultura]=true;});
+  var cards=[
+    {value:String(activeTickets.length),label:'Tickets Ativos'},
+    {value:fmt(totalPeso/1000)+' t',label:'Peso Liquido'},
+    {value:String(Object.keys(culturas).length),label:'Culturas Ativas'}
+  ];
+  while(el.firstChild)el.removeChild(el.firstChild);
+  cards.forEach(function(c){
+    var card=document.createElement('div');card.className='card';
+    var val=document.createElement('div');val.className='card-value';val.textContent=c.value;card.appendChild(val);
+    var lab=document.createElement('div');lab.className='card-label';lab.textContent=c.label;card.appendChild(lab);
+    el.appendChild(card);
+  });
+  document.getElementById('kanbanCount').textContent=activeTickets.length;
+}
+
+function renderKanban(){
+  var el=document.getElementById('kanban');while(el.firstChild)el.removeChild(el.firstChild);
+  var q=document.getElementById('search').value.toLowerCase().trim();
+  var fCul=document.getElementById('filterCultura').value;
+  var fTipo=document.getElementById('filterTipo').value;
+  var totalVisible=0;var moegaInserted=false;
+
+  UBG_STAGES.forEach(function(stage,stageIdx){
+    if(stageIdx===2&&!moegaInserted){
+      moegaInserted=true;
+      var sep=document.createElement('div');sep.className='moega-separator';
+      var bar=document.createElement('div');bar.className='moega-bar';
+      bar.textContent='\u26A0 Graos misturados apos moega \u2014 rastreamento por CULTURA';
+      sep.appendChild(bar);el.appendChild(sep);
+    }
+    var stageTickets=allTickets.filter(function(t){return t.status===stage.id;});
+    var filteredTickets=stageTickets.filter(function(t){
+      if(fCul&&t.cultura!==fCul)return false;
+      if(fTipo&&t.tipo!==fTipo)return false;
+      if(q){var hay=(t.placa+' '+t.motorista+' '+t.cultura+' '+t.talhao).toLowerCase();if(hay.indexOf(q)<0)return false;}
+      return true;
+    });
+    if(filteredTickets.length===0&&(fCul||fTipo||q))return;
+    totalVisible+=filteredTickets.length;
+
+    var col=document.createElement('div');col.className='kanban-column expanded';col.id='col-'+stageIdx;
+    var header=document.createElement('div');header.className='column-header';
+    header.addEventListener('click',function(){col.classList.toggle('expanded');});
+    var dot=document.createElement('div');dot.className='column-dot';dot.style.background=stage.color;header.appendChild(dot);
+    var name=document.createElement('div');name.className='column-name';name.textContent=stage.label;header.appendChild(name);
+    var resp=document.createElement('span');resp.className='column-resp';resp.textContent=stage.responsavel;header.appendChild(resp);
+    var count=document.createElement('span');count.className='column-count';count.textContent=filteredTickets.length;header.appendChild(count);
+    var chev=document.createElement('span');chev.className='column-chevron';chev.textContent='\u25BC';header.appendChild(chev);
+    col.appendChild(header);
+
+    var body=document.createElement('div');body.className='column-body';
+    var grid=document.createElement('div');grid.className='cards-grid';
+    filteredTickets.forEach(function(ticket,ci){
+      var cardEl=renderTicketCard(ticket,stage);cardEl.style.animationDelay=(ci*40)+'ms';grid.appendChild(cardEl);
+    });
+    body.appendChild(grid);col.appendChild(body);el.appendChild(col);
+  });
+  document.getElementById('filterCount').textContent=totalVisible+' tickets';
+}
+
+function renderTicketCard(ticket,stage){
+  var el=document.createElement('div');el.className='ticket-card';el.style.borderLeftColor=stage.color;
+  el.addEventListener('click',function(ev){ev.stopPropagation();openDetail(ticket.id);});
+  var placa=document.createElement('div');placa.className='ticket-placa';placa.textContent=ticket.placa;el.appendChild(placa);
+  var mot=document.createElement('div');mot.className='ticket-motorista';mot.textContent=ticket.motorista;el.appendChild(mot);
+  var origin=document.createElement('div');origin.className='ticket-origin';
+  var tal=document.createElement('span');tal.className='ticket-talhao';tal.textContent=ticket.talhao;origin.appendChild(tal);
+  var culBadge=document.createElement('span');culBadge.className='ticket-cultura-badge';
+  culBadge.textContent=ticket.cultura.charAt(0).toUpperCase()+ticket.cultura.slice(1);origin.appendChild(culBadge);
+  if(ticket.tipo==='semente'){var semBadge=document.createElement('span');semBadge.className='ticket-semente-badge';semBadge.textContent='\u2605 Semente';origin.appendChild(semBadge);}
+  if(ticket.from_agricultura){var agBadge=document.createElement('span');agBadge.className='from-agriculture-badge';agBadge.textContent='Da Agricultura \u2192';origin.appendChild(agBadge);}
+  el.appendChild(origin);
+  var pesoGrid=document.createElement('div');pesoGrid.className='ticket-peso-grid';
+  [['Bruto',ticket.peso_bruto],['Tara',ticket.tara],['Liquido',ticket.peso_liquido]].forEach(function(p){
+    var cell=document.createElement('div');var lbl=document.createElement('div');lbl.className='label';lbl.textContent=p[0];cell.appendChild(lbl);
+    var val=document.createElement('div');val.className='value';val.textContent=fmt(p[1]);cell.appendChild(val);pesoGrid.appendChild(cell);
+  });el.appendChild(pesoGrid);
+  if(ticket.umidade){var qual=document.createElement('div');qual.className='ticket-quality';qual.textContent='Umid: '+ticket.umidade+'% \u00b7 Imp: '+(ticket.impureza||'\u2014')+'%';el.appendChild(qual);}
+  if(ticket._lote){var lote=document.createElement('div');lote.className='ticket-lote';lote.textContent='Lote: '+ticket._lote;el.appendChild(lote);}
+  if(ticket.silo_destino){var siloDest=document.createElement('div');siloDest.className='ticket-silo-dest';siloDest.textContent='\u2192 '+ticket.silo_destino;el.appendChild(siloDest);}
+  return el;
+}
+
+// ══════════════════════════════════════
+// SILOS TAB — Realistic Visualization
+// ══════════════════════════════════════
+function renderSilosSummary(){
+  var el=document.getElementById('silosSummary');while(el.firstChild)el.removeChild(el.firstChild);
+  var totalCap=0,totalEst=0,cultCount={};
+  SILOS.forEach(function(s){totalCap+=s.capacidade_ton;totalEst+=s.estoque_ton;cultCount[s.cultura]=true;});
+  var avgOcup=Math.round(totalEst/totalCap*100);
+  var stats=[
+    {v:fmt(totalEst)+' t',l:'Estoque Atual'},
+    {v:fmt(totalCap)+' t',l:'Capacidade Total'},
+    {v:avgOcup+'%',l:'Ocupacao Media'},
+    {v:String(Object.keys(cultCount).length),l:'Culturas Armazenadas'},
+    {v:fmt(totalCap-totalEst)+' t',l:'Espaco Disponivel'}
+  ];
+  stats.forEach(function(s){
+    var card=document.createElement('div');card.className='silo-stat';
+    var sv=document.createElement('div');sv.className='sv';sv.textContent=s.v;card.appendChild(sv);
+    var sl=document.createElement('div');sl.className='sl';sl.textContent=s.l;card.appendChild(sl);
+    el.appendChild(card);
+  });
+}
+
+function buildSiloSVG(silo){
+  var ns='http://www.w3.org/2000/svg';
+  var W=140,H=220;
+  var svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.setAttribute('class','silo-svg');
+
+  var grainGrad=GRAIN_COLORS[silo.cultura]||'grainEmpty';
+  var pct=silo.ocupacao_pct/100;
+
+  if(silo.shape==='conv'){
+    // ── Conventional Cylindrical Silo ──
+    var bodyX=20,bodyY=50,bodyW=100,bodyH=130;
+    var roofPeakY=15;
+
+    // Legs
+    [[35,bodyY+bodyH,35,bodyY+bodyH+25],[105,bodyY+bodyH,105,bodyY+bodyH+25]].forEach(function(l){
+      var leg=document.createElementNS(ns,'line');
+      leg.setAttribute('x1',l[0]);leg.setAttribute('y1',l[1]);leg.setAttribute('x2',l[2]);leg.setAttribute('y2',l[3]);
+      leg.setAttribute('class','leg');leg.setAttribute('stroke-width','3');svg.appendChild(leg);
+    });
+    // Base
+    var base=document.createElementNS(ns,'rect');
+    base.setAttribute('x',bodyX-2);base.setAttribute('y',bodyY+bodyH-3);base.setAttribute('width',bodyW+4);base.setAttribute('height',6);
+    base.setAttribute('rx','2');base.setAttribute('class','base');svg.appendChild(base);
+
+    // Body outer
+    var bOuter=document.createElementNS(ns,'rect');
+    bOuter.setAttribute('x',bodyX);bOuter.setAttribute('y',bodyY);bOuter.setAttribute('width',bodyW);bOuter.setAttribute('height',bodyH);
+    bOuter.setAttribute('rx','3');bOuter.setAttribute('class','body-outer');svg.appendChild(bOuter);
+
+    // Body inner (dark fill area)
+    var bInner=document.createElementNS(ns,'rect');
+    bInner.setAttribute('x',bodyX+3);bInner.setAttribute('y',bodyY+3);bInner.setAttribute('width',bodyW-6);bInner.setAttribute('height',bodyH-6);
+    bInner.setAttribute('rx','2');bInner.setAttribute('class','body-inner');svg.appendChild(bInner);
+
+    // Grain fill
+    var fillH=(bodyH-6)*pct;
+    var fillY=bodyY+3+(bodyH-6)-fillH;
+    var gFill=document.createElementNS(ns,'rect');
+    gFill.setAttribute('x',bodyX+3);gFill.setAttribute('y',fillY);gFill.setAttribute('width',bodyW-6);gFill.setAttribute('height',fillH);
+    gFill.setAttribute('rx','1');gFill.setAttribute('fill','url(#'+grainGrad+')');gFill.setAttribute('class','grain-fill');
+    svg.appendChild(gFill);
+
+    // Grain top mound (slight arc)
+    if(pct>0.05){
+      var moundPath=document.createElementNS(ns,'path');
+      var mx=bodyX+3,mw=bodyW-6;
+      moundPath.setAttribute('d','M'+mx+','+fillY+' Q'+(mx+mw/2)+','+(fillY-6)+' '+(mx+mw)+','+fillY);
+      moundPath.setAttribute('fill','url(#'+grainGrad+')');moundPath.setAttribute('opacity','.8');
+      svg.appendChild(moundPath);
+    }
+
+    // Horizontal rings
+    for(var ri=1;ri<=5;ri++){
+      var ry=bodyY+bodyH*ri/6;
+      var ring=document.createElementNS(ns,'line');
+      ring.setAttribute('x1',bodyX);ring.setAttribute('y1',ry);ring.setAttribute('x2',bodyX+bodyW);ring.setAttribute('y2',ry);
+      ring.setAttribute('class','ring');svg.appendChild(ring);
+    }
+
+    // Conical roof
+    var roofPath=document.createElementNS(ns,'path');
+    roofPath.setAttribute('d','M'+(bodyX-4)+','+bodyY+' L'+(W/2)+','+roofPeakY+' L'+(bodyX+bodyW+4)+','+bodyY+' Z');
+    roofPath.setAttribute('class','roof');svg.appendChild(roofPath);
+
+    // Vent cap on top
+    var vent=document.createElementNS(ns,'rect');
+    vent.setAttribute('x',W/2-5);vent.setAttribute('y',roofPeakY-6);vent.setAttribute('width',10);vent.setAttribute('height',8);
+    vent.setAttribute('rx','2');vent.setAttribute('class','vent');svg.appendChild(vent);
+
+    // Percentage text
+    var pctText=document.createElementNS(ns,'text');
+    pctText.setAttribute('x',W/2);pctText.setAttribute('y',bodyY+bodyH/2+5);
+    pctText.setAttribute('text-anchor','middle');pctText.setAttribute('fill','#fff');
+    pctText.setAttribute('font-size','18');pctText.setAttribute('font-weight','700');
+    pctText.setAttribute('font-family','JetBrains Mono,monospace');
+    pctText.setAttribute('style','text-shadow:0 2px 4px rgba(0,0,0,.7)');
+    pctText.textContent=silo.ocupacao_pct+'%';
+    svg.appendChild(pctText);
+
+  } else if(silo.shape==='flat'){
+    // ── Pulmao Plano (flat, wider, shorter) ──
+    var bX=10,bY=80,bW=120,bH=90;
+
+    // Base supports
+    [[30,bY+bH,30,bY+bH+20],[110,bY+bH,110,bY+bH+20]].forEach(function(l){
+      var leg=document.createElementNS(ns,'line');
+      leg.setAttribute('x1',l[0]);leg.setAttribute('y1',l[1]);leg.setAttribute('x2',l[2]);leg.setAttribute('y2',l[3]);
+      leg.setAttribute('class','leg');leg.setAttribute('stroke-width','3');svg.appendChild(leg);
+    });
+
+    var bOuter=document.createElementNS(ns,'rect');
+    bOuter.setAttribute('x',bX);bOuter.setAttribute('y',bY);bOuter.setAttribute('width',bW);bOuter.setAttribute('height',bH);
+    bOuter.setAttribute('rx','4');bOuter.setAttribute('class','body-outer');svg.appendChild(bOuter);
+    var bInner=document.createElementNS(ns,'rect');
+    bInner.setAttribute('x',bX+3);bInner.setAttribute('y',bY+3);bInner.setAttribute('width',bW-6);bInner.setAttribute('height',bH-6);
+    bInner.setAttribute('rx','2');bInner.setAttribute('class','body-inner');svg.appendChild(bInner);
+
+    var fillH2=(bH-6)*pct;
+    var fillY2=bY+3+(bH-6)-fillH2;
+    var gFill2=document.createElementNS(ns,'rect');
+    gFill2.setAttribute('x',bX+3);gFill2.setAttribute('y',fillY2);gFill2.setAttribute('width',bW-6);gFill2.setAttribute('height',fillH2);
+    gFill2.setAttribute('rx','1');gFill2.setAttribute('fill','url(#'+grainGrad+')');gFill2.setAttribute('class','grain-fill');
+    svg.appendChild(gFill2);
+
+    // Rings
+    for(var ri2=1;ri2<=3;ri2++){
+      var ry2=bY+bH*ri2/4;
+      var ring2=document.createElementNS(ns,'line');
+      ring2.setAttribute('x1',bX);ring2.setAttribute('y1',ry2);ring2.setAttribute('x2',bX+bW);ring2.setAttribute('y2',ry2);
+      ring2.setAttribute('class','ring');svg.appendChild(ring2);
+    }
+
+    // Flat roof
+    var roof2=document.createElementNS(ns,'rect');
+    roof2.setAttribute('x',bX-3);roof2.setAttribute('y',bY-8);roof2.setAttribute('width',bW+6);roof2.setAttribute('height',12);
+    roof2.setAttribute('rx','3');roof2.setAttribute('class','flat-roof');svg.appendChild(roof2);
+
+    var pctText2=document.createElementNS(ns,'text');
+    pctText2.setAttribute('x',W/2);pctText2.setAttribute('y',bY+bH/2+5);
+    pctText2.setAttribute('text-anchor','middle');pctText2.setAttribute('fill','#fff');
+    pctText2.setAttribute('font-size','18');pctText2.setAttribute('font-weight','700');
+    pctText2.setAttribute('font-family','JetBrains Mono,monospace');
+    pctText2.setAttribute('style','text-shadow:0 2px 4px rgba(0,0,0,.7)');
+    pctText2.textContent=silo.ocupacao_pct+'%';
+    svg.appendChild(pctText2);
+
+  } else {
+    // ── Pulmao Elevado Conico (tall legs, cone bottom) ──
+    var eX=25,eY=35,eW=90,eH=100;
+    var legH=55;
+
+    // Tall legs
+    [[40,eY+eH,32,eY+eH+legH],[100,eY+eH,108,eY+eH+legH],[70,eY+eH,70,eY+eH+legH]].forEach(function(l){
+      var leg=document.createElementNS(ns,'line');
+      leg.setAttribute('x1',l[0]);leg.setAttribute('y1',l[1]);leg.setAttribute('x2',l[2]);leg.setAttribute('y2',l[3]);
+      leg.setAttribute('class','leg');leg.setAttribute('stroke-width','2.5');svg.appendChild(leg);
+    });
+    // Cross braces
+    var br1=document.createElementNS(ns,'line');
+    br1.setAttribute('x1',36);br1.setAttribute('y1',eY+eH+25);br1.setAttribute('x2',70);br1.setAttribute('y2',eY+eH+40);
+    br1.setAttribute('class','leg');br1.setAttribute('stroke-width','1');svg.appendChild(br1);
+    var br2=document.createElementNS(ns,'line');
+    br2.setAttribute('x1',104);br2.setAttribute('y1',eY+eH+25);br2.setAttribute('x2',70);br2.setAttribute('y2',eY+eH+40);
+    br2.setAttribute('class','leg');br2.setAttribute('stroke-width','1');svg.appendChild(br2);
+
+    // Cone bottom
+    var coneBot=document.createElementNS(ns,'path');
+    coneBot.setAttribute('d','M'+eX+','+(eY+eH)+' L'+(W/2)+','+(eY+eH+20)+' L'+(eX+eW)+','+(eY+eH)+' Z');
+    coneBot.setAttribute('fill','url(#metalGrad)');coneBot.setAttribute('stroke','#555');coneBot.setAttribute('stroke-width','1');
+    svg.appendChild(coneBot);
+
+    var bOuter3=document.createElementNS(ns,'rect');
+    bOuter3.setAttribute('x',eX);bOuter3.setAttribute('y',eY);bOuter3.setAttribute('width',eW);bOuter3.setAttribute('height',eH);
+    bOuter3.setAttribute('rx','3');bOuter3.setAttribute('class','body-outer');svg.appendChild(bOuter3);
+    var bInner3=document.createElementNS(ns,'rect');
+    bInner3.setAttribute('x',eX+3);bInner3.setAttribute('y',eY+3);bInner3.setAttribute('width',eW-6);bInner3.setAttribute('height',eH-6);
+    bInner3.setAttribute('rx','2');bInner3.setAttribute('class','body-inner');svg.appendChild(bInner3);
+
+    var fillH3=(eH-6)*pct;
+    var fillY3=eY+3+(eH-6)-fillH3;
+    var gFill3=document.createElementNS(ns,'rect');
+    gFill3.setAttribute('x',eX+3);gFill3.setAttribute('y',fillY3);gFill3.setAttribute('width',eW-6);gFill3.setAttribute('height',fillH3);
+    gFill3.setAttribute('rx','1');gFill3.setAttribute('fill','url(#'+grainGrad+')');gFill3.setAttribute('class','grain-fill');
+    svg.appendChild(gFill3);
+
+    // Rings
+    for(var ri3=1;ri3<=4;ri3++){
+      var ry3=eY+eH*ri3/5;
+      var ring3=document.createElementNS(ns,'line');
+      ring3.setAttribute('x1',eX);ring3.setAttribute('y1',ry3);ring3.setAttribute('x2',eX+eW);ring3.setAttribute('y2',ry3);
+      ring3.setAttribute('class','ring');svg.appendChild(ring3);
+    }
+
+    // Conical roof
+    var roofPath3=document.createElementNS(ns,'path');
+    roofPath3.setAttribute('d','M'+(eX-3)+','+eY+' L'+(W/2)+','+(eY-22)+' L'+(eX+eW+3)+','+eY+' Z');
+    roofPath3.setAttribute('class','roof');svg.appendChild(roofPath3);
+    var vent3=document.createElementNS(ns,'rect');
+    vent3.setAttribute('x',W/2-4);vent3.setAttribute('y',eY-26);vent3.setAttribute('width',8);vent3.setAttribute('height',6);
+    vent3.setAttribute('rx','2');vent3.setAttribute('class','vent');svg.appendChild(vent3);
+
+    var pctText3=document.createElementNS(ns,'text');
+    pctText3.setAttribute('x',W/2);pctText3.setAttribute('y',eY+eH/2+5);
+    pctText3.setAttribute('text-anchor','middle');pctText3.setAttribute('fill','#fff');
+    pctText3.setAttribute('font-size','16');pctText3.setAttribute('font-weight','700');
+    pctText3.setAttribute('font-family','JetBrains Mono,monospace');
+    pctText3.setAttribute('style','text-shadow:0 2px 4px rgba(0,0,0,.7)');
+    pctText3.textContent=silo.ocupacao_pct+'%';
+    svg.appendChild(pctText3);
+  }
+
+  return svg;
+}
+
+function renderSiloYard(){
+  var yard=document.getElementById('siloYard');
+  while(yard.firstChild)yard.removeChild(yard.firstChild);
+
+  SILOS.forEach(function(silo){
+    var unit=document.createElement('div');
+    unit.className='silo-unit';
+    unit.addEventListener('click',function(){openSiloDetail(silo.id);});
+
+    unit.appendChild(buildSiloSVG(silo));
+
+    var label=document.createElement('div');label.className='silo-label';
+    var nm=document.createElement('div');nm.className='silo-label-name';nm.textContent=silo.id;label.appendChild(nm);
+    var tp=document.createElement('div');tp.className='silo-label-type';tp.textContent=silo.tipo;label.appendChild(tp);
+    var tons=document.createElement('div');tons.className='silo-label-tons';
+    tons.textContent=fmt(silo.estoque_ton)+' / '+fmt(silo.capacidade_ton)+' t';label.appendChild(tons);
+
+    var culBadge=document.createElement('span');culBadge.className='silo-label-cultura';
+    var badgeStyle=CULTURA_BADGE_COLORS[silo.cultura]||'rgba(90,159,212,.15);color:#5a9fd4';
+    culBadge.style.cssText='background:'+badgeStyle;
+    culBadge.textContent=silo.cultura;
+    label.appendChild(culBadge);
+
+    unit.appendChild(label);
+    yard.appendChild(unit);
+  });
+}
+
+function openSiloDetail(siloId){
+  var silo=null;
+  for(var i=0;i<SILOS.length;i++){if(SILOS[i].id===siloId){silo=SILOS[i];break;}}
+  if(!silo)return;
+
+  var card=document.getElementById('siloDetail');
+  while(card.firstChild)card.removeChild(card.firstChild);
+
+  var hdr=document.createElement('div');hdr.className='silo-detail-header';
+  var h3=document.createElement('h3');h3.textContent=silo.nome+' ('+silo.id+')';hdr.appendChild(h3);
+  var closeBtn=document.createElement('button');closeBtn.className='silo-detail-close';closeBtn.textContent='\u00d7';
+  closeBtn.addEventListener('click',function(){card.classList.remove('open');});
+  hdr.appendChild(closeBtn);card.appendChild(hdr);
+
+  var grid=document.createElement('div');grid.className='silo-detail-grid';
+  var rows=[
+    ['Tipo',silo.tipo],['Capacidade',fmt(silo.capacidade_ton)+' t'],
+    ['Estoque Atual',fmt(silo.estoque_ton)+' t'],['Ocupacao',silo.ocupacao_pct+'%'],
+    ['Espaco Livre',fmt(silo.capacidade_ton-silo.estoque_ton)+' t'],['Cultura',silo.cultura],
+    ['Umidade Media',silo.umidade_media+'%'],['Temperatura Media',silo.temp_media+'\u00b0C'],
+    ['Termometria',silo.termometria?'Sim':'Nao (sem cabos)']
+  ];
+  rows.forEach(function(r){
+    var row=document.createElement('div');row.className='silo-detail-row';
+    var dk=document.createElement('span');dk.className='dk';dk.textContent=r[0];row.appendChild(dk);
+    var dv=document.createElement('span');dv.className='dv';dv.textContent=r[1];row.appendChild(dv);
+    grid.appendChild(row);
+  });
+  card.appendChild(grid);
+  card.classList.add('open');
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════════════
+// TICKET DETAIL PANEL
+// ══════════════════════════════════════
+function openDetail(ticketId){
+  var ticket=null;
+  for(var i=0;i<allTickets.length;i++){if(allTickets[i].id===ticketId){ticket=allTickets[i];break;}}
+  if(!ticket)return;
+  var stageIdx=STAGE_MAP[ticket.status];var stage=UBG_STAGES[stageIdx];if(!stage)return;
+  var overlay=document.getElementById('detailOverlay');
+  var panel=document.getElementById('detailPanel');while(panel.firstChild)panel.removeChild(panel.firstChild);
+
+  var hdr=document.createElement('div');hdr.className='detail-header';
+  var hdrLeft=document.createElement('div');
+  var h2=document.createElement('h2');h2.textContent=ticket.placa;hdrLeft.appendChild(h2);
+  var sub=document.createElement('div');sub.className='sub';sub.textContent=ticket.motorista+' \u00b7 '+ticket.cultura+' \u00b7 '+ticket.hora;
+  hdrLeft.appendChild(sub);hdr.appendChild(hdrLeft);
+  var closeBtn=document.createElement('button');closeBtn.className='detail-close';closeBtn.textContent='\u00d7';
+  closeBtn.addEventListener('click',closeDetail);hdr.appendChild(closeBtn);panel.appendChild(hdr);
+
+  var body=document.createElement('div');body.className='detail-body';
+  var stBadge=document.createElement('div');
+  stBadge.style.cssText='display:inline-block;padding:.3rem .75rem;border-radius:20px;font-size:.8rem;font-weight:700;margin-bottom:1rem;color:#fff;background:'+stage.color;
+  stBadge.textContent=stage.label+' \u00b7 '+stage.responsavel;body.appendChild(stBadge);
+
+  if(ticket.tipo==='semente'||ticket.from_agricultura){
+    var badges=document.createElement('div');badges.style.cssText='display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap';
+    if(ticket.from_agricultura){var ab=document.createElement('span');ab.className='from-agriculture-badge';ab.textContent='Da Agricultura \u2192';badges.appendChild(ab);}
+    if(ticket.tipo==='semente'){var sb=document.createElement('span');sb.className='ticket-semente-badge';sb.textContent='\u2605 Semente';badges.appendChild(sb);}
+    body.appendChild(badges);
+  }
+
+  addSection(body,'Origem',[['Talhao',ticket.talhao],['Fazenda',ticket.fazenda],['Cultura',ticket.cultura.charAt(0).toUpperCase()+ticket.cultura.slice(1)],['Tipo',ticket.tipo==='semente'?'Semente Certificada':'Commodity'],['Data',ticket.data],['Hora',ticket.hora]]);
+  addSection(body,'Pesagem',[['Peso Bruto',fmt(ticket.peso_bruto)+' kg'],['Tara',fmt(ticket.tara)+' kg'],['Peso Liquido',fmt(ticket.peso_liquido)+' kg']]);
+  if(ticket.umidade)addSection(body,'Qualidade',[['Umidade',ticket.umidade+'%'],['Impureza',(ticket.impureza||'\u2014')+'%']]);
+  if(ticket.leituras)addSection(body,'Secagem',[['Leituras',String(ticket.leituras)+' registradas'],['Silo Destino',ticket.silo_destino||'\u2014']]);
+  if(ticket.quantidade_kg)addSection(body,'Alocacao',[['Silo',ticket.silo_destino||'\u2014'],['Quantidade',fmt(ticket.quantidade_kg)+' kg']]);
+  if(ticket.destino)addSection(body,'Saida',[['Destino',ticket.destino],['Contrato',ticket.contrato||'\u2014'],['Transportadora',ticket.transportadora||'\u2014'],['Peso Embarque',ticket.peso_embarque?fmt(ticket.peso_embarque)+' kg':'\u2014']]);
+
+  if(stageIdx<4){
+    var actions=document.createElement('div');actions.className='detail-actions';
+    var nextStage=UBG_STAGES[stageIdx+1];
+    var advBtn=document.createElement('button');advBtn.className='btn-advance';
+    advBtn.textContent='Avancar \u2192 '+nextStage.label;
+    advBtn.addEventListener('click',function(){advanceTicket(ticket.id);});
+    actions.appendChild(advBtn);body.appendChild(actions);
+  }
+  panel.appendChild(body);
+  overlay.classList.add('open');
+  overlay.addEventListener('click',function(ev){if(ev.target===overlay)closeDetail();});
+}
+
+function addSection(parent,title,rows){
+  var sec=document.createElement('div');sec.className='detail-section';
+  var t=document.createElement('div');t.className='detail-section-title';t.textContent=title;sec.appendChild(t);
+  rows.forEach(function(r){
+    var row=document.createElement('div');row.className='detail-row';
+    var dk=document.createElement('span');dk.className='dk';dk.textContent=r[0];row.appendChild(dk);
+    var dv=document.createElement('span');dv.className='dv';dv.textContent=r[1]||'\u2014';row.appendChild(dv);
+    sec.appendChild(row);
+  });parent.appendChild(sec);
+}
+
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');}
+
+function advanceTicket(ticketId){
+  var ticket=null;for(var i=0;i<allTickets.length;i++){if(allTickets[i].id===ticketId){ticket=allTickets[i];break;}}
+  if(!ticket)return;var stIdx=STAGE_MAP[ticket.status];if(stIdx>=4)return;
+  var next=UBG_STAGES[stIdx+1];ticket.status=next.id;
+  if(next.id==='amostragem'){ticket.umidade=randomBetween(14,22);ticket.impureza=randomBetween(0.5,3.0);}
+  else if(next.id==='secagem'){ticket.leituras=1;ticket.silo_destino='S'+Math.ceil(Math.random()*6);ticket._lote=ticket.cultura.charAt(0).toUpperCase()+ticket.cultura.slice(1)+' '+ticket.silo_destino;}
+  else if(next.id==='alocacao_silo'){ticket.leituras=8;ticket.quantidade_kg=ticket.peso_liquido;ticket._lote=ticket.cultura.charAt(0).toUpperCase()+ticket.cultura.slice(1)+' '+ticket.silo_destino;}
+  else if(next.id==='saida_grao'){ticket.destino='Castrolanda';ticket.contrato='CT-2526-'+String(100+ticketId).padStart(3,'0');ticket.transportadora='Transp. Parana';ticket.peso_embarque=ticket.peso_liquido;}
+  showToast(ticket.placa+' \u2192 '+next.label);
+  closeDetail();renderKanban();renderSummary();
+}
+
+// ── TOAST ──
+var toastTimer;
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},2500);}
+
+// ── FILTERS ──
+document.getElementById('search').addEventListener('input',renderKanban);
+document.getElementById('filterCultura').addEventListener('change',renderKanban);
+document.getElementById('filterTipo').addEventListener('change',renderKanban);
+
+// ── KEYBOARD ──
+document.addEventListener('keydown',function(ev){
+  if(ev.target.tagName==='INPUT'||ev.target.tagName==='SELECT')return;
+  var key=ev.key;
+  if(key>='1'&&key<='5'){var idx=parseInt(key)-1;var col=document.getElementById('col-'+idx);if(col){col.classList.toggle('expanded');ev.preventDefault();}}
+  else if(key==='Escape'){
+    if(document.getElementById('detailOverlay').classList.contains('open')){closeDetail();}
+    else{document.getElementById('search').value='';document.getElementById('filterCultura').value='';document.getElementById('filterTipo').value='';renderKanban();}
+    ev.preventDefault();
+  }
+  else if(key==='/'){document.getElementById('search').focus();ev.preventDefault();}
+});
+
+// ── INIT ──
+renderSummary();
+renderKanban();
+renderSilosSummary();
+renderSiloYard();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SOAL Alocacao Silo Playground</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e2422;--bg2:#262c2a;--bg3:#313836;--bg4:#424a47;
+  --fg:#d4dbd6;--fg2:#8a9a8c;--fg3:#5c6b5e;
+  --accent:#4caf7c;--green:#4caf7c;--yellow:#d4a63c;--red:#e05a50;--orange:#d47a3a;--blue:#5b9bd5;
+  --radius:10px;--shadow:0 2px 8px rgba(0,0,0,.35);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+html{font-size:15px}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.4;min-height:100vh;padding-bottom:2rem}
+
+.header{background:var(--bg2);border-bottom:1px solid var(--bg4);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.header h1{font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
+.header h1 span{color:var(--accent)}
+.header-stats{display:flex;gap:.6rem;margin-left:auto;flex-wrap:wrap}
+.stat{background:var(--bg3);font-size:.72rem;padding:.2rem .6rem;border-radius:12px;font-family:var(--mono);color:var(--fg2);white-space:nowrap}
+.stat b{color:var(--fg);font-weight:600}
+
+.content{max-width:1200px;margin:0 auto;padding:1rem}
+
+.silo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-bottom:1.25rem}
+.silo-card{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--radius);padding:.75rem;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;min-height:160px;display:flex;flex-direction:column}
+.silo-card:hover{border-color:var(--fg3);transform:translateY(-1px)}
+.silo-card.selected{border-color:var(--accent);box-shadow:0 0 12px rgba(76,175,124,.25)}
+.silo-card.selected-origin{border-color:var(--orange);box-shadow:0 0 12px rgba(212,122,58,.25)}
+.silo-name{font-size:1rem;font-weight:700;margin-bottom:.15rem}
+.silo-type{font-size:.65rem;color:var(--fg3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem}
+.silo-bar-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:.4rem;position:relative;background:var(--bg);border-radius:6px;overflow:hidden;min-height:50px}
+.silo-bar-fill{border-radius:0 0 6px 6px;transition:height .4s ease;width:100%;position:absolute;bottom:0}
+.silo-bar-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mono);font-size:.85rem;font-weight:700;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.silo-info{font-size:.7rem;color:var(--fg2);font-family:var(--mono)}
+.silo-info .cultura-tag{display:inline-block;background:var(--bg3);padding:0 .3rem;border-radius:3px;margin-top:.15rem;font-size:.65rem}
+.silo-capacity{font-size:.65rem;color:var(--fg3);font-family:var(--mono)}
+
+.actions{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.action-btn{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--radius);color:var(--fg);font-size:.9rem;font-weight:600;padding:.85rem 1.25rem;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;gap:.5rem;min-height:52px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.action-btn:hover{border-color:var(--fg3);background:var(--bg3)}
+.action-btn.active{border-color:var(--accent);background:rgba(76,175,124,.12)}
+.action-btn .icon{font-size:1.2rem}
+.action-btn.entrada .icon{color:var(--green)}
+.action-btn.transfer .icon{color:var(--blue)}
+.action-btn.saida .icon{color:var(--orange)}
+.action-btn.ajuste .icon{color:var(--yellow)}
+
+.form-panel{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem;display:none}
+.form-panel.visible{display:block}
+.form-panel h3{font-size:.9rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.form-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:.6rem}
+.form-group{display:flex;flex-direction:column;gap:.25rem;flex:1;min-width:120px}
+.form-group label{font-size:.7rem;color:var(--fg2);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.form-group input,.form-group select{background:var(--bg);border:1px solid var(--bg4);border-radius:6px;color:var(--fg);font-size:.9rem;padding:.55rem .7rem;outline:none;font-family:var(--font);width:100%}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath fill='%238a9a8c' d='M6 8.5L1 3.5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6rem center;padding-right:2rem}
+.form-hint{font-size:.65rem;color:var(--fg3);font-style:italic}
+.confirm-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:1rem;font-weight:700;padding:.85rem 2rem;cursor:pointer;transition:opacity .2s;font-family:var(--font);min-height:52px;touch-action:manipulation;width:100%;margin-top:.5rem}
+.confirm-btn:hover{opacity:.9}
+.confirm-btn:disabled{opacity:.4;cursor:not-allowed}
+
+.ledger-section{margin-top:1.5rem}
+.ledger-section h2{font-size:1rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+.ledger-section h2 .count{font-size:.75rem;color:var(--fg2);font-family:var(--mono)}
+.ledger-wrap{overflow-x:auto}
+.ledger-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.ledger-table thead th{background:var(--bg2);color:var(--fg2);font-weight:600;text-transform:uppercase;font-size:.65rem;letter-spacing:.04em;padding:.6rem .4rem;text-align:left;border-bottom:2px solid var(--bg4);white-space:nowrap;position:sticky;top:54px;z-index:10}
+.ledger-table tbody td{padding:.5rem .4rem;border-bottom:1px solid var(--bg3);vertical-align:top}
+.ledger-table tbody tr:hover{background:var(--bg2)}
+.tipo-badge{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.65rem;font-weight:600;font-family:var(--mono)}
+.tipo-entrada_secagem{background:rgba(76,175,124,.15);color:var(--green)}
+.tipo-transferencia{background:rgba(91,155,213,.15);color:var(--blue)}
+.tipo-saida_expedicao{background:rgba(212,122,58,.15);color:var(--orange)}
+.tipo-ajuste_inventario{background:rgba(210,166,60,.15);color:var(--yellow)}
+.arrow{color:var(--fg3);font-family:var(--mono)}
+
+.export-section{margin-top:1.5rem}
+.export-section h2{font-size:1rem;font-weight:700;margin-bottom:.75rem}
+.export-btns{display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap}
+.export-btn{background:var(--bg2);border:1px solid var(--bg4);border-radius:6px;color:var(--fg2);font-size:.78rem;padding:.4rem .8rem;cursor:pointer;font-family:var(--font);transition:all .2s}
+.export-btn:hover{border-color:var(--accent);color:var(--fg)}
+.json-pre{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius);padding:.75rem;font-family:var(--mono);font-size:.72rem;color:var(--fg2);max-height:300px;overflow:auto;white-space:pre;tab-size:2}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius);padding:.6rem 1.25rem;font-size:.85rem;font-weight:600;z-index:200;opacity:0;transition:transform .3s ease,opacity .3s ease;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+.empty{text-align:center;color:var(--fg3);padding:2rem 1rem;font-size:.85rem}
+
+@media(max-width:600px){
+  .silo-grid{grid-template-columns:repeat(4,1fr);gap:.5rem}
+  .silo-card{padding:.5rem;min-height:130px}
+  .silo-name{font-size:.85rem}
+  .actions{gap:.5rem}
+  .action-btn{flex:1;min-width:0;padding:.7rem .5rem;font-size:.78rem;justify-content:center}
+  .form-row{flex-direction:column;gap:.5rem}
+  .form-group{min-width:0}
+  .ledger-table{font-size:.7rem}
+  .ledger-table thead th,.ledger-table tbody td{padding:.4rem .25rem}
+}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--fg3)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SOAL <span>Alocacao Silo</span></h1>
+  <div class="header-stats" id="headerStats">
+    <span class="stat" id="stat-total"><b>0</b> kg total</span>
+    <span class="stat" id="stat-txns"><b>0</b> transacoes</span>
+    <span class="stat" id="stat-silos"><b>8</b> silos</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="silo-grid" id="siloGrid"></div>
+
+  <div class="actions" id="actionBtns">
+    <button class="action-btn entrada" data-action="entrada_secagem" onclick="setAction('entrada_secagem')">
+      <span class="icon">&#x2B07;</span> Alocar Grao
+    </button>
+    <button class="action-btn transfer" data-action="transferencia" onclick="setAction('transferencia')">
+      <span class="icon">&#x21C4;</span> Transferir
+    </button>
+    <button class="action-btn saida" data-action="saida_expedicao" onclick="setAction('saida_expedicao')">
+      <span class="icon">&#x2B06;</span> Saida
+    </button>
+    <button class="action-btn ajuste" data-action="ajuste_inventario" onclick="setAction('ajuste_inventario')">
+      <span class="icon">&#x2696;</span> Ajuste
+    </button>
+  </div>
+
+  <div class="form-panel" id="formPanel">
+    <h3 id="formTitle"></h3>
+    <div id="formBody"></div>
+  </div>
+
+  <div class="ledger-section">
+    <h2>Ledger de Movimentacoes <span class="count" id="ledgerCount"></span></h2>
+    <div id="ledgerBody"></div>
+  </div>
+
+  <div class="export-section">
+    <h2>Exportar</h2>
+    <div class="export-btns">
+      <button class="export-btn" onclick="copyJSON()">Copiar JSON</button>
+      <button class="export-btn" onclick="copySQL()">Copiar INSERT SQL</button>
+      <button class="export-btn" onclick="resetAll()">Limpar tudo</button>
+    </div>
+    <pre class="json-pre" id="jsonOutput"></pre>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Silo definitions
+var SILOS = [
+  {id:'S1',nome:'Silo 1',tipo:'metalico_convencional',capacidade_ton:1800,capacidade_kg:1800000},
+  {id:'S2',nome:'Silo 2',tipo:'metalico_convencional',capacidade_ton:1800,capacidade_kg:1800000},
+  {id:'S3',nome:'Silo 3',tipo:'metalico_convencional',capacidade_ton:1500,capacidade_kg:1500000},
+  {id:'S4',nome:'Silo 4',tipo:'metalico_convencional',capacidade_ton:1500,capacidade_kg:1500000},
+  {id:'S5',nome:'Silo 5',tipo:'metalico_convencional',capacidade_ton:1500,capacidade_kg:1500000},
+  {id:'S6',nome:'Silo 6',tipo:'metalico_convencional',capacidade_ton:1500,capacidade_kg:1500000},
+  {id:'SP',nome:'Pulmao',tipo:'pulmao_plano',capacidade_ton:700,capacidade_kg:700000},
+  {id:'SE',nome:'Elevado',tipo:'pulmao_elevado_conico',capacidade_ton:460,capacidade_kg:460000}
+];
+
+var CULTURAS = ['Soja','Milho','Trigo','Feijao','Cevada','Aveia','Milheto','Canola'];
+var SAFRAS = ['25/26','24/25','23/24'];
+var PESSOAS = ['Josmar','Leomar','Claudio','Vanessa'];
+
+var ledger = [];
+var currentAction = null;
+var selectedOrigin = null;
+var selectedDestino = null;
+var txnCounter = 0;
+
+function getEstoque(siloId) {
+  var estoque = {};
+  for (var i = 0; i < ledger.length; i++) {
+    var tx = ledger[i];
+    var key = tx.cultura + '|' + tx.safra;
+    if (tx.silo_destino_id === siloId) {
+      estoque[key] = (estoque[key] || 0) + tx.quantidade_kg;
+    }
+    if (tx.silo_origem_id === siloId) {
+      estoque[key] = (estoque[key] || 0) - tx.quantidade_kg;
+    }
+  }
+  for (var k in estoque) { if (estoque[k] <= 0) delete estoque[k]; }
+  return estoque;
+}
+
+function getTotalKg(siloId) {
+  var est = getEstoque(siloId);
+  var total = 0;
+  for (var k in est) total += est[k];
+  return total;
+}
+
+function getGrandTotal() {
+  var sum = 0;
+  for (var i = 0; i < SILOS.length; i++) sum += getTotalKg(SILOS[i].id);
+  return sum;
+}
+
+function fmt(n) { return Math.round(n).toLocaleString('pt-BR'); }
+
+function esc(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// Render silos
+function renderSilos() {
+  var grid = document.getElementById('siloGrid');
+  while (grid.firstChild) grid.removeChild(grid.firstChild);
+
+  for (var si = 0; si < SILOS.length; si++) {
+    var silo = SILOS[si];
+    var totalKg = getTotalKg(silo.id);
+    var pct = Math.min(100, (totalKg / silo.capacidade_kg) * 100);
+    var estoque = getEstoque(silo.id);
+
+    var card = document.createElement('div');
+    card.className = 'silo-card';
+    if (selectedDestino === silo.id) card.className += ' selected';
+    if (selectedOrigin === silo.id) card.className += ' selected-origin';
+    card.setAttribute('data-silo', silo.id);
+    card.addEventListener('click', (function(id){ return function(){ onSiloClick(id); }; })(silo.id));
+
+    var fillColor = pct > 85 ? 'var(--red)' : pct > 60 ? 'var(--yellow)' : 'var(--green)';
+    if (pct === 0) fillColor = 'var(--bg4)';
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'silo-name';
+    nameEl.textContent = silo.id;
+    card.appendChild(nameEl);
+
+    var typeEl = document.createElement('div');
+    typeEl.className = 'silo-type';
+    typeEl.textContent = silo.tipo.replace(/_/g, ' ');
+    card.appendChild(typeEl);
+
+    var barWrap = document.createElement('div');
+    barWrap.className = 'silo-bar-wrap';
+    var barFill = document.createElement('div');
+    barFill.className = 'silo-bar-fill';
+    barFill.style.height = Math.max(pct, 2) + '%';
+    barFill.style.background = fillColor;
+    barWrap.appendChild(barFill);
+    var barPct = document.createElement('div');
+    barPct.className = 'silo-bar-pct';
+    barPct.textContent = pct.toFixed(0) + '%';
+    barWrap.appendChild(barPct);
+    card.appendChild(barWrap);
+
+    var infoEl = document.createElement('div');
+    infoEl.className = 'silo-info';
+    infoEl.textContent = fmt(totalKg) + ' / ' + fmt(silo.capacidade_kg);
+    card.appendChild(infoEl);
+
+    var capEl = document.createElement('div');
+    capEl.className = 'silo-capacity';
+    capEl.textContent = silo.capacidade_ton + 't cap';
+    card.appendChild(capEl);
+
+    var cultEl = document.createElement('div');
+    cultEl.className = 'silo-info';
+    var hasCultura = false;
+    for (var key in estoque) {
+      hasCultura = true;
+      var parts = key.split('|');
+      var tag = document.createElement('span');
+      tag.className = 'cultura-tag';
+      tag.textContent = parts[0] + ' ' + fmt(estoque[key]);
+      cultEl.appendChild(tag);
+      cultEl.appendChild(document.createTextNode(' '));
+    }
+    if (!hasCultura) {
+      var empty = document.createElement('span');
+      empty.style.color = 'var(--fg3)';
+      empty.textContent = 'vazio';
+      cultEl.appendChild(empty);
+    }
+    card.appendChild(cultEl);
+
+    grid.appendChild(card);
+  }
+
+  var gt = getGrandTotal();
+  document.getElementById('stat-total').firstElementChild.textContent = fmt(gt);
+  document.getElementById('stat-txns').firstElementChild.textContent = ledger.length;
+}
+
+// Actions
+function setAction(action) {
+  currentAction = currentAction === action ? null : action;
+  selectedOrigin = null;
+  selectedDestino = null;
+
+  var btns = document.querySelectorAll('.action-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute('data-action') === currentAction) {
+      btns[i].classList.add('active');
+    } else {
+      btns[i].classList.remove('active');
+    }
+  }
+  updateForm();
+  renderSilos();
+}
+
+function onSiloClick(siloId) {
+  if (!currentAction) return;
+
+  if (currentAction === 'entrada_secagem') {
+    selectedDestino = siloId;
+    selectedOrigin = null;
+  } else if (currentAction === 'transferencia') {
+    if (!selectedOrigin) {
+      selectedOrigin = siloId;
+    } else if (selectedOrigin === siloId) {
+      selectedOrigin = null;
+    } else {
+      selectedDestino = siloId;
+    }
+  } else if (currentAction === 'saida_expedicao') {
+    selectedOrigin = siloId;
+    selectedDestino = null;
+  } else if (currentAction === 'ajuste_inventario') {
+    selectedDestino = siloId;
+    selectedOrigin = null;
+  }
+
+  updateForm();
+  renderSilos();
+}
+
+// Form
+function updateForm() {
+  var panel = document.getElementById('formPanel');
+  var titleEl = document.getElementById('formTitle');
+  var body = document.getElementById('formBody');
+
+  if (!currentAction) {
+    panel.classList.remove('visible');
+    return;
+  }
+  panel.classList.add('visible');
+
+  var labels = {
+    'entrada_secagem': 'Alocar Grao (pos-secagem)',
+    'transferencia': 'Transferir entre Silos',
+    'saida_expedicao': 'Saida para Expedicao',
+    'ajuste_inventario': 'Ajuste de Inventario'
+  };
+  titleEl.textContent = labels[currentAction];
+
+  var needsConfirm = false;
+  var hint = '';
+
+  if (currentAction === 'entrada_secagem') {
+    hint = selectedDestino ? '' : 'Toque no silo de destino acima';
+    needsConfirm = !!selectedDestino;
+  } else if (currentAction === 'transferencia') {
+    if (!selectedOrigin) hint = 'Toque no silo de ORIGEM';
+    else if (!selectedDestino) hint = 'Agora toque no silo de DESTINO';
+    needsConfirm = !!(selectedOrigin && selectedDestino);
+  } else if (currentAction === 'saida_expedicao') {
+    hint = selectedOrigin ? '' : 'Toque no silo de onde sai o grao';
+    needsConfirm = !!selectedOrigin;
+  } else if (currentAction === 'ajuste_inventario') {
+    hint = selectedDestino ? '' : 'Toque no silo para ajustar';
+    needsConfirm = !!selectedDestino;
+  }
+
+  var origemLabel = selectedOrigin ? selectedOrigin : '\u2014';
+  var destinoLabel = selectedDestino ? selectedDestino : '\u2014';
+  var flowDisplay = '';
+  if (currentAction === 'entrada_secagem') flowDisplay = 'Secagem \u2192 ' + destinoLabel;
+  else if (currentAction === 'transferencia') flowDisplay = origemLabel + ' \u2192 ' + destinoLabel;
+  else if (currentAction === 'saida_expedicao') flowDisplay = origemLabel + ' \u2192 Expedicao';
+  else if (currentAction === 'ajuste_inventario') flowDisplay = 'Ajuste \u2192 ' + destinoLabel;
+
+  var btnLabel = currentAction === 'entrada_secagem' ? 'CONFIRMAR ALOCACAO' :
+    currentAction === 'transferencia' ? 'CONFIRMAR TRANSFERENCIA' :
+    currentAction === 'saida_expedicao' ? 'CONFIRMAR SAIDA' : 'CONFIRMAR AJUSTE';
+
+  // Build form with DOM
+  while (body.firstChild) body.removeChild(body.firstChild);
+
+  if (hint) {
+    var hintEl = document.createElement('div');
+    hintEl.className = 'form-hint';
+    hintEl.style.marginBottom = '.75rem';
+    hintEl.style.fontSize = '.85rem';
+    hintEl.textContent = hint;
+    body.appendChild(hintEl);
+  }
+
+  var flowEl = document.createElement('div');
+  flowEl.style.cssText = 'font-size:.85rem;margin-bottom:.75rem;color:var(--fg2)';
+  flowEl.textContent = flowDisplay;
+  body.appendChild(flowEl);
+
+  // Row 1: Quantidade, Cultura, Safra
+  var row1 = document.createElement('div');
+  row1.className = 'form-row';
+
+  row1.appendChild(makeFormGroup('Quantidade (kg)', 'input', 'fQtd', {type:'number',value:'12500',min:'1',step:'100',inputMode:'numeric'}));
+  row1.appendChild(makeFormGroup('Cultura', 'select', 'fCultura', {options:CULTURAS}));
+  row1.appendChild(makeFormGroup('Safra', 'select', 'fSafra', {options:SAFRAS}));
+  body.appendChild(row1);
+
+  // Row 2: Executado, Aprovado, Umidade
+  var row2 = document.createElement('div');
+  row2.className = 'form-row';
+  row2.appendChild(makeFormGroup('Executado por', 'select', 'fExec', {options:PESSOAS}));
+  row2.appendChild(makeFormGroup('Aprovado por', 'select', 'fAprov', {options:['Leomar'].concat(PESSOAS.filter(function(p){return p!=='Leomar';}))}));
+  row2.appendChild(makeFormGroup('Umidade %', 'input', 'fUmid', {type:'number',value:'13.0',min:'0',max:'40',step:'0.1',inputMode:'decimal'}));
+  body.appendChild(row2);
+
+  // Row 3: Observacoes
+  var row3 = document.createElement('div');
+  row3.className = 'form-row';
+  var obsGroup = makeFormGroup('Observacoes (opcional)', 'input', 'fObs', {type:'text',placeholder:'Ex: lote secagem #5'});
+  obsGroup.style.flex = '3';
+  row3.appendChild(obsGroup);
+  body.appendChild(row3);
+
+  // Confirm button
+  var btn = document.createElement('button');
+  btn.className = 'confirm-btn';
+  btn.id = 'confirmBtn';
+  btn.textContent = btnLabel;
+  btn.disabled = !needsConfirm;
+  btn.addEventListener('click', confirmAction);
+  body.appendChild(btn);
+}
+
+function makeFormGroup(label, tagName, id, opts) {
+  var group = document.createElement('div');
+  group.className = 'form-group';
+  var lbl = document.createElement('label');
+  lbl.textContent = label;
+  group.appendChild(lbl);
+
+  var el;
+  if (tagName === 'select') {
+    el = document.createElement('select');
+    el.id = id;
+    var options = opts.options || [];
+    for (var i = 0; i < options.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = options[i];
+      opt.textContent = options[i];
+      el.appendChild(opt);
+    }
+  } else {
+    el = document.createElement('input');
+    el.id = id;
+    if (opts.type) el.type = opts.type;
+    if (opts.value) el.value = opts.value;
+    if (opts.min) el.min = opts.min;
+    if (opts.max) el.max = opts.max;
+    if (opts.step) el.step = opts.step;
+    if (opts.inputMode) el.inputMode = opts.inputMode;
+    if (opts.placeholder) el.placeholder = opts.placeholder;
+  }
+  group.appendChild(el);
+  return group;
+}
+
+function confirmAction() {
+  var qtdEl = document.getElementById('fQtd');
+  var qtd = parseFloat(qtdEl ? qtdEl.value : 0);
+  if (!qtd || qtd <= 0) { showToast('Quantidade invalida'); return; }
+
+  var cultura = document.getElementById('fCultura').value;
+  var safra = document.getElementById('fSafra').value;
+  var exec = document.getElementById('fExec').value;
+  var aprov = document.getElementById('fAprov').value;
+  var umidEl = document.getElementById('fUmid');
+  var umid = umidEl ? parseFloat(umidEl.value) : null;
+  if (isNaN(umid)) umid = null;
+  var obsEl = document.getElementById('fObs');
+  var obs = obsEl ? obsEl.value : null;
+  if (obs === '') obs = null;
+  var now = new Date();
+
+  // Validate stock for saida/transferencia
+  if (currentAction === 'saida_expedicao' || currentAction === 'transferencia') {
+    var sourceId = selectedOrigin;
+    var est = getEstoque(sourceId);
+    var key = cultura + '|' + safra;
+    var available = est[key] || 0;
+    if (qtd > available) {
+      showToast('Estoque insuficiente em ' + sourceId + ': ' + fmt(available) + ' kg de ' + cultura);
+      return;
+    }
+  }
+
+  // Validate capacity for entrada/transferencia/ajuste
+  if (currentAction === 'entrada_secagem' || currentAction === 'transferencia' || currentAction === 'ajuste_inventario') {
+    var destId = selectedDestino;
+    var silo = null;
+    for (var i = 0; i < SILOS.length; i++) { if (SILOS[i].id === destId) { silo = SILOS[i]; break; } }
+    var currentKg = getTotalKg(destId);
+    if (currentKg + qtd > silo.capacidade_kg) {
+      showToast('Capacidade excedida em ' + destId + ': ' + fmt(silo.capacidade_kg - currentKg) + ' kg restante');
+      return;
+    }
+  }
+
+  txnCounter++;
+  var tx = {
+    seq: txnCounter,
+    tipo: currentAction,
+    quantidade_kg: qtd,
+    cultura: cultura,
+    safra: safra,
+    silo_origem_id: selectedOrigin || null,
+    silo_destino_id: selectedDestino || null,
+    data_alocacao: now.toISOString().split('T')[0],
+    hora_alocacao: now.toTimeString().slice(0,5),
+    executado_por: exec,
+    aprovado_por: aprov,
+    umidade_pct: umid,
+    observacoes: obs,
+    created_at: now.toISOString()
+  };
+
+  ledger.push(tx);
+
+  var toastDest = selectedDestino || 'Expedicao';
+  showToast(toastDest + ' \u2190 ' + fmt(qtd) + ' kg ' + cultura);
+
+  selectedOrigin = null;
+  selectedDestino = null;
+  currentAction = null;
+  var btns = document.querySelectorAll('.action-btn');
+  for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+
+  renderAll();
+}
+
+// Ledger table
+function renderLedger() {
+  var body = document.getElementById('ledgerBody');
+  var count = document.getElementById('ledgerCount');
+  count.textContent = '(' + ledger.length + ')';
+
+  while (body.firstChild) body.removeChild(body.firstChild);
+
+  if (ledger.length === 0) {
+    var emptyEl = document.createElement('div');
+    emptyEl.className = 'empty';
+    emptyEl.textContent = 'Nenhuma movimentacao registrada. Selecione uma acao acima e toque em um silo.';
+    body.appendChild(emptyEl);
+    return;
+  }
+
+  var wrap = document.createElement('div');
+  wrap.className = 'ledger-wrap';
+  var table = document.createElement('table');
+  table.className = 'ledger-table';
+
+  var thead = document.createElement('thead');
+  var headerRow = document.createElement('tr');
+  var headers = ['#','Tipo','Qtd (kg)','Cultura','Safra','Origem \u2192 Destino','Exec','Aprov','Data/Hora'];
+  for (var h = 0; h < headers.length; h++) {
+    var th = document.createElement('th');
+    th.textContent = headers[h];
+    if (h === 2) th.style.textAlign = 'right';
+    headerRow.appendChild(th);
+  }
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  for (var i = ledger.length - 1; i >= 0; i--) {
+    var tx = ledger[i];
+    var tr = document.createElement('tr');
+
+    var tdSeq = document.createElement('td');
+    tdSeq.style.cssText = 'font-family:var(--mono);color:var(--fg3)';
+    tdSeq.textContent = tx.seq;
+    tr.appendChild(tdSeq);
+
+    var tdTipo = document.createElement('td');
+    var badge = document.createElement('span');
+    badge.className = 'tipo-badge tipo-' + tx.tipo;
+    badge.textContent = tx.tipo.replace(/_/g, ' ');
+    tdTipo.appendChild(badge);
+    tr.appendChild(tdTipo);
+
+    var tdQtd = document.createElement('td');
+    tdQtd.style.cssText = 'font-family:var(--mono);text-align:right;font-weight:600';
+    tdQtd.textContent = fmt(tx.quantidade_kg);
+    tr.appendChild(tdQtd);
+
+    var tdCultura = document.createElement('td');
+    tdCultura.textContent = tx.cultura;
+    tr.appendChild(tdCultura);
+
+    var tdSafra = document.createElement('td');
+    tdSafra.style.color = 'var(--fg2)';
+    tdSafra.textContent = tx.safra;
+    tr.appendChild(tdSafra);
+
+    var tdFlow = document.createElement('td');
+    var oriSpan = document.createElement('span');
+    oriSpan.textContent = tx.silo_origem_id || '\u2014';
+    if (tx.silo_origem_id) oriSpan.style.fontWeight = '600';
+    else oriSpan.className = 'arrow';
+    tdFlow.appendChild(oriSpan);
+    var arrowSpan = document.createElement('span');
+    arrowSpan.className = 'arrow';
+    arrowSpan.textContent = ' \u2192 ';
+    tdFlow.appendChild(arrowSpan);
+    var destSpan = document.createElement('span');
+    destSpan.textContent = tx.silo_destino_id || '\u2014';
+    if (tx.silo_destino_id) destSpan.style.fontWeight = '600';
+    else destSpan.className = 'arrow';
+    tdFlow.appendChild(destSpan);
+    tr.appendChild(tdFlow);
+
+    var tdExec = document.createElement('td');
+    tdExec.style.cssText = 'color:var(--fg2);font-size:.7rem';
+    tdExec.textContent = tx.executado_por;
+    tr.appendChild(tdExec);
+
+    var tdAprov = document.createElement('td');
+    tdAprov.style.cssText = 'color:var(--fg2);font-size:.7rem';
+    tdAprov.textContent = tx.aprovado_por;
+    tr.appendChild(tdAprov);
+
+    var tdDate = document.createElement('td');
+    tdDate.style.cssText = 'color:var(--fg3);font-size:.65rem;font-family:var(--mono)';
+    tdDate.textContent = tx.data_alocacao + ' ' + tx.hora_alocacao;
+    tr.appendChild(tdDate);
+
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  body.appendChild(wrap);
+}
+
+// Export
+function renderExport() {
+  var out = document.getElementById('jsonOutput');
+  if (ledger.length === 0) {
+    out.textContent = '-- Nenhuma transacao para exportar';
+    return;
+  }
+  var ddlRows = [];
+  for (var i = 0; i < ledger.length; i++) {
+    var tx = ledger[i];
+    ddlRows.push({
+      tipo: tx.tipo,
+      quantidade_kg: tx.quantidade_kg,
+      cultura: tx.cultura,
+      safra: tx.safra,
+      silo_origem_id: tx.silo_origem_id,
+      silo_destino_id: tx.silo_destino_id,
+      data_alocacao: tx.data_alocacao,
+      hora_alocacao: tx.hora_alocacao,
+      executado_por: tx.executado_por,
+      aprovado_por: tx.aprovado_por,
+      umidade_pct: tx.umidade_pct,
+      observacoes: tx.observacoes
+    });
+  }
+  out.textContent = JSON.stringify(ddlRows, null, 2);
+}
+
+function copyJSON() {
+  var text = document.getElementById('jsonOutput').textContent;
+  navigator.clipboard.writeText(text).then(function(){ showToast('JSON copiado!'); });
+}
+
+function copySQL() {
+  if (ledger.length === 0) { showToast('Nenhuma transacao'); return; }
+  var lines = [];
+  for (var i = 0; i < ledger.length; i++) {
+    var tx = ledger[i];
+    var ori = tx.silo_origem_id ? "'" + tx.silo_origem_id + "'" : 'NULL';
+    var dest = tx.silo_destino_id ? "'" + tx.silo_destino_id + "'" : 'NULL';
+    var obs = tx.observacoes ? "'" + tx.observacoes.replace(/'/g, "''") + "'" : 'NULL';
+    var umid = tx.umidade_pct !== null ? tx.umidade_pct : 'NULL';
+    lines.push("INSERT INTO alocacoes_silo (organization_id, tipo, quantidade_kg, cultura_id, safra_id, silo_origem_id, silo_destino_id, data_alocacao, hora_alocacao, executado_por, aprovado_por, umidade_pct, observacoes) VALUES ('ORG_UUID', '" + tx.tipo + "', " + tx.quantidade_kg + ", '" + tx.cultura + "_UUID', '" + tx.safra + "_UUID', " + ori + ", " + dest + ", '" + tx.data_alocacao + "', '" + tx.hora_alocacao + "', '" + tx.executado_por + "', '" + tx.aprovado_por + "', " + umid + ", " + obs + ");");
+  }
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){ showToast('SQL copiado!'); });
+}
+
+function resetAll() {
+  if (ledger.length > 0 && !confirm('Limpar todas as transacoes?')) return;
+  ledger = [];
+  txnCounter = 0;
+  currentAction = null;
+  selectedOrigin = null;
+  selectedDestino = null;
+  var btns = document.querySelectorAll('.action-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  renderAll();
+  showToast('Tudo limpo');
+}
+
+// Toast
+var toastTimer;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+function renderAll() {
+  renderSilos();
+  updateForm();
+  renderLedger();
+  renderExport();
+}
+
+// Presets
+function loadPreset(name) {
+  ledger = [];
+  txnCounter = 0;
+  var now = new Date();
+  var d = now.toISOString().split('T')[0];
+  var h = now.toTimeString().slice(0,5);
+
+  var txs = [];
+  if (name === 'colheita_soja') {
+    txs = [
+      {tipo:'entrada_secagem',qtd:24000,cultura:'Soja',dest:'S1'},
+      {tipo:'entrada_secagem',qtd:18500,cultura:'Soja',dest:'S1'},
+      {tipo:'entrada_secagem',qtd:31000,cultura:'Soja',dest:'S2'},
+      {tipo:'entrada_secagem',qtd:22000,cultura:'Soja',dest:'S3'},
+      {tipo:'entrada_secagem',qtd:15000,cultura:'Soja',dest:'SP'}
+    ];
+  } else if (name === 'safra_mista') {
+    txs = [
+      {tipo:'entrada_secagem',qtd:850000,cultura:'Soja',dest:'S1'},
+      {tipo:'entrada_secagem',qtd:750000,cultura:'Soja',dest:'S2'},
+      {tipo:'entrada_secagem',qtd:620000,cultura:'Milho',dest:'S3'},
+      {tipo:'entrada_secagem',qtd:480000,cultura:'Milho',dest:'S4'},
+      {tipo:'entrada_secagem',qtd:350000,cultura:'Trigo',dest:'S5'},
+      {tipo:'entrada_secagem',qtd:200000,cultura:'Feijao',dest:'S6'},
+      {tipo:'entrada_secagem',qtd:180000,cultura:'Soja',dest:'SP'},
+      {tipo:'entrada_secagem',qtd:120000,cultura:'Cevada',dest:'SE'}
+    ];
+  } else if (name === 'expedicao') {
+    txs = [
+      {tipo:'entrada_secagem',qtd:1200000,cultura:'Soja',dest:'S1'},
+      {tipo:'entrada_secagem',qtd:1100000,cultura:'Soja',dest:'S2'},
+      {tipo:'entrada_secagem',qtd:900000,cultura:'Milho',dest:'S3'},
+      {tipo:'saida_expedicao',qtd:350000,cultura:'Soja',ori:'S1'},
+      {tipo:'saida_expedicao',qtd:280000,cultura:'Soja',ori:'S2'},
+      {tipo:'transferencia',qtd:150000,cultura:'Milho',ori:'S3',dest:'S5'}
+    ];
+  }
+
+  for (var i = 0; i < txs.length; i++) {
+    var t = txs[i];
+    txnCounter++;
+    ledger.push({
+      seq: txnCounter, tipo: t.tipo, quantidade_kg: t.qtd, cultura: t.cultura, safra: '25/26',
+      silo_origem_id: t.ori || null, silo_destino_id: t.dest || null,
+      data_alocacao: d, hora_alocacao: h, executado_por: 'Josmar', aprovado_por: 'Leomar',
+      umidade_pct: t.tipo === 'saida_expedicao' ? 12.5 : 13.0,
+      observacoes: t.tipo === 'saida_expedicao' ? 'Castrolanda' : null,
+      created_at: now.toISOString()
+    });
+  }
+
+  renderAll();
+  showToast('Preset "' + name + '" carregado');
+}
+
+// Add preset buttons to header
+(function() {
+  var stats = document.getElementById('headerStats');
+  var presets = [
+    {name:'colheita_soja',label:'Demo: Colheita'},
+    {name:'safra_mista',label:'Demo: Safra Mista'},
+    {name:'expedicao',label:'Demo: Expedicao'}
+  ];
+  for (var i = 0; i < presets.length; i++) {
+    var btn = document.createElement('span');
+    btn.className = 'stat';
+    btn.style.cursor = 'pointer';
+    btn.style.borderBottom = '1px dashed var(--fg3)';
+    btn.textContent = presets[i].label;
+    btn.addEventListener('click', (function(n){ return function(){ loadPreset(n); }; })(presets[i].name));
+    stats.appendChild(btn);
+  }
+})();
+
+// Initial render
+renderAll();
+</script>
+</body>
+</html>

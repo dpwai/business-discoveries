@@ -66,7 +66,7 @@ PHASE 7 — Auto: MOVIMENTACAO_INSUMO, ESTOQUE_INSUMO, MOVIMENTACAO_SILO, ESTOQU
 
 | Entity | Category | Dependencies | Key Action |
 |--------|----------|-------------|------------|
-| CULTURAS | A | None | Seed 6 cultures: Soja, Milho, Trigo, Aveia, Sorgo, Semente de Soja — **adicionar:** Feijão, Milheto, Azevem, Aveia Preta, Aveia Branca |
+| CULTURAS | A | None | Seed 126 culturas em 8 grupos (graos, oleaginosa, cobertura, forrageira, pastagem, fibra, florestal, outros). CSV: `fase_0/01_culturas.csv` |
 | ROLES | A | None | Seed: admin, owner, manager, agronomist, operator, finance, viewer |
 | PERMISSIONS | A | None | Define permission set (João designs) |
 | PRODUTO_INSUMO | A+B | None | Seed base catalog + import from Agriwin export |

@@ -133,8 +133,8 @@ Apos visita de campo e analise das planilhas de controle da SOAL, foi mapeado o 
 | organization_id | UUID | FK -> ORGANIZATIONS |
 | fazenda_sede_id | UUID | FK -> FAZENDAS |
 | nome | VARCHAR(100) | Nome da UBG |
-| capacidade_recepcao_t_dia | DECIMAL(10,2) | Capacidade recepcao t/dia |
-| capacidade_secagem_t_dia | DECIMAL(10,2) | Capacidade secagem t/dia |
+| capacidade_recepcao_t_h | DECIMAL(10,2) | Capacidade recepcao t/h (45 t/h) |
+| capacidade_secagem_t_h | DECIMAL(10,2) | Capacidade secagem t/h (30 t/h) |
 | tem_balanca | BOOLEAN | Possui balanca propria |
 | tem_tombador | BOOLEAN | Possui tombador/moega |
 | tem_secador | BOOLEAN | Possui secador |
@@ -161,7 +161,7 @@ Apos visita de campo e analise das planilhas de controle da SOAL, foi mapeado o 
 | ubg_id | UUID | FK -> UBG |
 | numero_silo | INTEGER | Numero do silo (1 a 8) |
 | nome | VARCHAR(100) | Nome do silo |
-| tipo | ENUM | convencional, sementes |
+| tipo | ENUM | metalico, pulmao (6 conv + 2 pulmao) |
 | capacidade_toneladas | DECIMAL(12,2) | Capacidade em toneladas |
 | capacidade_m3 | DECIMAL(12,2) | Capacidade em m³ |
 | material | ENUM | metalico, madeira, concreto |
@@ -177,68 +177,73 @@ Apos visita de campo e analise das planilhas de controle da SOAL, foi mapeado o 
 
 ---
 
-### 3. TICKET_BALANCA (Etapa 1)
+### 3. TICKET_BALANCA (Etapa 1 — Pesagem)
+
+Responsavel: **Vanessa** (operadora balanca). Registra APENAS peso — dados de qualidade ficam em RECEBIMENTO_GRAO.
 
 | Coluna | Tipo | Descricao |
 |--------|------|-----------|
 | id | UUID | PK |
-| ubg_id | UUID | FK -> UBG |
-| operacao_campo_id | UUID | FK -> OPERACAO_CAMPO (colheita) |
-| numero_ticket | VARCHAR(20) | Numero sequencial |
-| tipo | ENUM | entrada, saida, transferencia |
-| data_hora | TIMESTAMP | Data/hora da pesagem |
+| organization_id | UUID | FK -> ORGANIZATIONS |
+| safra_id | UUID | FK -> SAFRAS |
+| cultura_id | UUID | FK -> CULTURAS |
+| talhao_safra_id | UUID | FK -> TALHAO_SAFRA |
+| silo_destino_id | UUID | FK -> SILOS |
+| tipo | ENUM | entrada_producao, pesagem_externa, transferencia_silo, saida_venda |
+| status | ENUM | pesado, classificado, consolidado, cancelado |
+| numero_ticket | INTEGER | Numero sequencial |
+| talhao_nome | VARCHAR(100) | Talhao de origem |
+| gleba | VARCHAR(100) | Sub-area dentro do talhao |
+| data_pesagem | DATE | Data da pesagem |
+| hora_pesagem | TIME | Hora da pesagem |
+| peso_bruto_kg | DECIMAL(12,2) | Peso bruto |
+| peso_tara_kg | DECIMAL(12,2) | Tara do veiculo |
+| peso_liquido_kg | DECIMAL(12,2) | Peso liquido calculado |
 | placa_veiculo | VARCHAR(10) | Placa do caminhao |
 | motorista | VARCHAR(100) | Nome do motorista |
-| transportadora | VARCHAR(100) | Empresa (se terceirizado) |
-| origem_talhao | VARCHAR(200) | Talhao de origem |
-| peso_bruto_kg | DECIMAL(12,2) | Peso bruto |
-| tara_cadastrada_kg | DECIMAL(12,2) | Tara do veiculo |
-| peso_liquido_kg | DECIMAL(12,2) | Peso liquido calculado |
-| operador_id | UUID | FK -> OPERADORES |
+| destino | VARCHAR(100) | Destino do grao |
+| variedade | VARCHAR(100) | Variedade/cultivar |
+| flag_semente | BOOLEAN | True quando producao de semente certificada |
 | observacoes | TEXT | Notas |
-| created_at | TIMESTAMP | Data criacao |
 
 **Relacionamentos:**
-- UBG (N:1) - Ticket gerado na UBG
-- OPERACAO_CAMPO (N:1) - Vincula a colheita de origem
-- RECEBIMENTO_GRAOS (1:1) - Cada ticket tem um recebimento
+- TALHAO_SAFRA (N:1) - Origem do grao
+- RECEBIMENTO_GRAOS (1:1) - Cada ticket tem um recebimento com dados de qualidade
 
 ---
 
-### 4. RECEBIMENTO_GRAOS (Etapa 2)
+### 4. RECEBIMENTO_GRAO (Etapa 2 — Classificacao pre-secagem)
 
-Baseado na Planilha de Recepcao de Graos.
+Responsavel: **Josmar**. Classificacao de qualidade na moega ANTES da secagem (amostra 200g).
 
 | Coluna | Tipo | Descricao |
 |--------|------|-----------|
 | id | UUID | PK |
-| ubg_id | UUID | FK -> UBG |
-| ticket_balanca_id | UUID | FK -> TICKET_BALANCA |
-| talhao_safra_id | UUID | FK -> TALHAO_SAFRA |
+| organization_id | UUID | FK -> ORGANIZATIONS |
+| ticket_balanca_id | UUID | FK -> TICKET_BALANCA (NOT NULL) |
+| safra_id | UUID | FK -> SAFRAS |
 | cultura_id | UUID | FK -> CULTURAS |
-| data_recebimento | DATE | Data |
-| hora_recebimento | TIME | Hora |
-| umidade_percent | DECIMAL(5,2) | % umidade |
-| peso_hectolitrico | DECIMAL(6,2) | PH |
-| impureza_g | DECIMAL(6,2) | Gramas impureza (amostra) |
-| ardido_g | DECIMAL(6,2) | Gramas ardidos (amostra) |
-| avariado_g | DECIMAL(6,2) | Gramas avariados (amostra) |
-| verde_g | DECIMAL(6,2) | Gramas verdes (amostra) |
-| quebrado_g | DECIMAL(6,2) | Gramas quebrados (amostra) |
-| amostra_total_g | DECIMAL(6,2) | Peso amostra (padrao 200g) |
-| descontos_umidade_kg | DECIMAL(10,2) | Desconto por umidade |
-| descontos_impureza_kg | DECIMAL(10,2) | Desconto por impureza |
-| peso_liquido_final_kg | DECIMAL(12,2) | Peso apos descontos |
-| responsavel_id | UUID | FK -> OPERADORES |
+| silo_destino_id | UUID | FK -> SILOS |
+| classificacao_grao | VARCHAR(50) | Classificacao do grao |
+| umidade_pct | DECIMAL(5,2) | % umidade |
+| ph | DECIMAL(5,2) | Peso hectolitrico |
+| impureza_g | DECIMAL(8,2) | Gramas impureza (amostra) |
+| ardidos_g | DECIMAL(8,2) | Gramas ardidos (amostra) |
+| avariado_g | DECIMAL(8,2) | Gramas avariados (amostra) |
+| verdes_g | DECIMAL(8,2) | Gramas verdes (amostra) |
+| quebrado_g | DECIMAL(8,2) | Gramas quebrados (amostra) |
+| desconto_umidade_kg | DECIMAL(12,2) | Desconto por umidade |
+| desconto_impureza_kg | DECIMAL(12,2) | Desconto por impureza |
+| desconto_outros_kg | DECIMAL(12,2) | Desconto outros |
+| desconto_total_kg | DECIMAL(12,2) | Soma dos 3 descontos |
+| peso_recebido_kg | DECIMAL(12,2) | Peso apos descontos |
 | observacoes | TEXT | Notas |
-| created_at | TIMESTAMP | Data criacao |
 
 **Relacionamentos:**
-- UBG (N:1) - Recebimento na UBG
-- TICKET_BALANCA (1:1) - Vinculado ao ticket
-- TALHAO_SAFRA (N:1) - Origem do grao
+- TICKET_BALANCA (1:1) - Vinculado ao ticket de pesagem
+- CONTROLE_SECAGEM (1:N) - FK `recebimento_grao_id` no controle de secagem
+- SAFRAS (N:1) - Safra de origem
 - CULTURAS (N:1) - Tipo de cultura
-- CONTROLE_SECAGEM (1:N) - Multiplas leituras de secagem
 
 ---
 
@@ -250,8 +255,8 @@ Cada registro = 1 leitura a cada 30 minutos.
 | Coluna | Tipo | Descricao |
 |--------|------|-----------|
 | id | UUID | PK |
-| ubg_id | UUID | FK -> UBG |
-| recebimento_id | UUID | FK -> RECEBIMENTO_GRAOS |
+| organization_id | UUID | FK -> ORGANIZATIONS |
+| recebimento_grao_id | UUID | FK -> RECEBIMENTO_GRAO (nullable — legacy sem link) |
 | secador_id | VARCHAR(50) | Identificacao do secador |
 | data_secagem | DATE | Data |
 | hora_leitura | TIME | Hora da leitura (30/30 min) |

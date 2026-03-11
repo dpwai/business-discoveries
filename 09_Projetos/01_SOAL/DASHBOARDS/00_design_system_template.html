@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL Design System — DPWAI Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SOAL DESIGN SYSTEM v3.0 — "Medium Dark + DPWAI Green"
+   ============================================================
+   Copy this <style> block into any new dashboard.
+   All components are self-contained vanilla CSS + JS.
+   Only external dependency: Google Fonts CDN above.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* === BACKGROUNDS === */
+  --bg-page:        #1a2332;
+  --bg-card:        #243040;
+  --bg-card-hover:  #2d3a4d;
+  --bg-elevated:    #354555;
+  --bg-input:       #1e2a3a;
+  --bg-glass:       rgba(36, 48, 64, 0.75);
+
+  /* === DPWAI BRAND === */
+  --green-primary:  #689F38;
+  --green-hover:    #558B2F;
+  --green-light:    #C5E1A5;
+  --green-glow:     rgba(104, 159, 56, 0.25);
+  --teal-dark:      #003C46;
+
+  /* === TEXT === */
+  --text-primary:   #E5EDF5;
+  --text-secondary: #B8C4D4;
+  --text-muted:     #7A8A9E;
+  --text-inverse:   #FFFFFF;
+
+  /* === BORDERS === */
+  --border-subtle:  rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong:  rgba(255, 255, 255, 0.20);
+
+  /* === SEMANTIC COLORS === */
+  --success:        #4CAF50;
+  --success-bg:     rgba(76, 175, 80, 0.12);
+  --danger:         #EF5350;
+  --danger-bg:      rgba(239, 83, 80, 0.12);
+  --warning:        #FFA726;
+  --warning-bg:     rgba(255, 167, 38, 0.12);
+  --info:           #42A5F5;
+  --info-bg:        rgba(66, 165, 245, 0.12);
+
+  /* === GRAIN COLORS === */
+  --grain-soy:      #EAB308;
+  --grain-corn:     #F97316;
+  --grain-wheat:    #D97706;
+  --grain-bean:     #A3743C;
+  --grain-barley:   #C4A35A;
+  --grain-oat:      #B8C4A0;
+
+  /* === CHART PALETTE (10 colors) === */
+  --chart-1:  #689F38;
+  --chart-2:  #42A5F5;
+  --chart-3:  #FFA726;
+  --chart-4:  #AB47BC;
+  --chart-5:  #EF5350;
+  --chart-6:  #26C6DA;
+  --chart-7:  #EAB308;
+  --chart-8:  #EC407A;
+  --chart-9:  #8D6E63;
+  --chart-10: #78909C;
+
+  /* === COST CATEGORIES === */
+  --cost-fertilizer: #42A5F5;
+  --cost-seeds:      #689F38;
+  --cost-pesticide:  #AB47BC;
+  --cost-fuel:       #FFA726;
+  --cost-labor:      #26C6DA;
+  --cost-maintenance:#F97316;
+  --cost-other:      #78909C;
+
+  /* === MACHINE BRANDS === */
+  --brand-john-deere:  #367C2B;
+  --brand-case-ih:     #AF1E2D;
+  --brand-new-holland: #0033A0;
+  --brand-massey:      #CC0000;
+  --brand-valtra:      #E30613;
+
+  /* === TYPOGRAPHY === */
+  --font-heading:  'Montserrat', 'Inter', sans-serif;
+  --font-body:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:     'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+
+  /* === SPACING (4px base) === */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* === LAYOUT === */
+  --page-max:     1440px;
+  --page-pad:     40px;
+  --card-gap:     20px;
+  --card-pad:     24px;
+  --card-radius:  12px;
+  --header-h:     72px;
+
+  /* === SHADOWS === */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.4);
+  --shadow-glow:0 0 20px var(--green-glow);
+}
+
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === CONTAINER === */
+.container {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
+
+/* === PAGE HEADER === */
+.page-header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--page-pad);
+  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, rgba(26,35,50,1) 0%, rgba(26,35,50,0.95) 100%);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.page-title .accent { color: var(--green-primary); }
+.page-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* === SECTION === */
+.section {
+  padding: var(--sp-8) 0;
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-5);
+  letter-spacing: -0.01em;
+}
+.section-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: -12px;
+  margin-bottom: var(--sp-5);
+}
+
+/* === GLASS CARD === */
+.card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--card-radius);
+  padding: var(--card-pad);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-md);
+}
+.card-solid {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--card-radius);
+  padding: var(--card-pad);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+.card-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* === KPI CARD === */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--card-gap);
+}
+.kpi-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--card-radius);
+  padding: var(--sp-5) var(--card-pad);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--green-primary);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.kpi-card:hover::before { opacity: 1; }
+.kpi-card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.kpi-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--sp-2);
+}
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: var(--sp-2);
+}
+.kpi-value.positive { color: var(--success); }
+.kpi-value.negative { color: var(--danger); }
+.kpi-value.accent { color: var(--green-primary); }
+.kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.kpi-delta.up {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.kpi-delta.down {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+.kpi-delta.neutral {
+  color: var(--text-muted);
+  background: rgba(122,138,158,0.12);
+}
+.kpi-sparkline {
+  margin-top: var(--sp-3);
+  height: 32px;
+}
+
+/* === STATUS BADGE === */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.badge-success { color: var(--success); background: var(--success-bg); }
+.badge-danger  { color: var(--danger);  background: var(--danger-bg); }
+.badge-warning { color: var(--warning); background: var(--warning-bg); }
+.badge-info    { color: var(--info);    background: var(--info-bg); }
+.badge-neutral { color: var(--text-muted); background: rgba(122,138,158,0.1); }
+.badge-brand   { color: var(--green-primary); background: var(--green-glow); }
+
+/* === PROGRESS GAUGE (Linear) === */
+.progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--green-primary);
+  transition: width 0.6s ease;
+}
+.progress-fill.danger { background: var(--danger); }
+.progress-fill.warning { background: var(--warning); }
+
+/* === PROGRESS GAUGE (Circular) === */
+.gauge-circle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.gauge-circle svg { transform: rotate(-90deg); }
+.gauge-circle .track { stroke: rgba(255,255,255,0.06); fill: none; }
+.gauge-circle .fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+.gauge-center {
+  position: absolute;
+  text-align: center;
+}
+.gauge-center .value {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.gauge-center .label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* === DATA TABLE === */
+.data-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--border-subtle);
+}
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+table.data-table thead th {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-subtle);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+table.data-table thead th:hover { color: var(--text-secondary); }
+table.data-table thead th.sorted { color: var(--green-primary); }
+table.data-table thead th .sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  opacity: 0.4;
+  font-size: 0.65rem;
+}
+table.data-table thead th.sorted .sort-icon { opacity: 1; }
+table.data-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.12s;
+}
+table.data-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+table.data-table tbody tr:hover { background: var(--bg-card-hover); }
+table.data-table tbody td {
+  padding: 10px 14px;
+  vertical-align: middle;
+  color: var(--text-secondary);
+}
+table.data-table tbody td.num {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-align: right;
+  color: var(--text-primary);
+}
+table.data-table tbody td.name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* === FILTER BAR === */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-4) 0;
+  position: sticky;
+  top: var(--header-h);
+  z-index: 50;
+  background: var(--bg-page);
+}
+.filter-select, .filter-search {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.filter-select:focus, .filter-search:focus {
+  border-color: var(--green-primary);
+}
+.filter-search {
+  flex: 1;
+  min-width: 180px;
+}
+.filter-search::placeholder { color: var(--text-muted); }
+.filter-select {
+  cursor: pointer;
+  min-width: 140px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%237A8A9E' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.filter-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* === ALERT BANNER === */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.alert-icon { flex-shrink: 0; font-size: 1.1rem; }
+.alert-success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(76,175,80,0.2); }
+.alert-danger  { background: var(--danger-bg);  color: var(--danger);  border: 1px solid rgba(239,83,80,0.2); }
+.alert-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(255,167,38,0.2); }
+.alert-info    { background: var(--info-bg);    color: var(--info);    border: 1px solid rgba(66,165,245,0.2); }
+
+/* === BUTTONS === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--green-primary);
+  color: var(--text-inverse);
+}
+.btn-primary:hover { background: var(--green-hover); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+.btn-secondary:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+
+/* === LAYOUT GRIDS === */
+.grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); }
+.grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--card-gap); }
+.grid-4   { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--card-gap); }
+.grid-60-40 { display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--card-gap); }
+.grid-40-60 { display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--card-gap); }
+
+@media (max-width: 1200px) {
+  :root { --page-pad: 24px; }
+  .kpi-grid, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-60-40, .grid-40-60 { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --page-pad: 16px; }
+  .kpi-grid, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* === SWATCH ROW (catalog only) === */
+.swatch-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.swatch {
+  width: 80px;
+  text-align: center;
+}
+.swatch-color {
+  width: 80px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
+}
+.swatch-label {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+/* === TYPE SCALE (catalog only) === */
+.type-sample {
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.type-meta {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* === CHART COMMON === */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+.chart-axis-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  fill: #7A8A9E;
+}
+.chart-grid-line {
+  stroke: rgba(255,255,255,0.06);
+  stroke-width: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div>
+    <div class="page-title">SOAL <span class="accent">Design System</span></div>
+    <div class="page-subtitle">DPWAI Dashboard Components v3.0 — Medium Dark + DPWAI Green</div>
+  </div>
+  <div class="page-header-right">
+    <span class="badge badge-brand">v3.0</span>
+    <button class="btn btn-primary">Exportar</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ 1. COLOR PALETTE ============ -->
+  <div class="section">
+    <h2 class="section-title">1. Color Palette</h2>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Backgrounds</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#1a2332"></div><div class="swatch-label">bg-page<br>#1a2332</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#243040"></div><div class="swatch-label">bg-card<br>#243040</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#2d3a4d"></div><div class="swatch-label">bg-hover<br>#2d3a4d</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#354555"></div><div class="swatch-label">bg-elevated<br>#354555</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#1e2a3a"></div><div class="swatch-label">bg-input<br>#1e2a3a</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Brand</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#689F38"></div><div class="swatch-label">green-primary<br>#689F38</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#558B2F"></div><div class="swatch-label">green-hover<br>#558B2F</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#C5E1A5"></div><div class="swatch-label">green-light<br>#C5E1A5</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#003C46"></div><div class="swatch-label">teal-dark<br>#003C46</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Text</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#E5EDF5"></div><div class="swatch-label">primary<br>#E5EDF5</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#B8C4D4"></div><div class="swatch-label">secondary<br>#B8C4D4</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#7A8A9E"></div><div class="swatch-label">muted<br>#7A8A9E</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Semantic</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#4CAF50"></div><div class="swatch-label">success<br>#4CAF50</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#EF5350"></div><div class="swatch-label">danger<br>#EF5350</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FFA726"></div><div class="swatch-label">warning<br>#FFA726</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#42A5F5"></div><div class="swatch-label">info<br>#42A5F5</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Grains</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#EAB308"></div><div class="swatch-label">soy<br>#EAB308</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#F97316"></div><div class="swatch-label">corn<br>#F97316</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#D97706"></div><div class="swatch-label">wheat<br>#D97706</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#A3743C"></div><div class="swatch-label">bean<br>#A3743C</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#C4A35A"></div><div class="swatch-label">barley<br>#C4A35A</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#B8C4A0"></div><div class="swatch-label">oat<br>#B8C4A0</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Chart Palette</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#689F38"></div><div class="swatch-label">1</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#42A5F5"></div><div class="swatch-label">2</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#FFA726"></div><div class="swatch-label">3</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#AB47BC"></div><div class="swatch-label">4</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#EF5350"></div><div class="swatch-label">5</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#26C6DA"></div><div class="swatch-label">6</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#EAB308"></div><div class="swatch-label">7</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#EC407A"></div><div class="swatch-label">8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#8D6E63"></div><div class="swatch-label">9</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#78909C"></div><div class="swatch-label">10</div></div>
+    </div>
+
+    <h3 style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;font-weight:600;">Machine Brands</h3>
+    <div class="swatch-row">
+      <div class="swatch"><div class="swatch-color" style="background:#367C2B"></div><div class="swatch-label">John Deere</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#AF1E2D"></div><div class="swatch-label">Case IH</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0033A0"></div><div class="swatch-label">New Holland</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#CC0000"></div><div class="swatch-label">Massey</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#E30613"></div><div class="swatch-label">Valtra</div></div>
+    </div>
+  </div>
+
+  <!-- ============ 2. TYPOGRAPHY ============ -->
+  <div class="section">
+    <h2 class="section-title">2. Typography</h2>
+
+    <div class="type-sample">
+      <div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;color:var(--text-primary)">Display XL — Montserrat 800</div>
+      <div class="type-meta">font-heading / 2rem / 800 / Montserrat</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--text-primary)">Page Title — Montserrat 700</div>
+      <div class="type-meta">font-heading / 1.5rem / 700 / Montserrat</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-heading);font-size:1.15rem;font-weight:700;color:var(--text-primary)">Section Title — Montserrat 700</div>
+      <div class="type-meta">font-heading / 1.15rem / 700 / Montserrat</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-heading);font-size:0.95rem;font-weight:600;color:var(--text-primary)">Card Title — Montserrat 600</div>
+      <div class="type-meta">font-heading / 0.95rem / 600 / Montserrat</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-body);font-size:0.93rem;font-weight:400;color:var(--text-primary)">Body text — Inter 400. Dados de producao da safra 2025/26 consolidados.</div>
+      <div class="type-meta">font-body / 0.93rem / 400 / Inter</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-body);font-size:0.82rem;font-weight:400;color:var(--text-secondary)">Body small — Inter 400. Texto secundario e descricoes curtas.</div>
+      <div class="type-meta">font-body / 0.82rem / 400 / Inter</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-mono);font-size:1.8rem;font-weight:700;color:var(--green-primary)">R$ 2.450.000</div>
+      <div class="type-meta">font-mono / 1.8rem / 700 / JetBrains Mono — KPI value</div>
+    </div>
+    <div class="type-sample">
+      <div style="font-family:var(--font-mono);font-size:0.85rem;font-weight:500;color:var(--text-primary)">12.450,80 ton | 883 tickets | UUID: a1b2c3d4</div>
+      <div class="type-meta">font-mono / 0.85rem / 500 / JetBrains Mono — Table numbers</div>
+    </div>
+  </div>
+
+  <!-- ============ 3. KPI CARDS ============ -->
+  <div class="section">
+    <h2 class="section-title">3. KPI Cards</h2>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Saldo de Caixa</div>
+        <div class="kpi-value accent">R$ 2,4M</div>
+        <div class="kpi-delta up">+12,3% vs mes anterior</div>
+        <div class="kpi-sparkline"><canvas id="spark1" height="32"></canvas></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">A Receber (30d)</div>
+        <div class="kpi-value positive">R$ 890K</div>
+        <div class="kpi-delta up">4 contratos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">A Pagar (30d)</div>
+        <div class="kpi-value negative">R$ 345K</div>
+        <div class="kpi-delta down">2 vencidos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Margem Liquida</div>
+        <div class="kpi-value">R$ 4.200<span style="font-size:0.75rem;color:var(--text-muted)">/ha</span></div>
+        <div class="kpi-delta neutral">Meta: R$ 4.000/ha</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. STATUS BADGES ============ -->
+  <div class="section">
+    <h2 class="section-title">4. Status Badges</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;">
+      <span class="badge badge-success">Operacional</span>
+      <span class="badge badge-danger">Critico</span>
+      <span class="badge badge-warning">Manutencao</span>
+      <span class="badge badge-info">Em Analise</span>
+      <span class="badge badge-neutral">Inativo</span>
+      <span class="badge badge-brand">DPWAI</span>
+    </div>
+  </div>
+
+  <!-- ============ 5. PROGRESS GAUGES ============ -->
+  <div class="section">
+    <h2 class="section-title">5. Progress Gauges</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Linear</div>
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;"><span style="color:var(--text-secondary)">Plantio</span><span style="color:var(--green-primary);font-family:var(--font-mono)">100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;"><span style="color:var(--text-secondary)">Colheita</span><span style="color:var(--warning);font-family:var(--font-mono)">45%</span></div>
+          <div class="progress-bar"><div class="progress-fill warning" style="width:45%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:6px;"><span style="color:var(--text-secondary)">Secagem</span><span style="color:var(--danger);font-family:var(--font-mono)">18%</span></div>
+          <div class="progress-bar"><div class="progress-fill danger" style="width:18%"></div></div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;gap:32px;align-items:center;justify-content:center;">
+        <div class="gauge-circle">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="track" cx="60" cy="60" r="50" stroke-width="10"/>
+            <circle class="fill" cx="60" cy="60" r="50" stroke-width="10" stroke="var(--green-primary)"
+              stroke-dasharray="314.16" stroke-dashoffset="0"/>
+          </svg>
+          <div class="gauge-center"><div class="value" style="color:var(--green-primary)">100%</div><div class="label">Plantio</div></div>
+        </div>
+        <div class="gauge-circle">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="track" cx="60" cy="60" r="50" stroke-width="10"/>
+            <circle class="fill" cx="60" cy="60" r="50" stroke-width="10" stroke="var(--warning)"
+              stroke-dasharray="314.16" stroke-dashoffset="172.79"/>
+          </svg>
+          <div class="gauge-center"><div class="value" style="color:var(--warning)">45%</div><div class="label">Colheita</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 6. DATA TABLE ============ -->
+  <div class="section">
+    <h2 class="section-title">6. Data Table</h2>
+    <div class="data-table-wrap">
+      <table class="data-table" id="sampleTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable('sampleTable',0)">Fazenda <span class="sort-icon">&#9650;</span></th>
+            <th onclick="sortTable('sampleTable',1)">Cultura <span class="sort-icon">&#9650;</span></th>
+            <th onclick="sortTable('sampleTable',2)" style="text-align:right">Area (ha) <span class="sort-icon">&#9650;</span></th>
+            <th onclick="sortTable('sampleTable',3)" style="text-align:right">Producao (ton) <span class="sort-icon">&#9650;</span></th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">Santana</td><td>Soja</td><td class="num">845,00</td><td class="num">3.042,00</td><td><span class="badge badge-success">Colhido</span></td></tr>
+          <tr><td class="name">Santa Rita</td><td>Milho</td><td class="num">320,50</td><td class="num">2.564,00</td><td><span class="badge badge-warning">Em Colheita</span></td></tr>
+          <tr><td class="name">Massacre</td><td>Trigo</td><td class="num">412,00</td><td class="num">1.236,00</td><td><span class="badge badge-success">Colhido</span></td></tr>
+          <tr><td class="name">Capinzal</td><td>Soja</td><td class="num">680,00</td><td class="num">2.448,00</td><td><span class="badge badge-info">Secando</span></td></tr>
+          <tr><td class="name">Lagarto</td><td>Feijao</td><td class="num">185,20</td><td class="num">444,48</td><td><span class="badge badge-danger">Atrasado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ 7. CHARTS ============ -->
+  <div class="section">
+    <h2 class="section-title">7. Charts</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Bar Chart (Vertical)</div>
+        <div class="chart-container" style="height:200px;">
+          <svg id="barChart" width="100%" height="200" viewBox="0 0 300 200"></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Donut Chart</div>
+        <div class="chart-container" style="height:200px;display:flex;justify-content:center;align-items:center;">
+          <svg id="donutChart" width="180" height="180" viewBox="0 0 180 180"></svg>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Line Chart</div>
+        <div class="chart-container" style="height:200px;">
+          <canvas id="lineChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 8. ALERT BANNERS ============ -->
+  <div class="section">
+    <h2 class="section-title">8. Alert Banners</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="alert alert-success"><span class="alert-icon">&#10003;</span> Plantio 100% concluido — 2.464 ha plantados na safra 25/26.</div>
+      <div class="alert alert-warning"><span class="alert-icon">&#9888;</span> Pulverizador JD 4730 com manutencao preventiva em 5h de operacao.</div>
+      <div class="alert alert-danger"><span class="alert-icon">&#10007;</span> 2 boletos vencidos — R$ 87.500 pendente com Castrolanda.</div>
+      <div class="alert alert-info"><span class="alert-icon">&#8505;</span> Novo lote de insumos disponivel para retirada na cooperativa.</div>
+    </div>
+  </div>
+
+  <!-- ============ 9. FILTER BAR ============ -->
+  <div class="section">
+    <h2 class="section-title">9. Filter Bar</h2>
+    <div class="filter-bar" style="position:static;">
+      <select class="filter-select">
+        <option>Safra 2025/26</option>
+        <option>Safra 2024/25</option>
+        <option>Safra 2023/24</option>
+      </select>
+      <select class="filter-select">
+        <option>Todas Culturas</option>
+        <option>Soja</option>
+        <option>Milho</option>
+        <option>Trigo</option>
+        <option>Feijao</option>
+      </select>
+      <select class="filter-select">
+        <option>Todas Fazendas</option>
+        <option>Santana</option>
+        <option>Santa Rita</option>
+        <option>Massacre</option>
+        <option>Capinzal</option>
+      </select>
+      <input class="filter-search" type="text" placeholder="Buscar...">
+      <span class="filter-count">883 registros</span>
+    </div>
+  </div>
+
+  <!-- ============ 10. BUTTONS ============ -->
+  <div class="section">
+    <h2 class="section-title">10. Buttons</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+      <button class="btn btn-primary">Primary Action</button>
+      <button class="btn btn-secondary">Secondary</button>
+      <button class="btn btn-ghost">Ghost Link</button>
+      <button class="btn btn-primary" style="background:var(--danger)">Danger</button>
+    </div>
+  </div>
+
+  <!-- ============ 11. GLASS CARD VARIANTS ============ -->
+  <div class="section">
+    <h2 class="section-title">11. Card Variants</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">Glass Card</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">Semi-transparent with backdrop blur. Default for all dashboards.</p>
+      </div>
+      <div class="card-solid">
+        <div class="card-title">Solid Card</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">Opaque background. Use for tables and dense content.</p>
+      </div>
+      <div class="card" style="border-color:var(--green-primary);box-shadow:var(--shadow-glow);">
+        <div class="card-title" style="color:var(--green-primary)">Accent Card</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">Green glow border. Use for highlighted KPIs or CTAs.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:48px 0 32px;color:var(--text-muted);font-size:0.72rem;">
+  SOAL Design System v3.0 — DeepWork AI Flows 2026 — Medium Dark + DPWAI Green (#689F38)
+</div>
+
+<script>
+/* ============================================================
+   SOAL DASHBOARD UTILITIES
+   Copy this script block into any new dashboard.
+   ============================================================ */
+
+// === FORMATTERS ===
+function formatBRL(v) {
+  if (v == null) return '\u2014';
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function formatNum(v, dec) {
+  if (v == null) return '\u2014';
+  return v.toLocaleString('pt-BR', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+}
+function formatPct(v) {
+  if (v == null) return '\u2014';
+  var sign = v > 0 ? '+' : '';
+  return sign + v.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+}
+function formatTons(v) {
+  if (v == null) return '\u2014';
+  return formatNum(v, 0) + ' t';
+}
+
+// === SPARKLINE (Canvas) ===
+function createSparkline(canvasId, data, color) {
+  var c = document.getElementById(canvasId);
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var w = c.parentElement.clientWidth;
+  var h = c.height;
+  c.width = w;
+  var max = Math.max.apply(null, data);
+  var min = Math.min.apply(null, data);
+  var range = max - min || 1;
+  var step = w / (data.length - 1);
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Area fill
+  ctx.beginPath();
+  data.forEach(function(d, i) {
+    var x = i * step;
+    var y = h - ((d - min) / range) * (h - 4) - 2;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  var grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, color + '40');
+  grad.addColorStop(1, color + '05');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  data.forEach(function(d, i) {
+    var x = i * step;
+    var y = h - ((d - min) / range) * (h - 4) - 2;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// === BAR CHART (SVG) ===
+function createBarChart(svgId, data, options) {
+  var svg = document.getElementById(svgId);
+  if (!svg) return;
+  var o = Object.assign({ pad: 40, gap: 8, colors: null }, options || {});
+  var vb = svg.viewBox.baseVal;
+  var W = vb.width, H = vb.height;
+  var chartW = W - o.pad - 10;
+  var chartH = H - o.pad - 10;
+  var max = Math.max.apply(null, data.map(function(d) { return d.value; }));
+  var barW = (chartW - o.gap * (data.length - 1)) / data.length;
+  var colors = o.colors || ['#689F38','#42A5F5','#FFA726','#AB47BC','#EF5350','#26C6DA','#EAB308','#EC407A'];
+
+  // Build SVG content safely using DOM methods
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // Grid lines
+  for (var i = 0; i <= 4; i++) {
+    var y = 10 + chartH - (chartH * i / 4);
+    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', o.pad); line.setAttribute('y1', y);
+    line.setAttribute('x2', W - 10); line.setAttribute('y2', y);
+    line.setAttribute('class', 'chart-grid-line');
+    svg.appendChild(line);
+
+    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', o.pad - 6); label.setAttribute('y', y + 4);
+    label.setAttribute('text-anchor', 'end');
+    label.setAttribute('class', 'chart-axis-label');
+    label.textContent = formatNum(max * i / 4);
+    svg.appendChild(label);
+  }
+
+  // Bars
+  data.forEach(function(d, idx) {
+    var x = o.pad + idx * (barW + o.gap);
+    var barH = (d.value / max) * chartH;
+    var yPos = 10 + chartH - barH;
+    var color = d.color || colors[idx % colors.length];
+
+    var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x); rect.setAttribute('y', yPos);
+    rect.setAttribute('width', barW); rect.setAttribute('height', barH);
+    rect.setAttribute('rx', 3); rect.setAttribute('fill', color);
+    rect.setAttribute('opacity', '0.85');
+    svg.appendChild(rect);
+
+    var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', x + barW / 2); txt.setAttribute('y', H - 2);
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('class', 'chart-axis-label');
+    txt.textContent = d.label;
+    svg.appendChild(txt);
+  });
+}
+
+// === DONUT CHART (SVG) ===
+function createDonutChart(svgId, data, options) {
+  var svg = document.getElementById(svgId);
+  if (!svg) return;
+  var o = Object.assign({ cx: 90, cy: 90, r: 70, stroke: 22, centerLabel: '', centerValue: '' }, options || {});
+  var total = data.reduce(function(s, d) { return s + d.value; }, 0);
+  var circ = 2 * Math.PI * o.r;
+  var colors = ['#689F38','#42A5F5','#FFA726','#AB47BC','#EF5350','#26C6DA','#EAB308'];
+
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // Track
+  var track = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  track.setAttribute('cx', o.cx); track.setAttribute('cy', o.cy);
+  track.setAttribute('r', o.r); track.setAttribute('fill', 'none');
+  track.setAttribute('stroke', 'rgba(255,255,255,0.06)');
+  track.setAttribute('stroke-width', o.stroke);
+  svg.appendChild(track);
+
+  var offset = 0;
+  data.forEach(function(d, i) {
+    var pct = d.value / total;
+    var dash = pct * circ;
+    var color = d.color || colors[i % colors.length];
+
+    var seg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    seg.setAttribute('cx', o.cx); seg.setAttribute('cy', o.cy);
+    seg.setAttribute('r', o.r); seg.setAttribute('fill', 'none');
+    seg.setAttribute('stroke', color); seg.setAttribute('stroke-width', o.stroke);
+    seg.setAttribute('stroke-dasharray', dash + ' ' + (circ - dash));
+    seg.setAttribute('stroke-dashoffset', -offset);
+    seg.setAttribute('transform', 'rotate(-90 ' + o.cx + ' ' + o.cy + ')');
+    seg.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(seg);
+    offset += dash;
+  });
+
+  if (o.centerValue) {
+    var valTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    valTxt.setAttribute('x', o.cx); valTxt.setAttribute('y', o.cy - 6);
+    valTxt.setAttribute('text-anchor', 'middle');
+    valTxt.setAttribute('fill', '#E5EDF5');
+    valTxt.setAttribute('font-family', "'JetBrains Mono',monospace");
+    valTxt.setAttribute('font-size', '18'); valTxt.setAttribute('font-weight', '700');
+    valTxt.textContent = o.centerValue;
+    svg.appendChild(valTxt);
+
+    var lblTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lblTxt.setAttribute('x', o.cx); lblTxt.setAttribute('y', o.cy + 14);
+    lblTxt.setAttribute('text-anchor', 'middle');
+    lblTxt.setAttribute('fill', '#7A8A9E');
+    lblTxt.setAttribute('font-family', "Inter,sans-serif");
+    lblTxt.setAttribute('font-size', '11');
+    lblTxt.textContent = o.centerLabel;
+    svg.appendChild(lblTxt);
+  }
+}
+
+// === LINE CHART (Canvas) ===
+function createLineChart(canvasId, datasets, labels, options) {
+  var c = document.getElementById(canvasId);
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var o = Object.assign({ padL: 50, padB: 24, padT: 8, padR: 8 }, options || {});
+  var W = c.parentElement.clientWidth;
+  var H = c.height;
+  c.width = W;
+  var chartW = W - o.padL - o.padR;
+  var chartH = H - o.padT - o.padB;
+
+  var allVals = [];
+  datasets.forEach(function(ds) { allVals = allVals.concat(ds.data); });
+  var max = Math.max.apply(null, allVals);
+  var min = Math.min.apply(null, allVals);
+  var range = max - min || 1;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 1;
+  for (var i = 0; i <= 4; i++) {
+    var y = o.padT + chartH - (chartH * i / 4);
+    ctx.beginPath(); ctx.moveTo(o.padL, y); ctx.lineTo(W - o.padR, y); ctx.stroke();
+    ctx.fillStyle = '#7A8A9E';
+    ctx.font = '10px "JetBrains Mono"';
+    ctx.textAlign = 'right';
+    ctx.fillText(formatNum(min + range * i / 4), o.padL - 6, y + 3);
+  }
+
+  // X labels
+  if (labels) {
+    var lstep = chartW / (labels.length - 1);
+    ctx.fillStyle = '#7A8A9E';
+    ctx.font = '10px "JetBrains Mono"';
+    ctx.textAlign = 'center';
+    labels.forEach(function(l, idx) {
+      if (idx % Math.ceil(labels.length / 6) === 0 || idx === labels.length - 1) {
+        ctx.fillText(l, o.padL + idx * lstep, H - 4);
+      }
+    });
+  }
+
+  // Lines
+  datasets.forEach(function(ds) {
+    var step = chartW / (ds.data.length - 1);
+
+    // Area
+    if (ds.fill) {
+      ctx.beginPath();
+      ds.data.forEach(function(v, idx) {
+        var x = o.padL + idx * step;
+        var yy = o.padT + chartH - ((v - min) / range) * chartH;
+        idx === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+      });
+      ctx.lineTo(o.padL + (ds.data.length - 1) * step, o.padT + chartH);
+      ctx.lineTo(o.padL, o.padT + chartH);
+      ctx.closePath();
+      var grad = ctx.createLinearGradient(0, o.padT, 0, o.padT + chartH);
+      grad.addColorStop(0, ds.color + '30');
+      grad.addColorStop(1, ds.color + '05');
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    // Line
+    ctx.beginPath();
+    ds.data.forEach(function(v, idx) {
+      var x = o.padL + idx * step;
+      var yy = o.padT + chartH - ((v - min) / range) * chartH;
+      idx === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+    });
+    ctx.strokeStyle = ds.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Dots
+    ds.data.forEach(function(v, idx) {
+      var x = o.padL + idx * step;
+      var yy = o.padT + chartH - ((v - min) / range) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, yy, 3, 0, Math.PI * 2);
+      ctx.fillStyle = ds.color;
+      ctx.fill();
+    });
+  });
+}
+
+// === TABLE SORT ===
+function sortTable(tableId, colIdx) {
+  var table = document.getElementById(tableId);
+  if (!table) return;
+  var tbody = table.querySelector('tbody');
+  var rows = Array.from(tbody.querySelectorAll('tr'));
+  var th = table.querySelectorAll('thead th')[colIdx];
+
+  var asc = th.dataset.sort !== 'asc';
+  table.querySelectorAll('thead th').forEach(function(h) { h.dataset.sort = ''; h.classList.remove('sorted'); });
+  th.dataset.sort = asc ? 'asc' : 'desc';
+  th.classList.add('sorted');
+
+  rows.sort(function(a, b) {
+    var va = a.cells[colIdx].textContent.trim();
+    var vb = b.cells[colIdx].textContent.trim();
+    var na = parseFloat(va.replace(/[^\d,-]/g, '').replace(',', '.'));
+    var nb = parseFloat(vb.replace(/[^\d,-]/g, '').replace(',', '.'));
+    if (!isNaN(na) && !isNaN(nb)) {
+      return asc ? na - nb : nb - na;
+    }
+    return asc ? va.localeCompare(vb, 'pt-BR') : vb.localeCompare(va, 'pt-BR');
+  });
+
+  rows.forEach(function(r) { tbody.appendChild(r); });
+}
+
+// === INIT DEMO CHARTS ===
+document.addEventListener('DOMContentLoaded', function() {
+  createSparkline('spark1', [180,220,195,240,210,280,260,310,290,340,320,380], '#689F38');
+
+  createBarChart('barChart', [
+    { label: 'Soja', value: 3042 },
+    { label: 'Milho', value: 2564 },
+    { label: 'Trigo', value: 1236 },
+    { label: 'Feijao', value: 444 },
+    { label: 'Cevada', value: 280 },
+  ]);
+
+  createDonutChart('donutChart', [
+    { value: 12800, color: '#EAB308' },
+    { value: 5650, color: '#F97316' },
+    { value: 1800, color: '#D97706' },
+  ], { centerValue: '18,4K', centerLabel: 'toneladas' });
+
+  createLineChart('lineChart', [
+    { data: [120,135,128,142,138,155,148,160,152,165,170,178], color: '#689F38', fill: true },
+    { data: [110,108,115,120,125,130,128,135,140,138,145,150], color: '#42A5F5', fill: false },
+  ], ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']);
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      createSparkline('spark1', [180,220,195,240,210,280,260,310,290,340,320,380], '#689F38');
+      createLineChart('lineChart', [
+        { data: [120,135,128,142,138,155,148,160,152,165,170,178], color: '#689F38', fill: true },
+        { data: [110,108,115,120,125,130,128,135,140,138,145,150], color: '#42A5F5', fill: false },
+      ], ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']);
+    }, 200);
+  });
+});
+</script>
+</body>
+</html>

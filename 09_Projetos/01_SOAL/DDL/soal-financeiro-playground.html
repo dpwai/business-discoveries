@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOAL — Módulo Financeiro</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2128;
+  --bg4: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #484f58;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --orange: #d29922;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --cyan: #39d2c0;
+  --pink: #f778ba;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; }
+
+.header { background:var(--bg2); border-bottom:1px solid var(--border); padding:14px 24px; display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:100; }
+.header h1 { font-size:17px; font-weight:700; }
+.header h1 span { color:var(--accent); }
+.badge { background:var(--bg4); color:var(--text2); padding:3px 10px; border-radius:12px; font-size:11px; font-family:var(--mono); }
+
+.summary { display:flex; gap:10px; padding:14px 24px; flex-wrap:wrap; }
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:12px 16px; flex:1; min-width:120px; }
+.card .val { font-size:26px; font-weight:700; font-family:var(--mono); line-height:1.1; }
+.card .lbl { font-size:11px; color:var(--text2); margin-top:3px; text-transform:uppercase; letter-spacing:.04em; }
+.c1 .val{color:var(--accent)} .c2 .val{color:var(--purple)} .c3 .val{color:var(--cyan)} .c4 .val{color:var(--green)} .c5 .val{color:var(--orange)}
+
+.tabs { display:flex; gap:0; padding:0 24px; border-bottom:1px solid var(--border); background:var(--bg2); overflow-x:auto; }
+.tab { padding:9px 16px; font-size:12px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; color:var(--text2); white-space:nowrap; transition:all .15s; user-select:none; }
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+.content { padding:18px 24px; max-width:1400px; }
+
+/* Phase cards */
+.phases { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+.phase { background:var(--bg2); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:border-color .2s; }
+.phase:hover { border-color:var(--text3); }
+.phase.expanded { grid-column:1/-1; }
+.ph { padding:12px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+.pn { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; }
+.pn1{background:#1a3a1a;color:var(--green)} .pn2{background:#3a2a0a;color:var(--orange)} .pn3{background:#2a1a3a;color:var(--purple)} .pn4{background:#0a2a3a;color:var(--cyan)}
+.pt { font-weight:600; font-size:13px; flex:1; }
+.ps { font-size:11px; color:var(--text2); }
+.pm { font-size:11px; color:var(--text2); }
+.pa { color:var(--text3); font-size:11px; transition:transform .2s; }
+.phase.expanded .pa { transform:rotate(90deg); }
+.pb { padding:0 16px 14px; display:none; }
+.phase.expanded .pb { display:block; }
+.pb p { font-size:12px; color:var(--text2); margin-bottom:10px; line-height:1.5; }
+.tag-group { margin-bottom:8px; }
+.tag-label { font-size:10px; font-weight:600; margin-bottom:3px; }
+.tl-t{color:var(--green)} .tl-e{color:var(--purple)} .tl-v{color:var(--cyan)} .tl-f{color:var(--orange)}
+.tags { display:flex; flex-wrap:wrap; gap:4px; }
+.tg { font-family:var(--mono); font-size:11px; padding:2px 7px; border-radius:4px; }
+.tg-t{background:#1a3a1a;color:var(--green)} .tg-e{background:#2a1a3a;color:var(--purple)} .tg-v{background:#0a2a3a;color:var(--cyan)} .tg-f{background:#3a2a0a;color:var(--orange)}
+
+/* Tree */
+.tree { font-family:var(--mono); font-size:12px; line-height:2; user-select:none; }
+.tn { padding-left:22px; }
+.tn.l0 { padding-left:0; }
+.tt { cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:1px 5px; border-radius:4px; transition:background .12s; }
+.tt:hover { background:var(--bg4); }
+.ta { display:inline-block; width:11px; font-size:9px; color:var(--text3); transition:transform .15s; }
+.ta.open { transform:rotate(90deg); }
+.tc { color:var(--orange); margin-right:5px; }
+.tl { color:var(--text); }
+.ttag { font-size:9px; padding:0 5px; border-radius:5px; margin-left:5px; }
+.n1{background:#1a3a1a;color:var(--green)} .n2{background:#0a2a3a;color:var(--cyan)} .n3{background:#3a2a0a;color:var(--orange)} .n4{background:#2a1a3a;color:var(--purple)} .n5{background:#3a1a2a;color:var(--pink)}
+.tch { overflow:hidden; }
+.tch.collapsed { display:none; }
+
+/* ETL */
+.etl-row { display:flex; align-items:center; background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:8px; transition:border-color .2s; }
+.etl-row:hover { border-color:var(--text3); }
+.etl-src { flex:0 0 200px; padding:9px 12px; border-right:1px solid var(--border); }
+.etl-sn { font-family:var(--mono); font-size:11px; font-weight:600; color:var(--orange); }
+.etl-sc { font-size:10px; color:var(--text2); }
+.etl-ac { flex:0 0 70px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px; }
+.etl-al { width:36px; height:2px; background:var(--accent); position:relative; }
+.etl-al::after { content:'\25B6'; position:absolute; right:-7px; top:-6px; color:var(--accent); font-size:9px; }
+.etl-lg { font-size:8px; color:var(--text3); text-align:center; max-width:70px; margin-top:2px; }
+.etl-tgt { flex:1; padding:9px 12px; }
+.etl-tn { font-family:var(--mono); font-size:11px; font-weight:600; color:var(--green); }
+.etl-tt { font-size:10px; color:var(--text2); }
+.etl-bar { height:3px; background:var(--bg); margin-top:3px; border-radius:2px; overflow:hidden; }
+.etl-bf { height:100%; border-radius:2px; }
+.etl-ph-lbl { font-size:9px; padding:1px 6px; border-radius:6px; margin-left:auto; flex-shrink:0; margin-right:10px; }
+
+/* Tables detail */
+.td-title { font-size:13px; font-weight:600; margin:14px 0 8px; }
+.tbl-item { background:var(--bg2); border:1px solid var(--border); border-radius:6px; margin-bottom:6px; overflow:hidden; }
+.tbl-hd { padding:8px 12px; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; transition:background .12s; }
+.tbl-hd:hover { background:var(--bg4); }
+.tbl-ic { font-size:9px; color:var(--text3); width:10px; }
+.tbl-nm { font-weight:600; font-family:var(--mono); font-size:11px; flex:1; }
+.tbl-tp { font-size:9px; padding:1px 6px; border-radius:6px; font-weight:500; background:#1a3a1a; color:var(--green); }
+.tbl-cc { font-size:10px; color:var(--text3); }
+.tbl-dt { display:none; padding:8px 12px; border-top:1px solid var(--border); font-size:11px; line-height:1.8; }
+.tbl-item.open .tbl-dt { display:block; }
+.cl { display:flex; gap:6px; align-items:baseline; }
+.cn { color:var(--accent); font-family:var(--mono); min-width:170px; font-size:11px; }
+.ct { color:var(--text2); font-family:var(--mono); font-size:10px; min-width:140px; }
+.cf { color:var(--pink); font-size:9px; }
+
+/* Exec */
+.exec-item { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.exec-num { width:26px; height:26px; border-radius:50%; background:var(--bg4); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; color:var(--accent); flex-shrink:0; }
+.exec-file { font-family:var(--mono); font-size:12px; font-weight:600; flex:1; }
+.exec-desc { font-size:11px; color:var(--text2); flex:2; }
+.exec-ph { font-size:9px; padding:2px 7px; border-radius:6px; flex-shrink:0; }
+
+/* Prompt */
+.prompt-area { background:var(--bg2); border:1px solid var(--border); border-radius:8px; margin:18px 24px; padding:12px 16px; }
+.prompt-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.prompt-title { font-size:11px; color:var(--text3); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.copy-btn { background:var(--bg4); border:1px solid var(--border); color:var(--text2); padding:3px 10px; border-radius:5px; cursor:pointer; font-size:10px; transition:all .15s; font-family:var(--font); }
+.copy-btn:hover { border-color:var(--accent); color:var(--accent); }
+.prompt-text { font-size:11px; color:var(--text2); line-height:1.6; white-space:pre-wrap; }
+
+@media(max-width:768px){
+  .summary{flex-direction:column}
+  .etl-row{flex-direction:column}
+  .etl-src{flex:none;border-right:none;border-bottom:1px solid var(--border)}
+  .etl-ac{flex:none;transform:rotate(90deg);padding:2px}
+  .phases{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SOAL <span>Módulo Financeiro</span></h1>
+  <span class="badge">V0 · Mar 2026</span>
+</div>
+
+<div class="summary">
+  <div class="card c1"><div class="val">13</div><div class="lbl">Tabelas</div></div>
+  <div class="card c2"><div class="val">14</div><div class="lbl">ENUMs</div></div>
+  <div class="card c3"><div class="val">12</div><div class="lbl">Views</div></div>
+  <div class="card c4"><div class="val">~35k</div><div class="lbl">Registros ETL</div></div>
+  <div class="card c5"><div class="val">4</div><div class="lbl">Fases</div></div>
+</div>
+
+<div class="tabs" id="tabsBar"></div>
+<div class="content" id="contentArea"></div>
+
+<div class="prompt-area">
+  <div class="prompt-hdr">
+    <span class="prompt-title">Prompt de Contexto</span>
+    <button class="copy-btn" id="copyBtn">Copiar</button>
+  </div>
+  <div class="prompt-text" id="promptText"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var TABS = [
+  {id:'overview',label:'Visão Geral'},
+  {id:'tree',label:'Hierarquia CC'},
+  {id:'etl',label:'Fluxo ETL'},
+  {id:'tables',label:'Tabelas & Colunas'},
+  {id:'exec',label:'Execução SQL'}
+];
+
+var PHASES = [
+  {
+    num:1,cls:'pn1',title:'Centro de Custo + Custeio',sub:'Prioridade #1 — Claudio',
+    desc:'Hierarquia de centros de custo (6 níveis) + acumulação de custos operacionais + orçamento por safra. Responde: "Quanto custa 1 ha de soja?"',
+    tables:['centro_custos','custo_operacoes','orcamento_safras'],
+    enums:['tipo_centro_custo (11)','natureza_centro_custo (4)','tipo_custo (7)','tipo_rateio (5)'],
+    views:['vw_centro_custo_hierarquia','vw_custo_por_talhao_safra','vw_custo_por_cultura_safra'],
+    funcs:['fn_custo_acumulado(cc_id, inicio, fim)'],
+    etl:'~22.915 registros'
+  },
+  {
+    num:2,cls:'pn2',title:'Contas a Pagar/Receber',sub:'Operação diária — Valentina',
+    desc:'NF-e, contas a pagar e receber com categorização automática. Fluxo de caixa projetado. Responde: "Quanto tenho a pagar nos próximos 30 dias?"',
+    tables:['notas_fiscais','nota_fiscal_itens','contas_pagar','contas_receber'],
+    enums:['tipo_nota_fiscal (2)','status_nota_fiscal (5)','origem_nota_fiscal (4)','categoria_conta_pagar (8)','status_conta (5)','forma_pagamento (6)','categoria_conta_receber (6)'],
+    views:['vw_contas_pagar_vencimento','vw_contas_receber_pipeline','vw_fluxo_caixa_projetado'],
+    funcs:[],
+    etl:'~10.602 registros'
+  },
+  {
+    num:3,cls:'pn3',title:'Contratos + Depreciação',sub:'Comercialização — Claudio',
+    desc:'Contratos de venda de grãos, entregas, CPR, arrendamento e depreciação de ativos. Responde: "Quanto já entreguei do contrato Castrolanda?"',
+    tables:['contratos_comerciais','contrato_entregas','cpr_documentos','contratos_arrendamento','contrato_arrendamento_talhoes','depreciacao_ativos'],
+    enums:['tipo_contrato_comercial (5)','status_contrato (5)','metodo_depreciacao (3)'],
+    views:[],
+    funcs:[],
+    etl:'~1.479 registros'
+  },
+  {
+    num:4,cls:'pn4',title:'Gold Views (Dashboards)',sub:'Analytics — Todos',
+    desc:'Views agregadas que alimentam os 5 dashboards financeiros. Camada Gold do Medallion Architecture.',
+    tables:[],
+    enums:[],
+    views:['vw_executive_overview → D01','vw_custo_treemap → D07','vw_budget_vs_actual → D07','vw_contas_pagar_calendar → D03','vw_contas_receber_timeline → D02','vw_custo_por_ha_trend → D07'],
+    funcs:[],
+    etl:'—'
+  }
+];
+
+var CC_TREE = {
+  code:'01',label:'SOAL (Organização)',level:1,children:[
+    {code:'01.01',label:'Faz. Santana do Iapo',level:2,children:[
+      {code:'01.01.025',label:'Safra 24/25',level:3,children:[
+        {code:'01.01.025.01',label:'Soja',level:4,tag:'custo/ha',children:[]},
+        {code:'01.01.025.02',label:'Milho',level:4,tag:'custo/ha',children:[]},
+        {code:'01.01.025.03',label:'Feijão',level:4,tag:'custo/ha',children:[]}
+      ]},
+      {code:'01.01.026',label:'Safra 25/26',level:3,children:[
+        {code:'01.01.026.01',label:'Soja',level:4,children:[
+          {code:'01.01.026.01.001',label:'Talhão Bonin (85.5 ha)',level:5,children:[]},
+          {code:'01.01.026.01.002',label:'Talhão Sede (120 ha)',level:5,children:[]}
+        ]},
+        {code:'01.01.026.02',label:'Milho',level:4,children:[]}
+      ]},
+      {code:'01.01.800',label:'Mecanização',level:3,children:[
+        {code:'01.01.800.01',label:'Tratores',level:4,children:[]},
+        {code:'01.01.800.02',label:'Colheitadeiras',level:4,children:[]}
+      ]},
+      {code:'01.01.810',label:'UBG',level:3,children:[
+        {code:'01.01.810.01',label:'Recepção/Balança',level:4,children:[]},
+        {code:'01.01.810.02',label:'Secagem',level:4,children:[]},
+        {code:'01.01.810.03',label:'Armazenagem',level:4,children:[]}
+      ]}
+    ]},
+    {code:'01.02',label:'Faz. São João',level:2,children:[
+      {code:'01.02.025',label:'Safra 24/25',level:3,children:[
+        {code:'01.02.025.01',label:'Soja',level:4,children:[]},
+        {code:'01.02.025.02',label:'Trigo',level:4,children:[]}
+      ]}
+    ]},
+    {code:'01.03',label:'Faz. Santo André',level:2,children:[]},
+    {code:'01.04',label:'Faz. São Francisco',level:2,children:[]},
+    {code:'01.05',label:'Faz. Lajeadinho',level:2,children:[]},
+    {code:'01.90',label:'Administrativo',level:2,children:[
+      {code:'01.90.001',label:'Escritório',level:3,children:[]},
+      {code:'01.90.002',label:'RH',level:3,children:[]},
+      {code:'01.90.003',label:'Contabilidade',level:3,children:[]}
+    ]},
+    {code:'01.95',label:'Financeiro',level:2,children:[
+      {code:'01.95.001',label:'Custos Financeiros',level:3,children:[]},
+      {code:'01.95.002',label:'Arrendamentos',level:3,children:[]},
+      {code:'01.95.003',label:'Depreciação',level:3,children:[]}
+    ]}
+  ]
+};
+
+var ETL_DATA = [
+  {src:'custos_insumo_coop',count:553,target:'custo_operacoes',tipo:"tipo='insumo'",logic:'safra+cultura → CC4',phase:1},
+  {src:'consumo_agriwin',count:21162,target:'custo_operacoes',tipo:'tipo variado (CASE)',logic:'tipo_op → tipo_custo',phase:1},
+  {src:'abastecimentos',count:1200,target:'custo_operacoes',tipo:'mecanização/diesel',logic:'CC mecanização',phase:1},
+  {src:'fluxo_caixa_fsi (débito)',count:10119,target:'contas_pagar',tipo:'split débito',logic:'CASE categorização',phase:2},
+  {src:'fluxo_caixa_fsi (crédito)',count:10119,target:'contas_receber',tipo:'split crédito',logic:'CASE categorização',phase:2},
+  {src:'financiamentos_coop',count:220,target:'contas_pagar',tipo:'financiamento',logic:'movimentos débito',phase:2},
+  {src:'vendas_grao',count:170,target:'contas_receber',tipo:'venda_cooperativa',logic:'valor_credito',phase:2},
+  {src:'vendas_diretas',count:73,target:'contas_receber',tipo:'venda_direta',logic:'data_pagamento',phase:2},
+  {src:'vendas_grao (GROUP BY)',count:170,target:'contratos_comerciais',tipo:'~30 contratos',logic:'agrupar por contrato',phase:3},
+  {src:'cargas_a_carga',count:1309,target:'contrato_entregas',tipo:'1 carga=1 entrega',logic:'JOIN contrato',phase:3}
+];
+
+var TABLES_DETAIL = {
+  centro_custos:{phase:1,cols:[
+    ['centro_custo_id','UUID PK',''],['parent_id','UUID FK','→ self'],['organization_id','UUID FK','→ organizations'],
+    ['codigo','VARCHAR(20) UNIQUE','XX.YY.ZZZ.WW.NNN'],['nome','VARCHAR(100)',''],['nivel','INTEGER CHECK(1-6)',''],
+    ['tipo','tipo_centro_custo','ENUM 11 valores'],['natureza','natureza_centro_custo','ENUM 4 valores'],
+    ['permite_lancamento','BOOLEAN','só níveis 4-5'],
+    ['fazenda_id','UUID FK NULL','DENORM'],['safra_id','UUID FK NULL','DENORM'],['cultura_id','UUID FK NULL','DENORM'],
+    ['talhao_id','UUID FK NULL','DENORM'],['maquina_id','UUID FK NULL','DENORM'],['silo_id','UUID FK NULL','DENORM']
+  ]},
+  custo_operacoes:{phase:1,cols:[
+    ['custo_operacao_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],['centro_custo_id','UUID FK NOT NULL','→ centro_custos'],
+    ['tipo_custo','tipo_custo','ENUM 7 valores'],['subtipo','VARCHAR(50)',''],['descricao','TEXT',''],
+    ['data_custo','DATE NOT NULL',''],['quantidade','DECIMAL(12,4)',''],['unidade','VARCHAR(20)',''],
+    ['valor_unitario','DECIMAL(14,4)',''],['valor_total','DECIMAL(14,2) NOT NULL',''],['custo_por_ha','DECIMAL(10,2)','calculado'],
+    ['rateio_tipo','tipo_rateio','ENUM 5 valores'],
+    ['safra_id','UUID FK NULL','DENORM'],['cultura_id','UUID FK NULL','DENORM'],
+    ['source_table','VARCHAR(50)','rastreabilidade Bronze'],['source_id','UUID','rastreabilidade Bronze']
+  ]},
+  orcamento_safras:{phase:1,cols:[
+    ['orcamento_safra_id','UUID PK',''],['safra_id','UUID FK','→ safras'],['centro_custo_id','UUID FK','→ centro_custos'],
+    ['categoria','tipo_custo','ENUM'],['valor_previsto','DECIMAL(14,2)',''],['valor_por_ha','DECIMAL(10,2)',''],
+    ['area_prevista_ha','DECIMAL(10,2)',''],['aprovado_por','UUID FK NULL','→ users'],['data_aprovacao','DATE','']
+  ]},
+  notas_fiscais:{phase:2,cols:[
+    ['nota_fiscal_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['chave_nfe','VARCHAR(44) UNIQUE',''],['parceiro_id','UUID FK NULL','→ parceiros_comerciais'],
+    ['tipo','tipo_nota_fiscal','entrada/saida'],['status_nf','status_nota_fiscal','ENUM 5 valores'],
+    ['data_emissao','DATE',''],['valor_total','DECIMAL(14,2)',''],['impostos_json','JSONB','ICMS, PIS, COFINS...']
+  ]},
+  nota_fiscal_itens:{phase:2,cols:[
+    ['nota_fiscal_item_id','UUID PK',''],['nota_fiscal_id','UUID FK','ON DELETE CASCADE'],
+    ['produto_insumo_id','UUID FK NULL','→ produtos_insumo'],['ncm','VARCHAR(10)',''],['cfop','VARCHAR(5)',''],
+    ['quantidade','DECIMAL(12,4)',''],['valor_unitario','DECIMAL(14,4)',''],['valor_total','DECIMAL(14,2)','']
+  ]},
+  contas_pagar:{phase:2,cols:[
+    ['conta_pagar_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['parceiro_id','UUID FK NULL','→ parceiros_comerciais'],['centro_custo_id','UUID FK NULL','→ centro_custos'],
+    ['nota_fiscal_id','UUID FK NULL','→ notas_fiscais'],['categoria','categoria_conta_pagar','ENUM 8 valores'],
+    ['status_conta','status_conta','ENUM 5 valores'],['descricao','TEXT',''],
+    ['data_emissao','DATE',''],['data_vencimento','DATE',''],['data_pagamento','DATE NULL',''],
+    ['valor_original','DECIMAL(14,2)',''],['valor_pago','DECIMAL(14,2) NULL',''],
+    ['forma_pagamento','forma_pagamento NULL','ENUM 6 valores'],
+    ['source_table','VARCHAR(50)','rastreabilidade'],['source_id','UUID','rastreabilidade']
+  ]},
+  contas_receber:{phase:2,cols:[
+    ['conta_receber_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['parceiro_id','UUID FK NULL','→ parceiros_comerciais'],['nota_fiscal_id','UUID FK NULL','→ notas_fiscais'],
+    ['categoria','categoria_conta_receber','ENUM 6 valores'],['status_conta','status_conta','ENUM 5 valores'],
+    ['descricao','TEXT',''],['data_emissao','DATE',''],['data_vencimento','DATE',''],['data_recebimento','DATE NULL',''],
+    ['valor_original','DECIMAL(14,2)',''],['valor_recebido','DECIMAL(14,2) NULL',''],['conta_bancaria','VARCHAR(50) NULL',''],
+    ['source_table','VARCHAR(50)','rastreabilidade'],['source_id','UUID','rastreabilidade']
+  ]},
+  contratos_comerciais:{phase:3,cols:[
+    ['contrato_comercial_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['parceiro_id','UUID FK NULL','→ parceiros_comerciais'],['safra_id','UUID FK','→ safras'],['cultura_id','UUID FK','→ culturas'],
+    ['tipo','tipo_contrato_comercial','ENUM 5 valores'],['status_contrato','status_contrato','ENUM 5 valores'],
+    ['numero_contrato','VARCHAR(50)','UNIQUE com org_id'],
+    ['quantidade_kg','DECIMAL(14,2)',''],['quantidade_sacas','DECIMAL(12,2)',''],
+    ['preco_por_saca','DECIMAL(10,2)',''],['valor_total','DECIMAL(14,2)',''],
+    ['quantidade_entregue_kg','DECIMAL(14,2)',''],['pct_entregue','DECIMAL(5,2)','']
+  ]},
+  contrato_entregas:{phase:3,cols:[
+    ['contrato_entrega_id','UUID PK',''],['contrato_comercial_id','UUID FK','→ contratos_comerciais'],
+    ['carga_a_carga_id','UUID FK NULL','→ cargas_a_carga'],['data_entrega','DATE',''],
+    ['quantidade_kg','DECIMAL(14,2)',''],['quantidade_sacas','DECIMAL(12,2)',''],
+    ['numero_documento','VARCHAR(50)',''],['placa','VARCHAR(10)',''],['motorista','VARCHAR(100)',''],['qualidade_json','JSONB','']
+  ]},
+  cpr_documentos:{phase:3,cols:[
+    ['cpr_documento_id','UUID PK',''],['contrato_comercial_id','UUID FK','→ contratos_comerciais'],
+    ['numero_cpr','VARCHAR(50)',''],['data_emissao','DATE',''],['data_vencimento','DATE',''],
+    ['valor_face','DECIMAL(14,2)',''],['status','VARCHAR(20)','']
+  ]},
+  contratos_arrendamento:{phase:3,cols:[
+    ['contrato_arrendamento_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['parceiro_id','UUID FK','→ parceiros (arrendador)'],['descricao','TEXT',''],
+    ['data_inicio','DATE',''],['data_fim','DATE',''],['valor_mensal','DECIMAL(14,2)',''],['area_total_ha','DECIMAL(10,2)','']
+  ]},
+  depreciacao_ativos:{phase:3,cols:[
+    ['depreciacao_ativo_id','UUID PK',''],['organization_id','UUID FK','→ organizations'],
+    ['maquina_id','UUID FK','→ maquinas'],['metodo','metodo_depreciacao','ENUM 3 valores'],
+    ['valor_aquisicao','DECIMAL(14,2)',''],['valor_residual','DECIMAL(14,2)',''],
+    ['vida_util_anos','INTEGER','ou vida_util_horas'],['data_inicio','DATE',''],['depreciacao_mensal','DECIMAL(10,2)','calculado']
+  ]}
+};
+
+var EXEC_ORDER = [
+  {num:1,file:'03_DDL_FINANCEIRO_CUSTEIO.sql',desc:'ENUMs + tabelas Fase 1 + views + função',phase:1},
+  {num:2,file:'03_INSERT_CENTRO_CUSTO_SEED.sql',desc:'Gera ~300-500 nós CC dinamicamente (PL/pgSQL)',phase:1},
+  {num:3,file:'03_ETL_CUSTO_OPERACAO.sql',desc:'ETL: insumos + agriwin + abastecimentos → custo_operacoes',phase:1},
+  {num:4,file:'04_DDL_FINANCEIRO_CONTAS.sql',desc:'ENUMs + tabelas Fase 2 + views',phase:2},
+  {num:5,file:'04_ETL_CONTAS_PR.sql',desc:'ETL: fluxo_caixa + financiamentos + vendas → contas P/R',phase:2},
+  {num:6,file:'05_DDL_FINANCEIRO_CONTRATOS.sql',desc:'ENUMs + tabelas Fase 3 + ALTER FKs cross-fase',phase:3},
+  {num:7,file:'05_ETL_CONTRATOS.sql',desc:'ETL: vendas_grao → contratos, cargas → entregas',phase:3},
+  {num:8,file:'06_VIEWS_GOLD_FINANCEIRO.sql',desc:'6 views Gold para dashboards (01, 02, 03, 07)',phase:4}
+];
+
+var maxETL = 0;
+ETL_DATA.forEach(function(e){ if(e.count>maxETL) maxETL=e.count; });
+
+var state = {
+  tab:'overview',
+  expandedPhases:{},
+  expandedTables:{},
+  expandedCC:{'01':true,'01.01':true,'01.01.025':true,'01.01.026':true}
+};
+
+// ── DOM helpers ──
+function el(tag,cls,text){
+  var e=document.createElement(tag);
+  if(cls) e.className=cls;
+  if(text) e.textContent=text;
+  return e;
+}
+
+// ── TABS ──
+function renderTabs(){
+  var bar=document.getElementById('tabsBar');
+  bar.textContent='';
+  TABS.forEach(function(t){
+    var d=el('div','tab'+(state.tab===t.id?' active':''),t.label);
+    d.addEventListener('click',function(){ switchTab(t.id); });
+    bar.appendChild(d);
+  });
+}
+
+function switchTab(id){
+  state.tab=id;
+  renderTabs();
+  renderContent();
+  updatePrompt();
+}
+
+// ── CONTENT ──
+function renderContent(){
+  var area=document.getElementById('contentArea');
+  area.textContent='';
+  if(state.tab==='overview') renderOverview(area);
+  else if(state.tab==='tree') renderTreeTab(area);
+  else if(state.tab==='etl') renderETLTab(area);
+  else if(state.tab==='tables') renderTablesTab(area);
+  else if(state.tab==='exec') renderExecTab(area);
+}
+
+// ── OVERVIEW ──
+function renderOverview(area){
+  var wrap=el('div','phases');
+  PHASES.forEach(function(p){
+    var exp=!!state.expandedPhases[p.num];
+    var div=el('div','phase'+(exp?' expanded':''));
+
+    var h=el('div','ph');
+    var pn=el('div','pn '+p.cls,String(p.num));
+    h.appendChild(pn);
+
+    var info=el('div');
+    info.style.flex='1';
+    info.appendChild(el('div','pt',p.title));
+    info.appendChild(el('div','ps',p.sub));
+    h.appendChild(info);
+
+    h.appendChild(el('div','pm',p.tables.length+'T '+p.enums.length+'E '+p.views.length+'V'));
+    h.appendChild(el('div','pa','\u25B6'));
+
+    h.addEventListener('click',(function(n){return function(){togglePhase(n);};})(p.num));
+    div.appendChild(h);
+
+    var b=el('div','pb');
+    b.appendChild(el('p','',p.desc));
+
+    if(p.tables.length) b.appendChild(makeTagGroup('TABELAS','tl-t','tg-t',p.tables));
+    if(p.enums.length) b.appendChild(makeTagGroup('ENUMS','tl-e','tg-e',p.enums));
+    if(p.views.length) b.appendChild(makeTagGroup('VIEWS','tl-v','tg-v',p.views));
+    if(p.funcs.length) b.appendChild(makeTagGroup('FUNÇÕES','tl-f','tg-f',p.funcs));
+
+    b.appendChild(el('div','','ETL: '+p.etl));
+    b.lastChild.style.cssText='font-size:11px;color:var(--text2);margin-top:6px';
+
+    div.appendChild(b);
+    wrap.appendChild(div);
+  });
+  area.appendChild(wrap);
+}
+
+function makeTagGroup(label,lCls,tCls,items){
+  var g=el('div','tag-group');
+  g.appendChild(el('div','tag-label '+lCls,label));
+  var t=el('div','tags');
+  items.forEach(function(item){ t.appendChild(el('span','tg '+tCls,item)); });
+  g.appendChild(t);
+  return g;
+}
+
+function togglePhase(num){
+  state.expandedPhases[num]=!state.expandedPhases[num];
+  renderContent();
+}
+
+// ── TREE ──
+function renderTreeTab(area){
+  var info=el('p');
+  info.style.cssText='font-size:12px;color:var(--text2);margin-bottom:12px';
+  info.textContent='Centro de Custo — hierarquia 6 níveis, ~300-500 nós. Código: XX.YY.ZZZ.WW.NNN. Clique para expandir/colapsar.';
+  area.appendChild(info);
+
+  var treeDiv=el('div','tree');
+  buildTree(treeDiv,CC_TREE,0);
+  area.appendChild(treeDiv);
+}
+
+function buildTree(parent,node,depth){
+  var hasKids=node.children&&node.children.length>0;
+  var isOpen=!!state.expandedCC[node.code];
+
+  var tn=el('div','tn l'+depth);
+  var tt=el('div','tt');
+  tt.style.cursor='pointer';
+
+  if(hasKids){
+    var arrow=el('span','ta'+(isOpen?' open':''),'\u25B6');
+    tt.appendChild(arrow);
+  } else {
+    var dot=el('span','ta','\u00B7');
+    dot.style.color='transparent';
+    tt.appendChild(dot);
+  }
+
+  tt.appendChild(el('span','tc',node.code));
+  tt.appendChild(el('span','tl',node.label));
+  tt.appendChild(el('span','ttag n'+node.level,'N'+node.level));
+  if(node.tag) tt.appendChild(el('span','ttag n'+node.level,node.tag));
+
+  tt.addEventListener('click',(function(code){return function(){
+    state.expandedCC[code]=!state.expandedCC[code];
+    renderContent();
+    updatePrompt();
+  };})(node.code));
+
+  tn.appendChild(tt);
+
+  if(hasKids){
+    var ch=el('div','tch'+(isOpen?'':' collapsed'));
+    node.children.forEach(function(child){ buildTree(ch,child,depth+1); });
+    tn.appendChild(ch);
+  }
+
+  parent.appendChild(tn);
+}
+
+// ── ETL ──
+function renderETLTab(area){
+  var info=el('p');
+  info.style.cssText='font-size:12px;color:var(--text2);margin-bottom:12px';
+  info.textContent='Bronze → Silver: 8 fontes, ~35k registros transformados via 3 scripts ETL.';
+  area.appendChild(info);
+
+  var phaseColors={1:'var(--green)',2:'var(--orange)',3:'var(--purple)'};
+  var phaseBgs={1:'#1a3a1a',2:'#3a2a0a',3:'#2a1a3a'};
+
+  ETL_DATA.forEach(function(e){
+    var pct=Math.max(3,(e.count/maxETL)*100);
+    var row=el('div','etl-row');
+
+    var src=el('div','etl-src');
+    src.appendChild(el('div','etl-sn',e.src));
+    src.appendChild(el('div','etl-sc',e.count.toLocaleString('pt-BR')+' registros'));
+    var bar=el('div','etl-bar');
+    var bf=el('div','etl-bf');
+    bf.style.width=pct+'%';
+    bf.style.background=phaseColors[e.phase]||'var(--accent)';
+    bar.appendChild(bf);
+    src.appendChild(bar);
+    row.appendChild(src);
+
+    var ac=el('div','etl-ac');
+    ac.appendChild(el('div','etl-al'));
+    ac.appendChild(el('div','etl-lg',e.logic));
+    row.appendChild(ac);
+
+    var tgt=el('div','etl-tgt');
+    tgt.appendChild(el('div','etl-tn',e.target));
+    tgt.appendChild(el('div','etl-tt',e.tipo));
+    row.appendChild(tgt);
+
+    var lbl=el('span','etl-ph-lbl','F'+e.phase);
+    lbl.style.background=phaseBgs[e.phase]||'#0a2a3a';
+    lbl.style.color=phaseColors[e.phase]||'var(--cyan)';
+    row.appendChild(lbl);
+
+    area.appendChild(row);
+  });
+}
+
+// ── TABLES ──
+function renderTablesTab(area){
+  var info=el('p');
+  info.style.cssText='font-size:12px;color:var(--text2);margin-bottom:12px';
+  info.textContent='Clique na tabela para ver colunas, ENUMs e FKs.';
+  area.appendChild(info);
+
+  var byPhase={};
+  Object.keys(TABLES_DETAIL).forEach(function(name){
+    var td=TABLES_DETAIL[name];
+    if(!byPhase[td.phase]) byPhase[td.phase]=[];
+    byPhase[td.phase].push({name:name,cols:td.cols,phase:td.phase});
+  });
+
+  Object.keys(byPhase).sort().forEach(function(phase){
+    var ph=PHASES[phase-1];
+    area.appendChild(el('div','td-title','Fase '+phase+': '+ph.title));
+
+    byPhase[phase].forEach(function(tbl){
+      var isOpen=!!state.expandedTables[tbl.name];
+      var item=el('div','tbl-item'+(isOpen?' open':''));
+
+      var hd=el('div','tbl-hd');
+      hd.appendChild(el('span','tbl-ic',isOpen?'\u25BC':'\u25B6'));
+      hd.appendChild(el('span','tbl-nm',tbl.name));
+      hd.appendChild(el('span','tbl-tp','table'));
+      hd.appendChild(el('span','tbl-cc',tbl.cols.length+' colunas'));
+
+      hd.addEventListener('click',(function(n){return function(){
+        state.expandedTables[n]=!state.expandedTables[n];
+        renderContent();
+        updatePrompt();
+      };})(tbl.name));
+      item.appendChild(hd);
+
+      var dt=el('div','tbl-dt');
+      tbl.cols.forEach(function(c){
+        var line=el('div','cl');
+        line.appendChild(el('span','cn',c[0]));
+        line.appendChild(el('span','ct',c[1]));
+        if(c[2]) line.appendChild(el('span','cf',c[2]));
+        dt.appendChild(line);
+      });
+      item.appendChild(dt);
+
+      area.appendChild(item);
+    });
+  });
+}
+
+// ── EXEC ──
+function renderExecTab(area){
+  var info=el('p');
+  info.style.cssText='font-size:12px;color:var(--text2);margin-bottom:12px';
+  info.textContent='Ordem de execução para João — rodar sequencialmente após 00_DDL + 01_SEEDS + 02_DADOS.';
+  area.appendChild(info);
+
+  var phaseColors={1:'var(--green)',2:'var(--orange)',3:'var(--purple)',4:'var(--cyan)'};
+  var phaseBgs={1:'#1a3a1a',2:'#3a2a0a',3:'#2a1a3a',4:'#0a2a3a'};
+
+  EXEC_ORDER.forEach(function(e){
+    var item=el('div','exec-item');
+    item.appendChild(el('div','exec-num',String(e.num)));
+    item.appendChild(el('div','exec-file',e.file));
+    item.appendChild(el('div','exec-desc',e.desc));
+
+    var ph=el('span','exec-ph','Fase '+e.phase);
+    ph.style.background=phaseBgs[e.phase];
+    ph.style.color=phaseColors[e.phase];
+    item.appendChild(ph);
+
+    area.appendChild(item);
+  });
+}
+
+// ── PROMPT ──
+function updatePrompt(){
+  var tab=state.tab;
+  var text='';
+  if(tab==='overview'){
+    text='O módulo financeiro SOAL tem 4 fases: (1) Custeio — centro de custo hierárquico 6 níveis + custo_operacoes com ~22.9k registros ETL, responde "custo/ha de soja"; (2) Contas P/R — NF-e + contas a pagar/receber com ~10.6k registros ETL do fluxo de caixa FSI, responde "quanto pagar em 30 dias"; (3) Contratos — comercialização grãos + depreciação com ~1.5k registros; (4) Gold Views — 6 views para dashboards 01/02/03/07. Total: 13 tabelas, 14 ENUMs, 12 views, 1 função, ~35k registros Bronze→Silver.';
+  } else if(tab==='tree'){
+    var expanded=Object.keys(state.expandedCC).filter(function(k){return state.expandedCC[k];});
+    text='Centro de Custo SOAL: hierarquia self-referential 6 níveis. Código XX.YY.ZZZ.WW.NNN. N1=Org, N2=Fazenda/Depto, N3=Safra, N4=Cultura, N5=Talhão. ~300-500 nós gerados de 9 fazendas × 9 safras × 126 culturas × 71 talhões. Nós expandidos: '+expanded.join(', ')+'.';
+  } else if(tab==='etl'){
+    text='ETL Bronze→Silver: 8 fontes → 4 tabelas Silver. Maiores: consumo_agriwin (21.162 → custo_operacoes), fluxo_caixa_fsi (10.119 → split contas P/R), cargas_a_carga (1.309 → contrato_entregas). Scripts: 03_ETL_CUSTO_OPERACAO.sql, 04_ETL_CONTAS_PR.sql, 05_ETL_CONTRATOS.sql.';
+  } else if(tab==='tables'){
+    var openTables=Object.keys(state.expandedTables).filter(function(k){return state.expandedTables[k];});
+    text=openTables.length
+      ? 'Tabelas em detalhe: '+openTables.map(function(t){return t+' (Fase '+TABLES_DETAIL[t].phase+', '+TABLES_DETAIL[t].cols.length+' cols)';}).join('; ')+'.'
+      : '13 tabelas financeiras em 3 fases. F1: centro_custos + custo_operacoes + orcamento_safras. F2: notas_fiscais + nota_fiscal_itens + contas_pagar + contas_receber. F3: contratos_comerciais + contrato_entregas + cpr_documentos + contratos_arrendamento + contrato_arrendamento_talhoes + depreciacao_ativos.';
+  } else if(tab==='exec'){
+    text='Execução para João (pós 00+01+02): '+EXEC_ORDER.map(function(e){return e.num+'. psql -f '+e.file;}).join(' → ')+'. 8 scripts sequenciais, 4 fases.';
+  }
+  document.getElementById('promptText').textContent=text;
+}
+
+document.getElementById('copyBtn').addEventListener('click',function(){
+  var btn=this;
+  navigator.clipboard.writeText(document.getElementById('promptText').textContent);
+  btn.textContent='Copiado!';
+  setTimeout(function(){btn.textContent='Copiar';},1500);
+});
+
+renderTabs();
+renderContent();
+updatePrompt();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SOAL — Controle de Secagem</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1e2422;--bg2:#262c2a;--bg3:#313836;--bg4:#424a47;
+  --fg:#d4dbd6;--fg2:#8a9a8c;--fg3:#5c6b5e;
+  --accent:#4caf7c;--accent2:#3d9468;--accent-dim:rgba(76,175,124,.15);
+  --yellow:#d4a63c;--red:#e05a50;--orange:#d47a3a;--blue:#5a9fd4;
+  --radius:10px;--radius-sm:6px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.4;display:flex;flex-direction:column}
+
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bg4);padding:.6rem 1rem;text-align:center;flex-shrink:0}
+.topbar h1{font-size:1rem;font-weight:700;letter-spacing:-.01em}
+.topbar h1 span{color:var(--accent)}
+.topbar .sub{font-size:.7rem;color:var(--fg3);margin-top:.1rem;font-family:var(--mono)}
+
+.screen-area{flex:1;overflow-y:auto;overflow-x:hidden;padding:0}
+.screen{display:none;max-width:480px;margin:0 auto;padding:1rem 1rem 2rem}
+.screen.active{display:block}
+
+.field{margin-bottom:.85rem}
+.field label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--fg2);margin-bottom:.3rem;font-weight:600}
+.field input,.field select,.field textarea{
+  width:100%;min-height:48px;background:var(--bg3);border:1.5px solid var(--bg4);
+  border-radius:var(--radius);color:var(--fg);font-size:1rem;padding:.5rem .75rem;
+  font-family:var(--font);outline:none;transition:border-color .15s;-webkit-appearance:none
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field input::placeholder{color:var(--fg3)}
+.field textarea{min-height:80px;resize:vertical}
+.field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a9a8c'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2rem}
+.field select option{background:var(--bg2);color:var(--fg)}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+
+.num-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.85rem}
+.num-cell{background:var(--bg3);border:1.5px solid var(--bg4);border-radius:var(--radius);padding:.5rem;text-align:center;transition:border-color .15s}
+.num-cell:focus-within{border-color:var(--accent)}
+.num-cell .nc-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--fg3);font-weight:600;margin-bottom:.25rem}
+.num-cell input{width:100%;background:transparent;border:none;color:var(--fg);font-size:1.5rem;font-weight:700;text-align:center;outline:none;font-family:var(--mono);padding:.1rem 0}
+.num-cell input::placeholder{color:var(--fg3);font-weight:400;font-size:1rem}
+.num-cell .nc-unit{font-size:.65rem;color:var(--fg3)}
+
+.qsel{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.3rem}
+.qsel-btn{
+  min-width:48px;min-height:42px;background:var(--bg3);border:1.5px solid var(--bg4);
+  border-radius:var(--radius-sm);color:var(--fg2);font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  padding:.3rem .6rem;font-family:var(--mono)
+}
+.qsel-btn:hover{border-color:var(--fg3);color:var(--fg)}
+.qsel-btn.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:.3rem}
+.tipo-btn{
+  min-height:48px;background:var(--bg3);border:1.5px solid var(--bg4);border-radius:var(--radius);
+  color:var(--fg2);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem
+}
+.tipo-btn:hover{border-color:var(--fg3)}
+.tipo-btn.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.tipo-btn small{font-size:.6rem;font-weight:400;text-transform:uppercase;letter-spacing:.04em}
+
+.btn-primary{
+  width:100%;min-height:56px;background:var(--accent);border:none;border-radius:var(--radius);
+  color:#fff;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .15s;
+  text-transform:uppercase;letter-spacing:.04em;margin-top:1rem
+}
+.btn-primary:hover{background:var(--accent2)}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+.btn-secondary{
+  width:100%;min-height:48px;background:var(--bg3);border:1.5px solid var(--bg4);border-radius:var(--radius);
+  color:var(--fg2);font-size:.9rem;font-weight:600;cursor:pointer;transition:all .15s;margin-top:.5rem
+}
+.btn-secondary:hover{border-color:var(--fg3);color:var(--fg)}
+
+.readings-wrap{margin-top:1.25rem;border-top:1px solid var(--bg4);padding-top:.85rem}
+.readings-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--fg3);font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between}
+.readings-title .badge{background:var(--accent);color:#fff;font-size:.65rem;padding:.1rem .45rem;border-radius:8px;font-weight:700}
+.readings-empty{text-align:center;color:var(--fg3);font-size:.85rem;padding:1.5rem 0}
+
+.rtable{width:100%;border-collapse:collapse;font-size:.72rem;font-family:var(--mono)}
+.rtable th{color:var(--fg3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .25rem;text-align:center;border-bottom:1px solid var(--bg4);font-size:.6rem;position:sticky;top:0;background:var(--bg)}
+.rtable td{padding:.35rem .25rem;text-align:center;border-bottom:1px solid var(--bg3);color:var(--fg2)}
+.rtable td:first-child{color:var(--fg);font-weight:600}
+.rtable .del-btn{background:none;border:none;color:var(--fg3);cursor:pointer;font-size:.9rem;padding:0 .2rem;transition:color .15s}
+.rtable .del-btn:hover{color:var(--red)}
+
+.rtable-scroll{max-height:240px;overflow-y:auto;border:1px solid var(--bg4);border-radius:var(--radius-sm)}
+
+.totals{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:.75rem}
+.total-card{background:var(--bg3);border-radius:var(--radius-sm);padding:.5rem;text-align:center}
+.total-card .tv{font-size:1.1rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.total-card .tl{font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--fg3);margin-top:.15rem}
+
+.summary-card{background:var(--bg3);border-radius:var(--radius);padding:.85rem;margin-bottom:.75rem}
+.summary-card h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--fg3);font-weight:600;margin-bottom:.5rem}
+.summary-row{display:flex;justify-content:space-between;padding:.25rem 0;font-size:.85rem}
+.summary-row .sk{color:var(--fg2)}
+.summary-row .sv{color:var(--fg);font-weight:600;font-family:var(--mono)}
+
+.tabbar{
+  display:flex;background:var(--bg2);border-top:1px solid var(--bg4);flex-shrink:0;
+  padding:.25rem .5rem calc(.25rem + env(safe-area-inset-bottom, 0px))
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  padding:.5rem .25rem;cursor:pointer;border-radius:var(--radius-sm);
+  transition:all .15s;position:relative;border:none;background:none;color:var(--fg3);font-family:var(--font)
+}
+.tab:hover{background:var(--bg3)}
+.tab.active{color:var(--accent)}
+.tab.disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+.tab-icon{font-size:1.15rem;line-height:1}
+.tab-label{font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.tab .dot{position:absolute;top:4px;right:calc(50% - 16px);width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.tab .count-badge{
+  position:absolute;top:2px;right:calc(50% - 20px);background:var(--accent);color:#fff;
+  font-size:.55rem;font-weight:700;min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;padding:0 .3rem;font-family:var(--mono)
+}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);max-width:480px;width:100%;max-height:80vh;display:flex;flex-direction:column}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--bg4)}
+.modal-header h3{font-size:.9rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--fg2);cursor:pointer;font-size:1.2rem;padding:.2rem .4rem;border-radius:4px}
+.modal-close:hover{background:var(--bg3);color:var(--fg)}
+.modal-body{padding:1rem;overflow-y:auto;flex:1}
+.modal-body pre{background:var(--bg);border:1px solid var(--bg4);border-radius:var(--radius-sm);padding:.75rem;font-size:.72rem;font-family:var(--mono);color:var(--fg2);white-space:pre-wrap;word-break:break-all;max-height:50vh;overflow-y:auto}
+.modal-footer{padding:.75rem 1rem;border-top:1px solid var(--bg4);display:flex;gap:.5rem}
+.modal-footer button{flex:1;min-height:42px;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:.85rem;border:none;font-family:var(--font)}
+.modal-footer .btn-copy{background:var(--accent);color:#fff}
+.modal-footer .btn-copy:hover{background:var(--accent2)}
+.modal-footer .btn-cancel{background:var(--bg3);color:var(--fg2);border:1px solid var(--bg4)}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:var(--bg2);border:2px solid var(--accent);border-radius:var(--radius);padding:2rem;text-align:center;z-index:1001;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.toast .check{font-size:3rem;margin-bottom:.5rem}
+.toast h3{font-size:1.1rem;margin-bottom:.25rem}
+.toast p{color:var(--fg2);font-size:.85rem}
+
+.divider{border:none;border-top:1px solid var(--bg4);margin:1rem 0 .85rem}
+.section-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--fg3);font-weight:600;margin-bottom:.6rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1><span>SOAL</span> — Controle de Secagem</h1>
+  <div class="sub">Monitoramento Diario (I.N. 029/2011 MAPA)</div>
+</div>
+
+<div class="screen-area">
+  <!-- SCREEN 1: HEADER -->
+  <div class="screen active" id="s-header">
+    <div class="section-label">Dados do Dia</div>
+    <div class="field"><label>Data</label><input type="date" id="h-data"></div>
+    <div class="field"><label>Produto</label>
+      <select id="h-produto">
+        <option value="">Selecione...</option>
+        <option>Soja</option><option>Milho</option><option>Feijao</option>
+        <option>Trigo</option><option>Aveia</option><option>Cevada</option><option>Milheto</option>
+      </select>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Cultivar / Hibrido</label><input type="text" id="h-cultivar" placeholder="Ex: BMX Potencia"></div>
+      <div class="field"><label>N. Sequencial</label><input type="number" id="h-seq" placeholder="1" min="1" inputmode="numeric"></div>
+    </div>
+    <div class="field"><label>Secador</label>
+      <select id="h-secador">
+        <option value="">Selecione...</option>
+        <option value="Secador 1">Secador 1</option>
+        <option value="Secador 2">Secador 2</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="btn-iniciar" disabled>INICIAR MONITORAMENTO</button>
+  </div>
+
+  <!-- SCREEN 2: LEITURAS -->
+  <div class="screen" id="s-leituras">
+    <div class="section-label">Nova Leitura</div>
+    <div class="field"><label>Hora</label><input type="time" id="l-hora" step="1800"></div>
+    <div class="num-grid">
+      <div class="num-cell"><div class="nc-label">P1</div><input type="number" id="l-p1" placeholder="—" step="0.1" inputmode="decimal"><div class="nc-unit">&deg;C</div></div>
+      <div class="num-cell"><div class="nc-label">P2</div><input type="number" id="l-p2" placeholder="—" step="0.1" inputmode="decimal"><div class="nc-unit">&deg;C</div></div>
+      <div class="num-cell"><div class="nc-label">P3</div><input type="number" id="l-p3" placeholder="—" step="0.1" inputmode="decimal"><div class="nc-unit">&deg;C</div></div>
+      <div class="num-cell"><div class="nc-label">Grao</div><input type="number" id="l-grao" placeholder="—" step="0.1" inputmode="decimal"><div class="nc-unit">&deg;C</div></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Umidade Entrada %</label><input type="number" id="l-ue" placeholder="17.5" step="0.1" inputmode="decimal"></div>
+      <div class="field"><label>Umidade Secagem %</label><input type="number" id="l-us" placeholder="13.0" step="0.1" inputmode="decimal"></div>
+    </div>
+    <div class="field"><label>Destino</label>
+      <div class="qsel" id="l-destino-wrap">
+        <button class="qsel-btn" data-v="S1">S1</button><button class="qsel-btn" data-v="S2">S2</button>
+        <button class="qsel-btn" data-v="S3">S3</button><button class="qsel-btn" data-v="S4">S4</button>
+        <button class="qsel-btn" data-v="S5">S5</button><button class="qsel-btn" data-v="S6">S6</button>
+        <button class="qsel-btn" data-v="SP">SP</button><button class="qsel-btn" data-v="SE">SE</button>
+        <button class="qsel-btn" data-v="Expedido">Exp</button>
+      </div>
+    </div>
+    <div class="field"><label>Tipo Secagem</label>
+      <div class="tipo-grid" id="l-tipo-wrap">
+        <button class="tipo-btn" data-v="total"><span>T</span><small>Total</small></button>
+        <button class="tipo-btn" data-v="parcial"><span>P</span><small>Parcial</small></button>
+        <button class="tipo-btn" data-v="ressecagem"><span>R</span><small>Ressec.</small></button>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Lenha (m3)</label><input type="number" id="l-lenha" placeholder="0.0" step="0.1" min="0" inputmode="decimal"></div>
+      <div class="field"><label>Trat. Fitos. (L)</label><input type="number" id="l-trat" placeholder="0.0" step="0.1" min="0" inputmode="decimal"></div>
+    </div>
+    <button class="btn-primary" id="btn-salvar">SALVAR LEITURA</button>
+
+    <div class="readings-wrap">
+      <div class="readings-title"><span>Leituras do Dia</span><span class="badge" id="readings-count">0</span></div>
+      <div id="readings-empty" class="readings-empty">Nenhuma leitura registrada</div>
+      <div id="readings-table-wrap" class="rtable-scroll" style="display:none">
+        <table class="rtable">
+          <thead><tr><th>Hora</th><th>P1</th><th>P2</th><th>P3</th><th>Grao</th><th>Ent%</th><th>Sec%</th><th>Dest</th><th>Tipo</th><th>Lenha</th><th></th></tr></thead>
+          <tbody id="readings-body"></tbody>
+        </table>
+      </div>
+      <div class="totals" id="totals-bar" style="display:none">
+        <div class="total-card"><div class="tv" id="tot-count">0</div><div class="tl">Leituras</div></div>
+        <div class="total-card"><div class="tv" id="tot-horas">0h</div><div class="tl">Horas</div></div>
+        <div class="total-card"><div class="tv" id="tot-lenha">0</div><div class="tl">Lenha m3</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: ENCERRAR -->
+  <div class="screen" id="s-encerrar">
+    <div class="section-label">Resumo do Dia</div>
+    <div class="summary-card" id="summary-box">
+      <h3>Producao</h3>
+      <div class="summary-row"><span class="sk">Produto</span><span class="sv" id="sum-prod">—</span></div>
+      <div class="summary-row"><span class="sk">Data</span><span class="sv" id="sum-data">—</span></div>
+      <div class="summary-row"><span class="sk">Leituras</span><span class="sv" id="sum-count">0</span></div>
+      <div class="summary-row"><span class="sk">Periodo</span><span class="sv" id="sum-periodo">—</span></div>
+      <div class="summary-row"><span class="sk">Total Horas</span><span class="sv" id="sum-horas">—</span></div>
+      <div class="summary-row"><span class="sk">Total Lenha</span><span class="sv" id="sum-lenha">0 m3</span></div>
+      <div class="summary-row"><span class="sk">Total Trat. Fitos.</span><span class="sv" id="sum-trat">0 L</span></div>
+    </div>
+    <hr class="divider">
+    <div class="section-label">Operadores</div>
+    <div class="field"><label>Operador Turno 1</label><input type="text" id="e-op1" placeholder="Nome do operador"></div>
+    <div class="row2">
+      <div class="field"><label>Operador Turno 2</label><input type="text" id="e-op2" placeholder="Opcional"></div>
+      <div class="field"><label>Operador Turno 3</label><input type="text" id="e-op3" placeholder="Opcional"></div>
+    </div>
+    <div class="field"><label>Observacoes</label><textarea id="e-obs" placeholder="Observacoes do dia..."></textarea></div>
+    <button class="btn-secondary" id="btn-json">EXPORTAR JSON</button>
+    <button class="btn-primary" id="btn-encerrar">ENCERRAR E ASSINAR</button>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tabbar">
+  <button class="tab active" data-screen="s-header" id="tab-header">
+    <span class="tab-icon">&#9783;</span><span class="tab-label">Header</span>
+  </button>
+  <button class="tab disabled" data-screen="s-leituras" id="tab-leituras">
+    <span class="tab-icon">&#9879;</span><span class="tab-label">Leituras</span>
+  </button>
+  <button class="tab disabled" data-screen="s-encerrar" id="tab-encerrar">
+    <span class="tab-icon">&#10003;</span><span class="tab-label">Encerrar</span>
+  </button>
+</div>
+
+<!-- JSON Modal -->
+<div class="modal-overlay" id="modal-json">
+  <div class="modal">
+    <div class="modal-header"><h3>Payload JSON</h3><button class="modal-close" id="modal-json-close">&times;</button></div>
+    <div class="modal-body"><pre id="json-output"></pre></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modal-json-cancel">Fechar</button>
+      <button class="btn-copy" id="modal-json-copy">Copiar JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast -->
+<div class="toast" id="toast-success">
+  <div class="check">&#10004;</div>
+  <h3>Monitoramento Encerrado</h3>
+  <p>Dados salvos com sucesso</p>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── State ──
+  const state = {
+    header: { data: '', produto: '', cultivar: '', secador: '', seq: null },
+    leituras: [],
+    headerFilled: false
+  };
+
+  const $ = function(id) { return document.getElementById(id); };
+  const hData = $('h-data'), hProduto = $('h-produto'), hCultivar = $('h-cultivar'),
+        hSeq = $('h-seq'), hSecador = $('h-secador');
+  const lHora = $('l-hora'), lP1 = $('l-p1'), lP2 = $('l-p2'), lP3 = $('l-p3'),
+        lGrao = $('l-grao'), lUe = $('l-ue'), lUs = $('l-us'),
+        lLenha = $('l-lenha'), lTrat = $('l-trat');
+  const eOp1 = $('e-op1'), eOp2 = $('e-op2'), eOp3 = $('e-op3'), eObs = $('e-obs');
+
+  var selDestino = '', selTipo = '';
+  var TIPO_MAP = { total: 'T', parcial: 'P', ressecagem: 'R' };
+
+  // ── Helpers ──
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function(k) {
+      if (k === 'textContent') { node.textContent = attrs[k]; }
+      else if (k === 'className') { node.className = attrs[k]; }
+      else if (k.startsWith('on')) { node.addEventListener(k.slice(2), attrs[k]); }
+      else { node.setAttribute(k, attrs[k]); }
+    });
+    if (children) children.forEach(function(c) { if (c) node.appendChild(c); });
+    return node;
+  }
+
+  function setRoundedTime() {
+    var now = new Date();
+    var mins = now.getMinutes();
+    var rounded = mins < 15 ? 0 : mins < 45 ? 30 : 60;
+    var d = new Date(now);
+    d.setMinutes(rounded % 60);
+    if (rounded === 60) d.setHours(d.getHours() + 1);
+    d.setSeconds(0);
+    lHora.value = d.toTimeString().slice(0, 5);
+  }
+
+  function checkHeader() {
+    var ok = hData.value && hProduto.value && hSecador.value;
+    $('btn-iniciar').disabled = !ok;
+  }
+
+  function switchScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    $(id).classList.add('active');
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelector('.tab[data-screen="' + id + '"]').classList.add('active');
+    if (id === 's-encerrar') updateSummary();
+    if (id === 's-leituras') setRoundedTime();
+  }
+
+  function updateTabs() {
+    var tabL = $('tab-leituras'), tabE = $('tab-encerrar');
+    if (state.headerFilled) {
+      tabL.classList.remove('disabled');
+      if (!$('tab-header').querySelector('.dot')) {
+        var dot = el('span', { className: 'dot' });
+        $('tab-header').appendChild(dot);
+      }
+    }
+    if (state.leituras.length > 0) {
+      tabE.classList.remove('disabled');
+      var badge = tabL.querySelector('.count-badge');
+      if (!badge) {
+        badge = el('span', { className: 'count-badge' });
+        tabL.appendChild(badge);
+      }
+      badge.textContent = state.leituras.length;
+    } else {
+      tabE.classList.add('disabled');
+      var b = tabL.querySelector('.count-badge');
+      if (b) b.remove();
+    }
+  }
+
+  function calcHoras() {
+    if (state.leituras.length < 2) return state.leituras.length * 0.5;
+    var times = state.leituras.map(function(l) {
+      var parts = l.hora.split(':');
+      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }).sort(function(a, b) { return a - b; });
+    return (times[times.length - 1] - times[0]) / 60;
+  }
+
+  function formatDate(d) {
+    var parts = d.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  // ── Render Readings Table (safe DOM) ──
+  function renderReadings() {
+    var body = $('readings-body');
+    var empty = $('readings-empty');
+    var wrap = $('readings-table-wrap');
+    var totals = $('totals-bar');
+
+    // Clear existing rows
+    while (body.firstChild) body.removeChild(body.firstChild);
+
+    if (state.leituras.length === 0) {
+      empty.style.display = '';
+      wrap.style.display = 'none';
+      totals.style.display = 'none';
+      $('readings-count').textContent = '0';
+      return;
+    }
+
+    empty.style.display = 'none';
+    wrap.style.display = '';
+    totals.style.display = '';
+    $('readings-count').textContent = state.leituras.length;
+
+    state.leituras.forEach(function(l, i) {
+      var tr = el('tr', null, [
+        el('td', { textContent: l.hora }),
+        el('td', { textContent: l.p1 != null ? String(l.p1) : '—' }),
+        el('td', { textContent: l.p2 != null ? String(l.p2) : '—' }),
+        el('td', { textContent: l.p3 != null ? String(l.p3) : '—' }),
+        el('td', { textContent: l.grao != null ? String(l.grao) : '—' }),
+        el('td', { textContent: l.ue != null ? String(l.ue) : '—' }),
+        el('td', { textContent: l.us != null ? String(l.us) : '—' }),
+        el('td', { textContent: l.destino || '—' }),
+        el('td', { textContent: TIPO_MAP[l.tipo] || '—' }),
+        el('td', { textContent: l.lenha != null ? String(l.lenha) : '—' }),
+        el('td', null, [
+          el('button', { className: 'del-btn', textContent: '\u00d7', onclick: function() { deleteLeitura(i); } })
+        ])
+      ]);
+      body.appendChild(tr);
+    });
+
+    // Totals
+    var totalLenha = state.leituras.reduce(function(s, l) { return s + (l.lenha || 0); }, 0);
+    var horas = calcHoras();
+    $('tot-count').textContent = state.leituras.length;
+    $('tot-horas').textContent = horas.toFixed(1) + 'h';
+    $('tot-lenha').textContent = totalLenha.toFixed(1);
+  }
+
+  // ── Leitura CRUD ──
+  function salvarLeitura() {
+    var hora = lHora.value;
+    if (!hora) { lHora.focus(); return; }
+
+    if (state.leituras.some(function(l) { return l.hora === hora; })) {
+      lHora.style.borderColor = 'var(--red)';
+      setTimeout(function() { lHora.style.borderColor = ''; }, 1500);
+      return;
+    }
+
+    state.leituras.push({
+      hora: hora,
+      p1: lP1.value ? parseFloat(lP1.value) : null,
+      p2: lP2.value ? parseFloat(lP2.value) : null,
+      p3: lP3.value ? parseFloat(lP3.value) : null,
+      grao: lGrao.value ? parseFloat(lGrao.value) : null,
+      ue: lUe.value ? parseFloat(lUe.value) : null,
+      us: lUs.value ? parseFloat(lUs.value) : null,
+      destino: selDestino || null,
+      tipo: selTipo || null,
+      lenha: lLenha.value ? parseFloat(lLenha.value) : null,
+      trat: lTrat.value ? parseFloat(lTrat.value) : null
+    });
+    state.leituras.sort(function(a, b) { return a.hora.localeCompare(b.hora); });
+
+    renderReadings();
+    updateTabs();
+    clearLeituraForm();
+  }
+
+  function clearLeituraForm() {
+    [lP1, lP2, lP3, lGrao, lUe, lUs, lLenha, lTrat].forEach(function(e) { e.value = ''; });
+    document.querySelectorAll('#l-destino-wrap .qsel-btn').forEach(function(b) { b.classList.remove('sel'); });
+    selDestino = '';
+    setRoundedTime();
+    document.querySelector('.screen-area').scrollTop = 0;
+  }
+
+  function deleteLeitura(idx) {
+    state.leituras.splice(idx, 1);
+    renderReadings();
+    updateTabs();
+  }
+
+  // ── Encerrar ──
+  function updateSummary() {
+    $('sum-prod').textContent = state.header.produto || '—';
+    $('sum-data').textContent = state.header.data ? formatDate(state.header.data) : '—';
+    $('sum-count').textContent = state.leituras.length;
+    if (state.leituras.length > 0) {
+      var sorted = state.leituras.slice().sort(function(a, b) { return a.hora.localeCompare(b.hora); });
+      $('sum-periodo').textContent = sorted[0].hora + ' — ' + sorted[sorted.length - 1].hora;
+      $('sum-horas').textContent = calcHoras().toFixed(1) + 'h';
+      $('sum-lenha').textContent = state.leituras.reduce(function(s, l) { return s + (l.lenha || 0); }, 0).toFixed(1) + ' m3';
+      $('sum-trat').textContent = state.leituras.reduce(function(s, l) { return s + (l.trat || 0); }, 0).toFixed(1) + ' L';
+    }
+  }
+
+  function buildPayload() {
+    var totalLenha = state.leituras.reduce(function(s, l) { return s + (l.lenha || 0); }, 0);
+    var totalTrat = state.leituras.reduce(function(s, l) { return s + (l.trat || 0); }, 0);
+    return {
+      controle_secagem: {
+        data_inicio: state.header.data,
+        cultura: state.header.produto.toLowerCase(),
+        cultivar: state.header.cultivar || null,
+        secador_identificacao: state.header.secador,
+        n_secagem_sequencial: state.header.seq,
+        total_horas_secagem: parseFloat(calcHoras().toFixed(1)),
+        lenha_m3: parseFloat(totalLenha.toFixed(2)),
+        trat_fitossanitario_total_litros: totalTrat > 0 ? parseFloat(totalTrat.toFixed(2)) : null,
+        operador_turno_1: eOp1.value || null,
+        operador_turno_2: eOp2.value || null,
+        operador_turno_3: eOp3.value || null,
+        observacoes: eObs.value || null
+      },
+      leituras_secagem: state.leituras.map(function(l) {
+        return {
+          hora_leitura: l.hora + ':00',
+          temp_p1_c: l.p1, temp_p2_c: l.p2, temp_p3_c: l.p3, temp_grao_c: l.grao,
+          umidade_entrada_pct: l.ue, umidade_secagem_pct: l.us,
+          destino_produto: l.destino, tipo_secagem: l.tipo,
+          lenha_m3: l.lenha, trat_fitossanitario_l: l.trat
+        };
+      })
+    };
+  }
+
+  function showJson() {
+    $('json-output').textContent = JSON.stringify(buildPayload(), null, 2);
+    $('modal-json').classList.add('open');
+  }
+
+  function copyJson() {
+    var text = JSON.stringify(buildPayload(), null, 2);
+    navigator.clipboard.writeText(text).then(function() {
+      $('modal-json-copy').textContent = 'Copiado!';
+      setTimeout(function() { $('modal-json-copy').textContent = 'Copiar JSON'; }, 1500);
+    });
+  }
+
+  function encerrarDia() {
+    var toast = $('toast-success');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  }
+
+  // ── Init ──
+  hData.value = new Date().toISOString().slice(0, 10);
+  setRoundedTime();
+
+  [hData, hProduto, hSecador].forEach(function(e) { e.addEventListener('change', checkHeader); });
+  [hCultivar, hSeq].forEach(function(e) { e.addEventListener('input', checkHeader); });
+
+  $('btn-iniciar').addEventListener('click', function() {
+    state.header = {
+      data: hData.value, produto: hProduto.value, cultivar: hCultivar.value,
+      secador: hSecador.value, seq: hSeq.value ? parseInt(hSeq.value) : null
+    };
+    state.headerFilled = true;
+    updateTabs();
+    switchScreen('s-leituras');
+  });
+
+  document.querySelectorAll('#l-destino-wrap .qsel-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#l-destino-wrap .qsel-btn').forEach(function(b) { b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      selDestino = btn.dataset.v;
+    });
+  });
+
+  document.querySelectorAll('#l-tipo-wrap .tipo-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#l-tipo-wrap .tipo-btn').forEach(function(b) { b.classList.remove('sel'); });
+      btn.classList.add('sel');
+      selTipo = btn.dataset.v;
+    });
+  });
+
+  $('btn-salvar').addEventListener('click', salvarLeitura);
+  $('btn-json').addEventListener('click', showJson);
+  $('btn-encerrar').addEventListener('click', encerrarDia);
+  $('modal-json-close').addEventListener('click', function() { $('modal-json').classList.remove('open'); });
+  $('modal-json-cancel').addEventListener('click', function() { $('modal-json').classList.remove('open'); });
+  $('modal-json-copy').addEventListener('click', copyJson);
+
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      if (tab.classList.contains('disabled')) return;
+      switchScreen(tab.dataset.screen);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
